@@ -1,0 +1,185 @@
+/* Loading Page Background */
+.loading-page-bg {
+  min-height: 100vh;
+  height: 100vh;
+  background-image: url('../../assets/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-page-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(15, 20, 25, 0.85) 0%, rgba(0, 0, 0, 0.9) 100%);
+  pointer-events: none;
+}
+
+.loading-page-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  text-align: center;
+}
+
+/* Logo Wrapper */
+.loading-logo-wrapper {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(45, 134, 89, 0.15));
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
+  animation: logoGlow 3s ease-in-out infinite;
+}
+
+.loading-logo {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  border-radius: 16px;
+  animation: logoPulse 2s ease-in-out infinite;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  color: #d4af37 !important;
+  width: 60px !important;
+  height: 60px !important;
+  animation: spinnerRotate 2s linear infinite;
+}
+
+/* Loading Text */
+.loading-text {
+  color: #d4af37 !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  animation: textFade 1.5s ease-in-out infinite;
+}
+
+/* Loading Tagline */
+.loading-tagline {
+  color: rgba(212, 175, 55, 0.6) !important;
+  font-size: 16px !important;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 20px;
+  animation: textGlimmer 3s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes logoGlow {
+  0%, 100% {
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(212, 175, 55, 0.4);
+  }
+}
+
+@keyframes logoPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes spinnerRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes textFade {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes textGlimmer {
+  0%, 100% {
+    color: rgba(212, 175, 55, 0.5);
+  }
+  50% {
+    color: rgba(212, 175, 55, 0.8);
+  }
+}
+
+/* Background Animation */
+.loading-bg-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+  animation: bgPulse 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes bgPulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .loading-page-container {
+    gap: 30px;
+  }
+
+  .loading-logo-wrapper {
+    width: 120px;
+    height: 120px;
+  }
+
+  .loading-logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .loading-spinner {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .loading-text {
+    font-size: 18px !important;
+  }
+
+  .loading-tagline {
+    font-size: 14px !important;
+  }
+}

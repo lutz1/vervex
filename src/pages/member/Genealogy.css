@@ -1,0 +1,460 @@
+/* Genealogy Background */
+.genealogy-bg {
+  min-height: 100vh;
+  background-image: url('../../assets/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+  padding: 40px 20px;
+  overflow-x: auto;
+}
+
+.genealogy-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(26, 95, 63, 0.4) 0%, rgba(15, 20, 25, 0.6) 100%);
+  pointer-events: none;
+}
+
+.genealogy-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+}
+
+/* Header */
+.genealogy-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  gap: 20px;
+}
+
+.genealogy-title {
+  color: #d4af37 !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px;
+  text-align: center;
+  flex: 1;
+}
+
+.back-button {
+  color: #d4af37 !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+}
+
+.back-button:hover {
+  background: rgba(212, 175, 55, 0.1) !important;
+}
+
+.help-button {
+  color: #d4af37 !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  min-width: 40px;
+  width: 40px;
+  padding: 0 !important;
+}
+
+.help-button:hover {
+  background: rgba(212, 175, 55, 0.1) !important;
+}
+
+/* Tree Section */
+.tree-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 60px;
+  overflow-x: auto;
+  padding: 20px;
+  background: rgba(30, 30, 35, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  min-height: 400px;
+}
+
+/* Tree Node Styles */
+.tree-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.node-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  background: rgba(30, 30, 35, 0.9);
+  border: 2px solid rgba(212, 175, 55, 0.4);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  min-width: 140px;
+}
+
+.node-card:hover {
+  background: rgba(30, 30, 35, 1);
+  border-color: #d4af37;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  transform: translateY(-4px);
+}
+
+.node-root {
+  border-color: #d4af37 !important;
+  background: rgba(26, 95, 63, 0.2) !important;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2) !important;
+}
+
+.node-parent {
+  border-color: rgba(212, 175, 55, 0.6) !important;
+  background: rgba(45, 134, 89, 0.1) !important;
+}
+
+.node-child {
+  border-color: rgba(212, 175, 55, 0.3) !important;
+  background: rgba(45, 134, 89, 0.05) !important;
+  min-width: 110px;
+  padding: 12px;
+}
+
+.node-avatar {
+  font-size: 32px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(45, 134, 89, 0.2));
+  border-radius: 50%;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.node-name {
+  color: #d4af37 !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.node-role {
+  color: rgba(212, 175, 55, 0.6) !important;
+  font-size: 12px !important;
+  text-align: center;
+}
+
+/* Tree Connectors */
+.tree-children {
+  position: relative;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tree-connector {
+  position: absolute;
+  top: -30px;
+  width: 2px;
+  height: 30px;
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.3), transparent);
+}
+
+.tree-children .MuiGrid-container {
+  position: relative;
+}
+
+.tree-children .MuiGrid-container::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+}
+
+/* Performance Section */
+.performance-section {
+  background: rgba(30, 30, 35, 0.8);
+  border: 2px solid rgba(212, 175, 55, 0.2);
+  border-radius: 16px;
+  padding: 40px 30px;
+  margin-top: 40px;
+  backdrop-filter: blur(10px);
+}
+
+.performance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.performance-title {
+  color: #d4af37 !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px;
+}
+
+.performance-label {
+  color: #2d8659 !important;
+  font-size: 12px !important;
+  font-weight: 600;
+  letter-spacing: 2px;
+  padding: 6px 12px;
+  background: rgba(45, 134, 89, 0.2);
+  border-radius: 4px;
+  border: 1px solid rgba(45, 134, 89, 0.4);
+}
+
+.performance-stats {
+  width: 100%;
+}
+
+.stat-card {
+  background: rgba(30, 30, 35, 0.9) !important;
+  border: 2px solid rgba(212, 175, 55, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 24px 20px !important;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.stat-card:hover {
+  border-color: #d4af37 !important;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2) !important;
+  transform: translateY(-4px);
+}
+
+.stat-value {
+  color: #d4af37 !important;
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.stat-label {
+  color: rgba(212, 175, 55, 0.6) !important;
+  font-size: 14px !important;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Member Modal */
+.member-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.member-modal-content {
+  background: rgba(30, 30, 35, 0.95) !important;
+  border: 2px solid rgba(212, 175, 55, 0.3) !important;
+  border-radius: 16px !important;
+  padding: 40px 30px !important;
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  color: #d4af37 !important;
+  min-width: auto;
+  padding: 8px 12px;
+  font-size: 24px;
+}
+
+.modal-avatar {
+  font-size: 64px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.modal-name {
+  color: #d4af37 !important;
+  text-align: center;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.modal-role {
+  color: rgba(212, 175, 55, 0.6) !important;
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.modal-details {
+  background: rgba(26, 95, 63, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.modal-details p {
+  color: rgba(212, 175, 55, 0.7) !important;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.modal-button {
+  width: 100%;
+  background: linear-gradient(90deg, #d4af37, #e8d5a1, #d4af37) !important;
+  background-size: 200% auto !important;
+  color: #1a5f3f !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .genealogy-header {
+    flex-direction: column;
+  }
+
+  .genealogy-title {
+    font-size: 1.5rem !important;
+  }
+
+  .tree-section {
+    padding: 15px;
+    min-height: 300px;
+  }
+
+  .node-card {
+    min-width: 120px;
+    padding: 12px;
+  }
+
+  .node-avatar {
+    font-size: 28px;
+    width: 50px;
+    height: 50px;
+  }
+
+  .node-name {
+    font-size: 13px !important;
+  }
+
+  .node-role {
+    font-size: 11px !important;
+  }
+
+  .performance-section {
+    padding: 30px 20px;
+  }
+
+  .performance-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stat-card {
+    padding: 20px 16px !important;
+  }
+
+  .stat-value {
+    font-size: 24px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .genealogy-container {
+    padding: 0 10px;
+  }
+
+  .genealogy-title {
+    font-size: 1.2rem !important;
+  }
+
+  .tree-section {
+    padding: 10px;
+    min-height: auto;
+    border-radius: 8px;
+  }
+
+  .node-card {
+    min-width: 100px;
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .node-avatar {
+    font-size: 24px;
+    width: 45px;
+    height: 45px;
+  }
+
+  .node-name {
+    font-size: 12px !important;
+  }
+
+  .node-role {
+    font-size: 10px !important;
+  }
+
+  .performance-section {
+    padding: 20px 16px;
+  }
+
+  .performance-title {
+    font-size: 1.1rem !important;
+  }
+
+  .performance-stats {
+    gap: 16px;
+  }
+
+  .stat-card {
+    padding: 16px 12px !important;
+  }
+
+  .stat-value {
+    font-size: 20px !important;
+  }
+
+  .stat-label {
+    font-size: 12px !important;
+  }
+
+  .member-modal-content {
+    padding: 30px 20px !important;
+    max-width: 90vw;
+  }
+
+  .modal-avatar {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+}

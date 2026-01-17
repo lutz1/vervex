@@ -6,21 +6,22 @@ import {
   TextField,
   Typography,
   Paper,
-  Link,
   Alert,
   InputAdornment,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebaseConfig';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { getUserRole } from '../../utils/firestore';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import EmailIcon from '@mui/icons-material/Email';
 import './Login.css';
 import logo from '../../assets/logo.jpg';
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -30,12 +31,20 @@ export default function Login() {
     setLoading(true);
 
     try {
-      if (isSignUp) {
-        await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      // Get user role
+      const role = await getUserRole(user.uid);
+      
+      console.log('Authentication successful, role:', role);
+      
+      // Redirect based on role
+      if (role === 'superadmin') {
+        navigate('/superadmin/users');
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        navigate('/');
       }
-      console.log('Authentication successful');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -54,7 +63,7 @@ export default function Login() {
             <Box className="login-header">
               <img src={logo} alt="Vervex Logo" className="login-logo-img" />
               <Typography variant="subtitle1" className="luxury-tagline">
-                {isSignUp ? 'Join Our Elite Circle' : 'Exclusive Access'}
+                Exclusive Access
               </Typography>
               {/* Centered Divider below tagline */}
               <Box className="gold-divider gold-divider-header" />
@@ -69,13 +78,11 @@ export default function Login() {
 
             {/* Title */}
             <Typography component="h1" variant="h5" className="login-title">
-              {isSignUp ? 'CREATE ACCOUNT' : 'SIGN IN'}
+              SIGN IN
             </Typography>
 
             <Typography variant="body2" className="login-subtitle">
-              {isSignUp
-                ? 'Join the exclusive Vervex community'
-                : 'Welcome back to luxury'}
+              Welcome back to luxury
             </Typography>
 
             {/* Form */}
@@ -131,31 +138,12 @@ export default function Login() {
                 className="luxury-button"
                 disabled={loading}
               >
-                {loading ? 'PROCESSING...' : isSignUp ? 'CREATE ACCOUNT' : 'SIGN IN'}
+                {loading ? 'PROCESSING...' : 'SIGN IN'}
               </Button>
             </Box>
 
             {/* Divider */}
             <Box className="gold-divider-bottom" />
-
-            {/* Toggle Sign Up / Sign In */}
-            <Box className="auth-toggle">
-              <Typography variant="body2" className="toggle-text">
-                {isSignUp ? 'Already a member? ' : 'Not a member yet? '}
-                <Link
-                  component="button"
-                  variant="body2"
-                  className="toggle-link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsSignUp(!isSignUp);
-                    setError('');
-                  }}
-                >
-                  {isSignUp ? 'SIGN IN' : 'JOIN NOW'}
-                </Link>
-              </Typography>
-            </Box>
           </Paper>
 
           {/* Footer */}

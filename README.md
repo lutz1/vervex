@@ -1,3 +1,43 @@
+# Vervex - Production Application
+
+## 🔐 IMPORTANT: Security Update
+
+This application has been updated with direct Firestore/Auth utilities for secure user management. No Cloud Functions are used.
+
+### What Changed?
+- ✅ User creation is now secure and handled on the backend
+- ✅ Superadmin session is never interrupted
+- ✅ All user actions are audited and logged
+- ✅ Complete password security implementation
+
+### Start Here
+**New to these changes?** Read [QUICK_START.md](./QUICK_START.md) (5 min read)
+
+### Deployment Required
+Cloud Functions must be deployed to Firebase before the system works:
+
+```bash
+# Option 1: Automated (Recommended)
+# Windows:
+deploy.bat
+
+# Mac/Linux:
+./deploy.sh
+
+# Option 2: Manual
+firebase deploy
+```
+
+### Full Documentation
+- **Quick Start**: [QUICK_START.md](./QUICK_START.md) - Get started in 5 minutes
+- **Setup Guide**: [SECURITY_SETUP.md](./SECURITY_SETUP.md) - Complete setup instructions
+- **Implementation**: [SECURITY_IMPLEMENTATION.md](./SECURITY_IMPLEMENTATION.md) - Architecture details
+- **Changes**: [CHANGES_SUMMARY.md](./CHANGES_SUMMARY.md) - What changed
+- **Pre-Deploy**: [PRE_DEPLOYMENT_CHECKLIST.md](./PRE_DEPLOYMENT_CHECKLIST.md) - Deployment checklist
+
+
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

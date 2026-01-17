@@ -1,0 +1,459 @@
+/* User Management Background */
+.user-management-bg {
+  min-height: 100vh;
+  background-image: url('../../assets/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+  padding: 40px 20px;
+  overflow-x: auto;
+}
+
+.user-management-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(26, 95, 63, 0.4) 0%, rgba(15, 20, 25, 0.6) 100%);
+  pointer-events: none;
+}
+
+.user-management-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  width: 100%;
+}
+
+/* Header */
+.management-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 35px;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px;
+  background: rgba(26, 95, 63, 0.15);
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.management-title {
+  color: #d4af37 !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px;
+  flex: 1;
+  text-align: center;
+  font-size: 2rem !important;
+}
+
+.back-button {
+  color: #d4af37 !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+}
+
+.back-button:hover {
+  background: rgba(212, 175, 55, 0.1) !important;
+}
+
+.create-button {
+  background: linear-gradient(90deg, #d4af37, #e8d5a1, #d4af37) !important;
+  background-size: 200% auto !important;
+  color: #1a5f3f !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px;
+}
+
+.create-button:hover {
+  background: linear-gradient(90deg, #e8d5a1, #d4af37, #e8d5a1) !important;
+  background-size: 200% auto !important;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3) !important;
+  transform: translateY(-2px);
+}
+
+/* Alerts */
+.alert-message {
+  margin-bottom: 20px;
+  background: rgba(30, 30, 35, 0.9) !important;
+  border: 1px solid rgba(212, 175, 55, 0.2) !important;
+  color: #d4af37 !important;
+}
+
+/* Search Section */
+.search-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(26, 95, 63, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.search-input {
+  background: rgba(45, 134, 89, 0.08) !important;
+  border-radius: 8px !important;
+}
+
+.search-input .MuiOutlinedInput-root {
+  color: #f5f5f5 !important;
+  transition: all 0.3s ease;
+}
+
+.search-input .MuiOutlinedInput-root fieldset {
+  border-color: rgba(212, 175, 55, 0.4) !important;
+}
+
+.search-input .MuiOutlinedInput-root:hover fieldset {
+  border-color: #d4af37 !important;
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.search-input .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #d4af37 !important;
+}
+
+.search-input .MuiInputLabel-root {
+  color: rgba(212, 175, 55, 0.7) !important;
+}
+
+/* Table Container */
+.users-table-container {
+  background: rgba(30, 30, 35, 0.9) !important;
+  border: 2px solid rgba(212, 175, 55, 0.2) !important;
+  border-radius: 12px !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  -webkit-overflow-scrolling: touch;
+}
+
+.users-table {
+  width: 100%;
+  min-width: 800px;
+}
+
+.table-header {
+  background: rgba(26, 95, 63, 0.3) !important;
+  border-bottom: 2px solid rgba(212, 175, 55, 0.3) !important;
+}
+
+.table-header .MuiTableCell-head {
+  color: #d4af37 !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px;
+  padding: 16px !important;
+  border-color: rgba(212, 175, 55, 0.2) !important;
+  white-space: nowrap;
+  text-align: left;
+  background: rgba(26, 95, 63, 0.5) !important;
+}
+
+.table-row {
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1) !important;
+  transition: all 0.3s ease;
+}
+
+.table-row:hover {
+  background: rgba(45, 134, 89, 0.1) !important;
+}
+
+.table-row .MuiTableCell-body {
+  color: rgba(212, 175, 55, 0.9) !important;
+  padding: 14px 16px !important;
+  border-color: rgba(212, 175, 55, 0.1) !important;
+  word-break: break-word;
+  max-width: 200px;
+}
+
+.user-name {
+  color: #d4af37 !important;
+  font-weight: 600 !important;
+}
+
+.no-users {
+  color: rgba(212, 175, 55, 0.5) !important;
+  padding: 40px 16px !important;
+  font-style: italic;
+}
+
+/* Role Select */
+.role-select {
+  background: rgba(45, 134, 89, 0.1) !important;
+  border-radius: 4px !important;
+}
+
+.role-select .MuiOutlinedInput-root {
+  color: rgba(212, 175, 55, 0.9) !important;
+  font-size: 13px !important;
+  min-height: 36px;
+}
+
+.role-select .MuiOutlinedInput-root fieldset {
+  border-color: rgba(212, 175, 55, 0.2) !important;
+}
+
+.role-select .MuiOutlinedInput-root:hover fieldset {
+  border-color: #d4af37 !important;
+}
+
+.role-select .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #d4af37 !important;
+}
+
+/* Action Buttons */
+.edit-button {
+  color: #d4af37 !important;
+  transition: all 0.3s ease;
+}
+
+.edit-button:hover {
+  background: rgba(212, 175, 55, 0.1) !important;
+  color: #e8d5a1 !important;
+}
+
+.delete-button {
+  color: #ff7f7f !important;
+  transition: all 0.3s ease;
+}
+
+.delete-button:hover {
+  background: rgba(255, 127, 127, 0.1) !important;
+}
+
+/* Dialog */
+.dialog-title {
+  color: #d4af37 !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, rgba(26, 95, 63, 0.3) 0%, rgba(26, 95, 63, 0.1) 100%) !important;
+  border-bottom: 2px solid rgba(212, 175, 55, 0.3) !important;
+  padding: 20px !important;
+  font-size: 1.5rem !important;
+}
+
+.dialog-content {
+  background: rgba(30, 30, 35, 0.95) !important;
+  padding: 25px !important;
+}
+
+.dialog-content .MuiTextField-root {
+  background: rgba(45, 134, 89, 0.1) !important;
+  border-radius: 8px !important;
+}
+
+.dialog-content .MuiTextField-root .MuiOutlinedInput-root {
+  color: #f5f5f5 !important;
+  font-size: 14px !important;
+}
+
+.dialog-content .MuiTextField-root .MuiOutlinedInput-root fieldset {
+  border-color: rgba(212, 175, 55, 0.4) !important;
+  border-width: 2px !important;
+}
+
+.dialog-content .MuiTextField-root .MuiOutlinedInput-root:hover fieldset {
+  border-color: #d4af37 !important;
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.dialog-content .MuiTextField-root .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #d4af37 !important;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.3) !important;
+}
+
+.dialog-content .MuiInputLabel-root {
+  color: #d4af37 !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+}
+
+.dialog-content .MuiInputLabel-root.Mui-focused {
+  color: #e8d5a1 !important;
+}
+
+.dialog-content .MuiFormHelperText-root {
+  color: rgba(212, 175, 55, 0.6) !important;
+  font-size: 12px !important;
+  margin-top: 5px !important;
+}
+
+.dialog-content .MuiFormControl-root {
+  margin-bottom: 5px !important;
+}
+
+.dialog-actions {
+  background: rgba(26, 95, 63, 0.15) !important;
+  border-top: 2px solid rgba(212, 175, 55, 0.2) !important;
+  padding: 16px 25px !important;
+  gap: 10px;
+}
+
+.dialog-actions .MuiButton-text {
+  color: rgba(212, 175, 55, 0.8) !important;
+  font-weight: 600 !important;
+}
+
+.dialog-actions .MuiButton-text:hover {
+  background: rgba(212, 175, 55, 0.1) !important;
+}
+
+.submit-button {
+  background: linear-gradient(90deg, #d4af37, #e8d5a1, #d4af37) !important;
+  background-size: 200% auto !important;
+  color: #1a5f3f !important;
+  font-weight: 700 !important;
+}
+
+.submit-button:hover {
+  background: linear-gradient(90deg, #e8d5a1, #d4af37, #e8d5a1) !important;
+  background-size: 200% auto !important;
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.loading-container .MuiCircularProgress-root {
+  color: #d4af37 !important;
+}
+
+/* Chip */
+.MuiChip-colorSuccess {
+  background: rgba(45, 134, 89, 0.3) !important;
+  color: #2d8659 !important;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .management-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .management-title {
+    order: 2;
+    font-size: 1.5rem !important;
+  }
+
+  .back-button {
+    order: 1;
+  }
+
+  .create-button {
+    order: 3;
+  }
+
+  .users-table {
+    font-size: 13px;
+    min-width: 700px;
+  }
+
+  .table-header .MuiTableCell-head {
+    padding: 12px 10px !important;
+    font-size: 12px !important;
+  }
+
+  .table-row .MuiTableCell-body {
+    padding: 11px 10px !important;
+    font-size: 12px !important;
+  }
+
+  .user-name {
+    font-weight: 700 !important;
+  }
+
+  .edit-button,
+  .delete-button {
+    padding: 6px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .user-management-bg {
+    padding: 20px 0;
+  }
+
+  .user-management-container {
+    padding: 0 12px;
+  }
+
+  .management-header {
+    gap: 12px;
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .management-title {
+    font-size: 1.4rem !important;
+    letter-spacing: 1px;
+    order: 1;
+  }
+
+  .back-button {
+    order: 2;
+    width: 100%;
+  }
+
+  .create-button {
+    order: 3;
+    width: 100%;
+  }
+
+  .search-section {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .search-input .MuiOutlinedInput-root {
+    font-size: 13px !important;
+  }
+
+  .users-table-container {
+    border-radius: 8px !important;
+  }
+
+  .users-table {
+    font-size: 11px;
+    min-width: 600px;
+  }
+
+  .table-header .MuiTableCell-head {
+    padding: 10px 8px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+  }
+
+  .table-row .MuiTableCell-body {
+    padding: 10px 8px !important;
+    font-size: 11px !important;
+    max-width: 120px;
+  }
+
+  .user-name {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .role-select .MuiOutlinedInput-root {
+    font-size: 11px !important;
+    min-height: 32px;
+  }
+
+  .edit-button,
+  .delete-button {
+    padding: 5px !important;
+    font-size: 16px;
+  }
+}
