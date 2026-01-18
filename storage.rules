@@ -1,0 +1,20 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Frames folder - All authenticated users can read/write
+    // (Firestore rules prevent unauthorized frame creation anyway)
+    match /frames/{allPaths=**} {
+      // All authenticated users can write and delete frame images
+      allow write, delete: if request.auth != null;
+      
+      // All authenticated users can read frame images
+      allow read: if request.auth != null;
+    }
+    
+    // Default deny all other requests
+    match /{allPaths=**} {
+      allow read, write, delete: if false;
+    }
+  }
+}

@@ -52,7 +52,6 @@ const ProtectedRoute = ({ user, loading, children, requiredRole = null, userRole
     if (requiredRole === 'superadmin' && typeof window !== 'undefined') {
       const lastSuperAdminUid = localStorage.getItem('lastSuperAdminUid');
       console.warn(`⚠️ Role mismatch. Required: ${requiredRole}, Got: ${userRole}`);
-      console.log(`Last superadmin UID: ${lastSuperAdminUid}, Current UID: ${user?.uid}`);
       
       // Show grace period loading if session was just switched
       if (lastSuperAdminUid && user?.uid !== lastSuperAdminUid && showGraceLoading) {
@@ -75,7 +74,6 @@ const ProtectedRoute = ({ user, loading, children, requiredRole = null, userRole
       
       // If the grace period has passed and we still don't have the right user, redirect
       if (lastSuperAdminUid && user?.uid !== lastSuperAdminUid) {
-        console.log('Redirecting to login - user session was switched during creation');
         return <Navigate to="/login" replace />;
       }
     }
@@ -84,7 +82,10 @@ const ProtectedRoute = ({ user, loading, children, requiredRole = null, userRole
     if (userRole === 'superadmin') {
       return <Navigate to="/superadmin/users" replace />;
     }
-    return <Navigate to="/" replace />;
+    if (userRole && ['vip', 'ambassador', 'supreme', 'admin', 'cashier'].includes(userRole)) {
+      return <Navigate to="/member/genealogy" replace />;
+    }
+    return <Navigate to="/login" replace />;
   }
 
   return children;

@@ -1,0 +1,49 @@
+.pv-bottomnav-root {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1500;
+  display: block;
+  /* Respect iPhone safe area */
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.pv-bottomnav {
+  background: linear-gradient(180deg, #071016 0%, #0b1216 100%);
+  border-top: 1px solid rgba(212,175,55,0.08);
+  color: #a8b3bb;
+  min-height: 64px;
+  box-shadow: 0 -6px 18px rgba(0,0,0,0.45);
+}
+
+/* Ensure action icons and labels are visible and high-contrast */
+.pv-bottomnav .MuiBottomNavigationAction-root {
+  color: #9aa4ad;
+  padding-top: 6px;
+}
+
+.pv-bottomnav .Mui-selected {
+  color: #d4af37 !important;
+}
+
+.pv-bottomnav .MuiBottomNavigationAction-label {
+  font-size: 12px;
+  line-height: 1;
+  margin-top: 2px;
+  opacity: 1 !important;
+}
+
+.pv-bottomnav .MuiSvgIcon-root {
+  font-size: 20px;
+}
+
+/* Slightly larger hit target on mobile */
+.pv-bottomnav .MuiBottomNavigationAction-root .MuiTouchRipple-root {
+  display: block;
+}
+
+/* Hide on larger screens */
+@media (min-width: 992px) {
+  .pv-bottomnav-root { display: none; }
+}

@@ -31,9 +31,11 @@ import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { createOrUpdateUser, USER_ROLES, getUsersByRole, ensureSuperAdminExists } from '../../utils/firestore';
 import { auth } from '../../firebaseConfig';
+import { useNavigate } from 'react-router-dom';
 import './UserManagement.css';
 
 export default function UserManagement() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -50,7 +52,7 @@ export default function UserManagement() {
     contactNumber: '',
     address: '',
     password: '',
-    role: USER_ROLES.USER,
+    role: 'admin',
   });
 
   // Load all users on component mount
@@ -123,7 +125,7 @@ export default function UserManagement() {
         contactNumber: '',
         address: '',
         password: '',
-        role: USER_ROLES.USER,
+        role: 'admin',
       });
     }
     setOpenDialog(true);
@@ -141,7 +143,7 @@ export default function UserManagement() {
       contactNumber: '',
       address: '',
       password: '',
-      role: USER_ROLES.USER,
+      role: 'admin',
     });
   };
 
@@ -324,14 +326,30 @@ export default function UserManagement() {
           <Typography variant="h4" className="management-title">
             User Management
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            className="create-button"
-            onClick={() => handleOpenDialog()}
-          >
-            Create User
-          </Button>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button
+              variant="outlined"
+              onClick={() => navigate('/superadmin/manage-tree')}
+              sx={{
+                color: '#d4af37',
+                borderColor: '#d4af37',
+                fontWeight: 600,
+                '&:hover': {
+                  background: 'rgba(212, 175, 55, 0.1)',
+                },
+              }}
+            >
+              Manage Tree
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              className="create-button"
+              onClick={() => handleOpenDialog()}
+            >
+              Create User
+            </Button>
+          </Box>
         </Box>
 
         {/* Alerts */}
@@ -407,7 +425,7 @@ export default function UserManagement() {
                             value={user.role}
                             onChange={(e) => handleUpdateRole(user.uid, e.target.value)}
                           >
-                            {Object.entries(USER_ROLES).map(([key, value]) => (
+                            {Object.entries(USER_ROLES).filter(([key, value]) => value !== 'user').map(([key, value]) => (
                               <MenuItem key={`role-${value}`} value={value}>
                                 {key}
                               </MenuItem>
@@ -549,7 +567,7 @@ export default function UserManagement() {
                     },
                   }}
                 >
-                  {Object.entries(USER_ROLES).map(([key, value]) => (
+                  {Object.entries(USER_ROLES).filter(([key, value]) => value !== 'user').map(([key, value]) => (
                     <MenuItem key={`dialog-role-${value}`} value={value}>
                       {key}
                     </MenuItem>

@@ -12,7 +12,6 @@ export const createUserOnAuth = async (uid, email, displayName, role = USER_ROLE
       role,
       isActive: true,
     });
-    console.log('User created on Firestore:', result);
     return result;
   } catch (error) {
     console.error('Error creating user on auth:', error);
@@ -31,7 +30,6 @@ export const assignRoleToUser = async (uid, role) => {
     }
 
     const result = await updateUserRole(uid, role);
-    console.log(`Role ${role} assigned to user ${uid}`);
     return result;
   } catch (error) {
     console.error('Error assigning role:', error);
@@ -51,7 +49,6 @@ export const createSuperAdmin = async (uid, email, displayName) => {
       role: USER_ROLES.SUPERADMIN,
       isActive: true,
     });
-    console.log('SuperAdmin account created:', result);
     return result;
   } catch (error) {
     console.error('Error creating superadmin:', error);

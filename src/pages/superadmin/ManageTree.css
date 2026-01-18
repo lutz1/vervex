@@ -1,0 +1,89 @@
+/* ManageTree Styles */
+.manage-tree-container {
+  background: linear-gradient(135deg, #0f1419 0%, #1a2a2a 100%);
+  min-height: 100vh;
+  color: #fff;
+}
+
+.tree-level {
+  margin-bottom: 2rem;
+}
+
+.tree-level-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1.5rem;
+}
+
+.avatar-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.avatar-card:hover {
+  transform: translateY(-4px);
+}
+
+.avatar-initials {
+  font-size: 1.5rem;
+  font-weight: 700;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  border: 3px solid currentColor;
+}
+
+.tree-structure-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.structure-item {
+  text-align: center;
+}
+
+.structure-number {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+}
+
+.structure-label {
+  font-size: 0.85rem;
+  color: #a8a8a8;
+}
+
+@media (max-width: 768px) {
+  .avatar-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+  }
+
+  .tree-level-title {
+    font-size: 1rem;
+  }
+}

@@ -47,7 +47,7 @@ exports.createUserHttp = functions.https.onRequest(async (req, res) => {
 
     // Verify caller is superadmin
     const callerDoc = await db.collection('users').doc(callerId).get();
-    if (!callerDoc.exists()) {
+    if (!callerDoc.exists) {
       console.warn(`User ${callerId} not found in Firestore`);
       return res.status(403).json({
         error: 'permission-denied',
@@ -189,7 +189,7 @@ exports.deleteUserHttp = functions.https.onRequest(async (req, res) => {
     try {
       // Verify caller is superadmin
       const callerDoc = await db.collection('users').doc(callerId).get();
-      if (!callerDoc.exists() || callerDoc.data().role !== 'superadmin') {
+      if (!callerDoc.exists || callerDoc.data().role !== 'superadmin') {
         return res.status(403).json({
           error: 'permission-denied',
           message: 'Only superadmins can delete users'

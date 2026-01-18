@@ -1,263 +1,356 @@
-/* Genealogy Background */
-.genealogy-bg {
-  min-height: 100vh;
-  background-image: url('../../assets/bg.png');
+/* Genealogy Dark Theme - Versace Green & Gold - Clean Style */
+
+:root {
+  --versace-green: #4ade80;
+  --versace-lime: #5edc6e;
+  --versace-gold: #d4a574;
+  --versace-dark: #0a2a0a;
+  --versace-darkgray: rgba(10, 35, 20, 0.95);
+  --versace-accent: #6ba76b;
+}
+
+/* Main Container */
+.genealogy-main-container {
+  background: #101a13 url('../../assets/bg.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  min-height: 100vh;
+  padding: 32px 0;
   position: relative;
-  padding: 40px 20px;
-  overflow-x: auto;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
 }
 
-.genealogy-bg::before {
+.genealogy-content-wrapper {
+  width: 100%;
+  max-width: 1440px;
+  padding: 0 32px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+@media (max-width: 1200px) {
+  .genealogy-content-wrapper {
+    max-width: 1000px;
+    padding: 0 18px;
+  }
+}
+
+@media (max-width: 900px) {
+  .genealogy-content-wrapper {
+    max-width: 100%;
+    padding: 0 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .genealogy-content-wrapper {
+    padding: 0 4px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+/* Dark overlay for background */
+.genealogy-main-container::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(26, 95, 63, 0.4) 0%, rgba(15, 20, 25, 0.6) 100%);
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 20, 20, 0.7);
+  z-index: 1;
   pointer-events: none;
 }
 
-.genealogy-container {
+/* Ensure content is above overlay */
+.genealogy-main-container > * {
   position: relative;
-  z-index: 1;
-  max-width: 1200px;
+  z-index: 2;
 }
 
-/* Header */
+/* On small screens some browsers don't respect background-attachment:fixed.
+   Use a fixed-position pseudo element to keep the background stationary while content scrolls. */
+@media (max-width: 768px) {
+  .genealogy-main-container {
+    /* remove the normal background so the fixed layer is used instead */
+    background: #101a13 none !important;
+    position: relative;
+  }
+
+  .genealogy-main-container::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../../assets/bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+    pointer-events: none;
+    transform: translateZ(0);
+  }
+
+  /* Keep the existing dark overlay on top of the fixed background */
+  .genealogy-main-container::before {
+    z-index: 1;
+  }
+}
+
+/* Header Section */
 .genealogy-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 40px;
-  gap: 20px;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
-.genealogy-title {
-  color: #d4af37 !important;
-  font-weight: 700 !important;
-  letter-spacing: 2px;
-  text-align: center;
+.genealogy-header-content {
   flex: 1;
 }
 
-.back-button {
-  color: #d4af37 !important;
-  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+.genealogy-title {
+  font-weight: 900;
+  color: #d4a574;
+  margin-bottom: 8px;
+  font-size: 2rem;
+  letter-spacing: 2px;
 }
 
-.back-button:hover {
-  background: rgba(212, 175, 55, 0.1) !important;
-}
-
-.help-button {
-  color: #d4af37 !important;
-  border: 1px solid rgba(212, 175, 55, 0.3) !important;
-  min-width: 40px;
-  width: 40px;
-  padding: 0 !important;
-}
-
-.help-button:hover {
-  background: rgba(212, 175, 55, 0.1) !important;
+.genealogy-subtitle {
+  color: #a3a3a3;
+  font-size: 0.875rem;
 }
 
 /* Tree Section */
-.tree-section {
+.tree-container {
+  background: #181f1b;
+  border: 1px solid #232e24;
+  border-radius: 8px;
+  padding: 32px;
+  margin-bottom: 32px;
+  overflow-x: auto;
+  min-height: 800px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.tree-content {
+  width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: 60px;
-  overflow-x: auto;
-  padding: 20px;
-  background: rgba(30, 30, 35, 0.5);
-  border-radius: 12px;
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  min-height: 400px;
+  margin-top: 24px;
 }
 
-/* Tree Node Styles */
-.tree-node {
+.tree-loading {
+  color: #fff;
+  text-align: center;
+  margin-top: 32px;
+}
+
+/* Root Node */
+.node-root {
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
+  margin-bottom: 32px;
 }
 
-.node-card {
+.node-root-box {
+  border: 1px solid #232e24;
+  border-radius: 8px;
+  background: transparent;
+  padding: 24px;
+  min-width: 180px;
+  text-align: center;
+}
+
+.node-root-avatar {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 8px;
+  background-color: #d4a574;
+  color: #0a2a0a;
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+.node-root-name {
+  font-weight: 700;
+  color: #6bdb7b;
+}
+
+.node-root-role {
+  color: #d4a574;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+/* Connector Lines */
+.connector-vertical {
+  width: 1px;
+  height: 32px;
+  background: #232e24;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.connector-horizontal {
+  width: 600px;
+  height: 1px;
+  background: #232e24;
+  margin-bottom: 24px;
+}
+
+.node-children-container {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+}
+
+/* Wing Node */
+.node-wing {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+}
+
+.node-wing-box {
+  border: 1px solid #232e24;
+  border-radius: 8px;
+  background: transparent;
   padding: 16px;
-  background: rgba(30, 30, 35, 0.9);
-  border: 2px solid rgba(212, 175, 55, 0.4);
-  border-radius: 12px;
+  min-width: 140px;
+  text-align: center;
+}
+
+.node-wing-avatar {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 8px;
+  background-color: #4ade80;
+  color: #0a2a0a;
+  font-weight: 700;
+}
+
+.node-wing-name {
+  font-weight: 700;
+  color: #6bdb7b;
+}
+
+.node-wing-label {
+  color: #d4a574;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+/* Empty Slot Wing */
+.empty-slot-wing {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 1px solid #232e24;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #d4a574;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  min-width: 140px;
+  padding: 0;
 }
 
-.node-card:hover {
-  background: rgba(30, 30, 35, 1);
-  border-color: #d4af37;
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-  transform: translateY(-4px);
+.empty-slot-wing:hover {
+  background: transparent;
+  border-color: #d4a574;
+  color: #d4a574;
 }
 
-.node-root {
-  border-color: #d4af37 !important;
-  background: rgba(26, 95, 63, 0.2) !important;
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2) !important;
+.wing-connector {
+  width: 1px;
+  height: 24px;
+  background: #232e24;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
-.node-parent {
-  border-color: rgba(212, 175, 55, 0.6) !important;
-  background: rgba(45, 134, 89, 0.1) !important;
+.wing-sub-container {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
 }
 
-.node-child {
-  border-color: rgba(212, 175, 55, 0.3) !important;
-  background: rgba(45, 134, 89, 0.05) !important;
-  min-width: 110px;
+/* Sub Node */
+.node-sub-box {
+  border: 1px solid #232e24;
+  border-radius: 8px;
+  background: transparent;
   padding: 12px;
+  min-width: 70px;
+  text-align: center;
 }
 
-.node-avatar {
-  font-size: 32px;
+.node-sub-avatar {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto 4px;
+  background-color: #d4a574;
+  color: #0a2a0a;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.node-sub-name {
+  font-weight: 700;
+  color: #6bdb7b;
+  font-size: 0.875rem;
+  display: block;
+}
+
+.node-sub-label {
+  color: #d4a574;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+/* Empty Slot Sub */
+.empty-slot-sub {
   width: 60px;
   height: 60px;
+  border-radius: 50%;
+  border: 1px solid #232e24;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(45, 134, 89, 0.2));
-  border-radius: 50%;
-  border: 2px solid rgba(212, 175, 55, 0.3);
-}
-
-.node-name {
-  color: #d4af37 !important;
-  font-weight: 700 !important;
-  font-size: 14px !important;
-  text-align: center;
-  letter-spacing: 0.5px;
-}
-
-.node-role {
-  color: rgba(212, 175, 55, 0.6) !important;
-  font-size: 12px !important;
-  text-align: center;
-}
-
-/* Tree Connectors */
-.tree-children {
-  position: relative;
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.tree-connector {
-  position: absolute;
-  top: -30px;
-  width: 2px;
-  height: 30px;
-  background: linear-gradient(180deg, rgba(212, 175, 55, 0.3), transparent);
-}
-
-.tree-children .MuiGrid-container {
-  position: relative;
-}
-
-.tree-children .MuiGrid-container::before {
-  content: '';
-  position: absolute;
-  top: -30px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
-}
-
-/* Performance Section */
-.performance-section {
-  background: rgba(30, 30, 35, 0.8);
-  border: 2px solid rgba(212, 175, 55, 0.2);
-  border-radius: 16px;
-  padding: 40px 30px;
-  margin-top: 40px;
-  backdrop-filter: blur(10px);
-}
-
-.performance-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  gap: 20px;
-}
-
-.performance-title {
-  color: #d4af37 !important;
-  font-weight: 700 !important;
-  letter-spacing: 2px;
-}
-
-.performance-label {
-  color: #2d8659 !important;
-  font-size: 12px !important;
-  font-weight: 600;
-  letter-spacing: 2px;
-  padding: 6px 12px;
-  background: rgba(45, 134, 89, 0.2);
-  border-radius: 4px;
-  border: 1px solid rgba(45, 134, 89, 0.4);
-}
-
-.performance-stats {
-  width: 100%;
-}
-
-.stat-card {
-  background: rgba(30, 30, 35, 0.9) !important;
-  border: 2px solid rgba(212, 175, 55, 0.2) !important;
-  border-radius: 12px !important;
-  padding: 24px 20px !important;
-  text-align: center;
-  transition: all 0.3s ease;
+  font-size: 1.5rem;
+  color: #d4a574;
   cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
 }
 
-.stat-card:hover {
-  border-color: #d4af37 !important;
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2) !important;
-  transform: translateY(-4px);
+.empty-slot-sub:hover {
+  background: transparent;
+  border-color: #d4a574;
+  color: #d4a574;
 }
 
-.stat-value {
-  color: #d4af37 !important;
-  font-size: 28px !important;
-  font-weight: 700 !important;
-  margin-bottom: 8px;
-  letter-spacing: 1px;
-}
-
-.stat-label {
-  color: rgba(212, 175, 55, 0.6) !important;
-  font-size: 14px !important;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-/* Member Modal */
-.member-modal {
+/* Modal Styles */
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -267,194 +360,109 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  backdrop-filter: blur(5px);
-}
-
-.member-modal-content {
-  background: rgba(30, 30, 35, 0.95) !important;
-  border: 2px solid rgba(212, 175, 55, 0.3) !important;
-  border-radius: 16px !important;
-  padding: 40px 30px !important;
-  max-width: 400px;
-  width: 90%;
-  position: relative;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
-}
-
-.modal-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  color: #d4af37 !important;
-  min-width: auto;
-  padding: 8px 12px;
-  font-size: 24px;
-}
-
-.modal-avatar {
-  font-size: 64px;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.modal-name {
-  color: #d4af37 !important;
-  text-align: center;
-  margin-bottom: 8px;
-  letter-spacing: 1px;
-}
-
-.modal-role {
-  color: rgba(212, 175, 55, 0.6) !important;
-  text-align: center;
-  margin-bottom: 24px;
-  font-size: 14px;
-}
-
-.modal-details {
-  background: rgba(26, 95, 63, 0.2);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  border-radius: 8px;
+  z-index: 1002;
   padding: 16px;
-  margin-bottom: 24px;
-  text-align: center;
 }
 
-.modal-details p {
-  color: rgba(212, 175, 55, 0.7) !important;
-  margin: 8px 0;
-  font-size: 14px;
-}
-
-.modal-button {
+.modal-card {
   width: 100%;
-  background: linear-gradient(90deg, #d4af37, #e8d5a1, #d4af37) !important;
-  background-size: 200% auto !important;
-  color: #1a5f3f !important;
-  font-weight: 700 !important;
-  letter-spacing: 2px;
+  max-width: 500px;
+  background: #181f1b;
+  color: #e0e0e0;
+  border: 1px solid #232e24;
+  border-radius: 8px;
+  padding: 24px;
 }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .genealogy-header {
-    flex-direction: column;
-  }
-
-  .genealogy-title {
-    font-size: 1.5rem !important;
-  }
-
-  .tree-section {
-    padding: 15px;
-    min-height: 300px;
-  }
-
-  .node-card {
-    min-width: 120px;
-    padding: 12px;
-  }
-
-  .node-avatar {
-    font-size: 28px;
-    width: 50px;
-    height: 50px;
-  }
-
-  .node-name {
-    font-size: 13px !important;
-  }
-
-  .node-role {
-    font-size: 11px !important;
-  }
-
-  .performance-section {
-    padding: 30px 20px;
-  }
-
-  .performance-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .stat-card {
-    padding: 20px 16px !important;
-  }
-
-  .stat-value {
-    font-size: 24px !important;
-  }
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
-@media (max-width: 600px) {
-  .genealogy-container {
-    padding: 0 10px;
-  }
+.modal-title {
+  font-weight: 700;
+  color: #6bdb7b;
+}
 
-  .genealogy-title {
-    font-size: 1.2rem !important;
-  }
+.modal-close-btn {
+  color: #6bdb7b;
+  min-width: auto;
+  padding: 0;
+  font-size: 1.5rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
 
-  .tree-section {
-    padding: 10px;
-    min-height: auto;
-    border-radius: 8px;
-  }
+.modal-divider {
+  border-color: #232e24;
+  margin: 16px 0;
+}
 
-  .node-card {
-    min-width: 100px;
-    padding: 10px;
-    gap: 6px;
-  }
+.modal-description {
+  color: #a3a3a3;
+  margin-bottom: 16px;
+  font-size: 0.875rem;
+}
 
-  .node-avatar {
-    font-size: 24px;
-    width: 45px;
-    height: 45px;
-  }
+.form-input {
+  margin-bottom: 16px;
+}
 
-  .node-name {
-    font-size: 12px !important;
-  }
+.form-input input {
+  color: #fff;
+}
 
-  .node-role {
-    font-size: 10px !important;
-  }
+.form-input input:focus {
+  border-color: #00ff41;
+}
 
-  .performance-section {
-    padding: 20px 16px;
-  }
+.form-input-label {
+  color: #a3a3a3;
+}
 
-  .performance-title {
-    font-size: 1.1rem !important;
-  }
+.modal-actions {
+  display: flex;
+  gap: 8px;
+}
 
-  .performance-stats {
-    gap: 16px;
-  }
+.btn-cancel {
+  flex: 1;
+  color: #d4a574;
+  border-color: #232e24;
+  font-weight: 700;
+  background: transparent;
+  border: 1px solid;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
-  .stat-card {
-    padding: 16px 12px !important;
-  }
+.btn-cancel:hover {
+  background: transparent;
+  border-color: #d4a574;
+}
 
-  .stat-value {
-    font-size: 20px !important;
-  }
+.btn-submit {
+  flex: 1;
+  background: #d4a574;
+  color: #101a13;
+  font-weight: 700;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
-  .stat-label {
-    font-size: 12px !important;
-  }
+.btn-submit:hover:not(:disabled) {
+  background: #e0c090;
+}
 
-  .member-modal-content {
-    padding: 30px 20px !important;
-    max-width: 90vw;
-  }
-
-  .modal-avatar {
-    font-size: 48px;
-    margin-bottom: 16px;
-  }
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

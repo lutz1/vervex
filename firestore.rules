@@ -37,33 +37,57 @@ service cloud.firestore {
       // User can always read their own document
       allow read: if isAuthenticated() && request.auth.uid == userId;
       
+      // VIP and above can read all users (for genealogy tree building)
+      // Simplified check to avoid circular dependencies
+      allow read: if isAuthenticated() && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['vip', 'ambassador', 'supreme', 'admin', 'superadmin']
+      );
+      
       // SuperAdmin write access - handle missing documents gracefully
+      // Allow users to create their own document, superadmin to manage all,
+      // and allow users to update their own profile as long as they do not change their `role`.
       allow write: if isAuthenticated() && (
         // Bootstrap: User creating their own initial document
         (request.auth.uid == userId && resource == null)
         ||
         // SuperAdmin creating/updating any user
-        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'superadmin')
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'superadmin')
         ||
-        // User creating/updating their own profile (except role field)
-        (request.auth.uid == userId && !('role' in request.resource.data))
-      );
-      
-      // Admin can read all users
-      allow read: if isAuthenticated() && (
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'superadmin']
+        // User creating/updating their own profile: allow if role is unchanged
+        (
+          request.auth.uid == userId && (
+            // If the request omits `role` entirely OR the role remains equal to the existing value
+            (!('role' in request.resource.data) || (resource.data.role == request.resource.data.role))
+          )
+        )
       );
       
       // Admin can create and manage non-superadmin users
       allow write: if isAuthenticated() && 
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'superadmin']
         && (resource == null || request.resource.data.role in ['user', 'vip', 'ambassador', 'supreme', 'cashier', 'admin']);
     }
 
-    // Genealogy Collection - Role-based Access
+    // Invitations Collection - VIP and above can send invitations
+    match /invitations/{invitationId} {
+      // Invited user can read their own invitation
+      allow read: if isAuthenticated() && resource.data.invitedEmail == request.auth.token.email;
+      
+      // VIP and above can create invitations
+      allow create: if isAuthenticated() && (
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['vip', 'ambassador', 'supreme', 'admin', 'superadmin']
+      ) && request.resource.data.createdBy == request.auth.uid;
+      
+      // Inviter can read and update their invitations
+      allow read, update: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
+      
+      // SuperAdmin can manage all invitations
+      allow read, write: if isAuthenticated() && (
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'superadmin'
+      );
+    }
     match /genealogy/{document=**} {
       // SuperAdmin full access
       allow read, write: if isAuthenticated() && isSuperAdmin(request.auth.uid);
@@ -137,6 +161,15 @@ service cloud.firestore {
       
       // Other users can read public settings
       allow read: if isAuthenticated() && resource.data.public == true;
+    }
+
+    // Frames Collection - SuperAdmin manages, all authenticated users read
+    match /frames/{frameId} {
+      // SuperAdmin full access (create, read, update, delete)
+      allow read, write, delete: if isAuthenticated() && isSuperAdmin(request.auth.uid);
+      
+      // All authenticated users can read frames
+      allow read: if isAuthenticated();
     }
 
     // Audit Logs Collection - SuperAdmin only read/write (created by Cloud Functions)

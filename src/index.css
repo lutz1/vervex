@@ -7,6 +7,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Prevent horizontal swipe/pan on mobile devices */
+html, body, #root {
+  overflow-x: hidden;
+  touch-action: pan-y; /* allow vertical scrolling only */
+  overscroll-behavior-x: none; /* prevent browser from handling horizontal overscroll */
+  -webkit-overflow-scrolling: touch;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
