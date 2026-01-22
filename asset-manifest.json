@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/vervex/static/css/main.007027fc.css",
-    "main.js": "/vervex/static/js/main.e6875d6b.js",
+    "main.css": "/vervex/static/css/main.07dc3883.css",
+    "main.js": "/vervex/static/js/main.68bbbffc.js",
     "static/js/453.69ce802e.chunk.js": "/vervex/static/js/453.69ce802e.chunk.js",
     "static/media/bg.png": "/vervex/static/media/bg.c8d38385929e5c73ee3b.png",
     "static/media/logo.jpg": "/vervex/static/media/logo.2ff622f9acfb253cd7b7.jpg",
     "index.html": "/vervex/index.html",
-    "main.007027fc.css.map": "/vervex/static/css/main.007027fc.css.map",
-    "main.e6875d6b.js.map": "/vervex/static/js/main.e6875d6b.js.map",
+    "main.07dc3883.css.map": "/vervex/static/css/main.07dc3883.css.map",
+    "main.68bbbffc.js.map": "/vervex/static/js/main.68bbbffc.js.map",
     "453.69ce802e.chunk.js.map": "/vervex/static/js/453.69ce802e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.007027fc.css",
-    "static/js/main.e6875d6b.js"
+    "static/css/main.07dc3883.css",
+    "static/js/main.68bbbffc.js"
   ]
 }
