@@ -1,0 +1,280 @@
+/* Invite New Member Modal Styling */
+
+.invite-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 16px;
+}
+
+.invite-modal-card {
+  width: 100%;
+  max-width: 600px;
+  background: linear-gradient(135deg, #1a2a2a 0%, #0f1419 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  border-radius: 8px !important;
+}
+
+.invite-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  padding-right: 0;
+  padding-top: 0;
+}
+
+.invite-modal-title {
+  font-weight: 700;
+  color: #d4af37;
+  font-size: 1.25rem;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+}
+
+.invite-modal-subtitle {
+  color: #9fa9a3;
+  font-size: 0.85rem;
+  margin-top: 6px;
+  line-height: 1.3;
+}
+
+.invite-modal-subtitle-highlight {
+  color: #d4af37;
+  font-weight: 600;
+}
+
+.invite-modal-close {
+  background: none;
+  border: none;
+  color: #d4af37;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  min-width: auto;
+  transition: color 0.3s ease;
+  font-weight: 700;
+}
+
+.invite-modal-close:hover:not(:disabled) {
+  color: #e8d5a1;
+}
+
+.invite-modal-close:disabled {
+  color: rgba(212, 175, 55, 0.5);
+  cursor: not-allowed;
+}
+
+.invite-modal-content {
+  padding: 24px !important;
+}
+
+.invite-modal-description {
+  color: #9fa9a3;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+/* Role and Price Container */
+.invite-role-price-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.invite-role-select {
+  width: 100%;
+}
+
+.invite-price-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 4px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.invite-price-label {
+  color: #9fa9a3;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.invite-price-value {
+  color: #d4af37;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Form Grid */
+.invite-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.invite-form-input {
+  width: 100%;
+}
+
+.invite-form-input-full {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Material-UI TextField Styling */
+.invite-form-input .MuiTextField-root,
+.invite-form-input-full .MuiTextField-root,
+.invite-role-select .MuiFormControl-root {
+  width: 100%;
+}
+
+.invite-form-input .MuiOutlinedInput-root,
+.invite-form-input-full .MuiOutlinedInput-root,
+.invite-role-select .MuiOutlinedInput-root {
+  color: #fff !important;
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  border-color: rgba(212, 175, 55, 0.3) !important;
+}
+
+.invite-form-input .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline,
+.invite-form-input-full .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline,
+.invite-role-select .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(212, 175, 55, 0.3) !important;
+}
+
+.invite-form-input .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+.invite-form-input-full .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+.invite-role-select .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(212, 175, 55, 0.5) !important;
+}
+
+.invite-form-input .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline,
+.invite-form-input-full .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline,
+.invite-role-select .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #d4af37 !important;
+}
+
+.invite-form-input .MuiInputLabel-root,
+.invite-form-input-full .MuiInputLabel-root,
+.invite-role-select .MuiInputLabel-root {
+  color: #9fa9a3 !important;
+  font-size: 0.9rem !important;
+}
+
+.invite-form-input .MuiInputLabel-root.Mui-focused,
+.invite-form-input-full .MuiInputLabel-root.Mui-focused,
+.invite-role-select .MuiInputLabel-root.Mui-focused {
+  color: #d4af37 !important;
+}
+
+.invite-form-input .MuiOutlinedInput-input,
+.invite-form-input-full .MuiOutlinedInput-input,
+.invite-role-select .MuiOutlinedInput-input {
+  color: #fff !important;
+}
+
+.invite-form-input .MuiOutlinedInput-input::placeholder,
+.invite-form-input-full .MuiOutlinedInput-input::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+  opacity: 1 !important;
+}
+
+.invite-role-select .MuiSelect-select {
+  color: #fff !important;
+}
+
+.invite-modal-divider {
+  border-color: rgba(212, 175, 55, 0.2);
+  margin: 20px 0;
+}
+
+/* Modal Actions */
+.invite-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.invite-btn-cancel,
+.invite-btn-submit {
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.invite-btn-cancel {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #9fa9a3;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.invite-btn-cancel:hover:not(:disabled) {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #d4af37;
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.invite-btn-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.invite-btn-submit {
+  background-color: rgba(212, 175, 55, 0.15);
+  color: #d4af37;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+.invite-btn-submit:hover:not(:disabled) {
+  background-color: rgba(212, 175, 55, 0.25);
+  border-color: #d4af37;
+}
+
+.invite-btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .invite-modal-card {
+    max-width: 95%;
+  }
+
+  .invite-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .invite-role-price-container {
+    grid-template-columns: 1fr;
+  }
+
+  .invite-modal-content {
+    padding: 16px;
+  }
+
+  .invite-modal-title {
+    font-size: 1.1rem;
+  }
+}

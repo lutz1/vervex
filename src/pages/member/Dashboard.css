@@ -1,7 +1,235 @@
-.pv-dashboard-root {
-  color: #fff;
+.dashboard-page {
+  padding: 24px 0 100px;
 }
 
-.pv-dashboard-header {
-  margin-bottom: 12px;
+.pv-dashboard-root {
+  color: #fff;
+  padding: 0 8px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.dash-bottom-spacer {
+  height: 96px;
+  width: 100%;
+}
+
+.dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 8px;
+  margin-bottom: 16px;
+  min-width: 0;
+}
+
+.dash-brand-title {
+  color: #d4af37;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  font-size: 0.85rem;
+  margin: 0;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.dash-brand-sub {
+  margin: 4px 0 0;
+  color: rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+}
+
+.dash-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 12px;
+  background: rgba(0, 12, 8, 0.4);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+.dash-user-meta {
+  text-align: right;
+}
+
+.dash-user-name {
+  margin: 0;
+  color: #d4af37;
+  font-weight: 800;
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
+.dash-user-rank {
+  margin: 2px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.dash-user-badge {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f5d98a 0%, #d4af37 100%);
+  color: #0a0a05;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.35), 0 12px 24px rgba(0, 0, 0, 0.45);
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.badge-letter {
+  font-weight: 900;
+  font-size: 0.88rem;
+  line-height: 1;
+}
+
+.badge-stars {
+  display: flex;
+  gap: 2px;
+  margin: 2px 0;
+  font-size: 0.6rem;
+}
+
+.badge-tier {
+  font-weight: 900;
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+}
+
+.dash-heading {
+  margin: 0 0 12px;
+  padding: 0 4px;
+}
+
+.dash-title {
+  color: #f4f1e6 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em;
+}
+
+.dash-sub {
+  color: #9aa4ad !important;
+  font-weight: 600 !important;
+}
+
+@media (max-width: 900px) {
+  .dashboard-page {
+    padding: 14px 0 110px;
+  }
+
+  .dash-header {
+    gap: 10px;
+    padding: 0 6px;
+    min-width: 0;
+  }
+
+  .dash-brand {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .dash-brand-title {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+  }
+
+  .dash-brand-sub {
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+  }
+
+  .dash-user {
+    flex-shrink: 0;
+    gap: 8px;
+    padding: 6px 8px;
+  }
+
+  .dash-user-meta {
+    text-align: right;
+  }
+
+  .dash-user-name {
+    font-size: 0.8rem;
+  }
+
+  .dash-user-rank {
+    font-size: 0.62rem;
+  }
+
+  .dash-user-badge {
+    width: 44px;
+    height: 44px;
+    padding: 3px;
+  }
+
+  .badge-letter {
+    font-size: 0.8rem;
+  }
+
+  .badge-stars {
+    margin: 1px 0;
+  }
+
+  .badge-tier {
+    font-size: 0.52rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dash-header {
+    gap: 8px;
+    padding: 0 4px;
+  }
+
+  .dash-brand-title {
+    font-size: 0.72rem;
+  }
+
+  .dash-brand-sub {
+    font-size: 0.54rem;
+  }
+
+  .dash-user {
+    gap: 6px;
+    padding: 5px 6px;
+  }
+
+  .dash-user-name {
+    font-size: 0.75rem;
+  }
+
+  .dash-user-rank {
+    font-size: 0.58rem;
+  }
+
+  .dash-user-badge {
+    width: 40px;
+    height: 40px;
+    padding: 3px;
+  }
+
+  .badge-letter {
+    font-size: 0.75rem;
+  }
+
+  .badge-tier {
+    font-size: 0.48rem;
+  }
 }

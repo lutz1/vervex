@@ -109,38 +109,27 @@ export default function PerformanceStats({ performanceData = {} }) {
   const data = Object.keys(performanceData).length ? performanceData : sample;
 
   const goldStyle = {
-    border: '2px solid transparent',
-    backgroundImage: 'linear-gradient(180deg, rgba(13,20,16,0.82) 0%, rgba(26,38,29,0.82) 100%), linear-gradient(90deg, #bfa14a 0%, #fff5d6 40%, #bfa14a 100%)',
-    backgroundOrigin: 'border-box',
-    backgroundClip: 'padding-box, border-box',
-    backgroundSize: 'auto, 200% 100%',
-    backgroundPosition: '0 0, 0% 0%',
-    backgroundRepeat: 'no-repeat'
+    background: 'rgba(4, 12, 9, 0.82)',
+    border: '1px solid rgba(212, 175, 55, 0.32)',
+    boxShadow: '0 12px 32px rgba(0,0,0,0.55)'
   };
 
   const overrideCss = `
   .pv-stats-grid .pv-stat-card {
-    background-image: linear-gradient(180deg, rgba(13,20,16,0.92) 0%, rgba(22,30,26,0.85) 100%) !important;
-    border: 2px solid rgba(212,175,55,0.18) !important;
-    box-shadow: 0 10px 28px rgba(0,0,0,0.55) !important;
+    background: rgba(4, 12, 9, 0.82) !important;
+    border: 1px solid rgba(212, 175, 55, 0.32) !important;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.55) !important;
     color: #fff !important;
-    padding: 24px 28px !important;
   }
-  .pv-stats-grid .pv-stat-card.pv-stat-card-gold {
-    background-image: linear-gradient(180deg, rgba(13,20,16,0.92) 0%, rgba(22,30,26,0.85) 100%), linear-gradient(90deg, #bfa14a 0%, #fff5d6 40%, #bfa14a 100%) !important;
-    background-origin: border-box !important;
-    background-clip: padding-box, border-box !important;
-    border: 2px solid transparent !important;
-  }
-  .pv-stats-grid .pv-stat-card .stat-value { color: #fff !important; }
+  .pv-stats-grid .pv-stat-card .stat-spark polyline { stroke: #d4af37 !important; }
   `;
 
   const METRICS = [
-    { key: 'directAffiliateCommission', label: 'Direct Affiliate Commission (Direct Referral)', icon: <IconAffiliate />, valueKey: 'directAffiliateCommission', deltaKey: 'directAffiliateDelta', trendKey: 'directAffiliateTrend', valueClass: 'stat-value-green' },
-    { key: 'triSyncEngine', label: 'Tri - Sync Engine (Pairing Bonus)', icon: <IconTriSync />, valueKey: 'triSyncEngine', deltaKey: 'triSyncDelta', trendKey: 'triSyncTrend', valueClass: 'stat-value-green' },
-    { key: 'trinityStrike', label: 'Trinity Stike (3Peat)', icon: <IconTrinity />, valueKey: 'trinityStrike', deltaKey: 'trinityDelta', trendKey: 'trinityTrend', valueClass: 'stat-value-gold' },
-    { key: 'prestigeVault', label: 'Pristege Vault (6th Pair LPV)', icon: <IconVault />, valueKey: 'prestigeVault', deltaKey: 'prestigeDelta', trendKey: 'prestigeTrend', valueClass: 'stat-value-gold' },
-    { key: 'mentorsMilestone', label: "The Mentor's Milestone (Leadership Bonus)", icon: <IconMentor />, valueKey: 'mentorsMilestone', deltaKey: 'mentorsDelta', trendKey: 'mentorsTrend', valueClass: 'stat-value-gold' },
+    { key: 'directAffiliateCommission', label: 'Direct Affiliate Commission', icon: <IconAffiliate />, valueKey: 'directAffiliateCommission', deltaKey: 'directAffiliateDelta', trendKey: 'directAffiliateTrend', valueClass: 'stat-value-green' },
+    { key: 'triSyncEngine', label: 'Tri - Sync Engine (Pairing)', icon: <IconTriSync />, valueKey: 'triSyncEngine', deltaKey: 'triSyncDelta', trendKey: 'triSyncTrend', valueClass: 'stat-value-green' },
+    { key: 'trinityStrike', label: 'Trinity Strike (3peat)', icon: <IconTrinity />, valueKey: 'trinityStrike', deltaKey: 'trinityDelta', trendKey: 'trinityTrend', valueClass: 'stat-value-gold' },
+    { key: 'prestigeVault', label: 'Prestige Vault (6th Pair LPV)', icon: <IconVault />, valueKey: 'prestigeVault', deltaKey: 'prestigeDelta', trendKey: 'prestigeTrend', valueClass: 'stat-value-gold' },
+    { key: 'mentorsMilestone', label: "The Mentor's Milestone", icon: <IconMentor />, valueKey: 'mentorsMilestone', deltaKey: 'mentorsDelta', trendKey: 'mentorsTrend', valueClass: 'stat-value-gold' },
     { key: 'legacyStream', label: 'Legacy Stream (Residuals)', icon: <IconLegacy />, valueKey: 'legacyStream', deltaKey: 'legacyDelta', trendKey: 'legacyTrend', valueClass: 'stat-value-gold' },
     { key: 'vCommerce', label: 'V - Commerce (Dropshipping)', icon: <IconVCommerce />, valueKey: 'vCommerce', deltaKey: 'vCommerceDelta', trendKey: 'vCommerceTrend', valueClass: 'stat-value-green' },
   ];

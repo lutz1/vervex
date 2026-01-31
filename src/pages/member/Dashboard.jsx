@@ -4,17 +4,55 @@ import PerformanceStats from './components/genealogycomponents/PerformanceStats'
 import './Dashboard.css';
 import './Genealogy.css';
 
-export default function Dashboard() {
+export default function Dashboard({ user, userRole }) {
+  const displayName = user?.displayName || user?.name || 'Member';
+  
+  const getRankDisplay = (role) => {
+    if (!role) return 'PRO RANK';
+    const roleStr = role.toLowerCase();
+    if (roleStr === 'vip') return 'VIP RANK';
+    if (roleStr === 'ambassador') return 'AMBASSADOR RANK';
+    if (roleStr === 'supreme') return 'SUPREME RANK';
+    return 'PRO RANK';
+  };
+  
+  const rank = getRankDisplay(userRole);
+  const initials = (displayName || 'V').charAt(0).toUpperCase();
+
   return (
-    <div className="genealogy-main-container">
+    <div className="genealogy-main-container dashboard-page">
       <div className="genealogy-content-wrapper">
-        <Container sx={{ py: 3 }} className="pv-dashboard-root">
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="h5" sx={{ color: '#d4af37', fontWeight: 800 }}>Dashboard</Typography>
-            <Typography variant="body2" sx={{ color: '#9aa4ad' }}>Overview & performance</Typography>
+        <header className="dash-header">
+          <div className="dash-brand">
+            <p className="dash-brand-title">Vervex - Member</p>
+            <p className="dash-brand-sub">Exclusive Access</p>
+          </div>
+
+          <div className="dash-user">
+            <div className="dash-user-meta">
+              <p className="dash-user-name">{displayName}</p>
+              <p className="dash-user-rank">{rank}</p>
+            </div>
+            <div className="dash-user-badge" aria-label="Member badge">
+              <span className="badge-letter">{initials}</span>
+              <div className="badge-stars" aria-hidden>
+                <span>*</span>
+                <span>*</span>
+                <span>*</span>
+              </div>
+              <span className="badge-tier">VIP</span>
+            </div>
+          </div>
+        </header>
+
+        <Container disableGutters maxWidth={false} sx={{ py: 2 }} className="pv-dashboard-root">
+          <Box sx={{ mb: 2 }} className="dash-heading">
+            <Typography variant="h5" className="dash-title">Dashboard</Typography>
+            <Typography variant="body2" className="dash-sub">Overview & performance</Typography>
           </Box>
 
           <PerformanceStats />
+          <div className="dash-bottom-spacer" aria-hidden />
         </Container>
       </div>
     </div>

@@ -11,12 +11,15 @@ import Genealogy from './pages/member/Genealogy';
 import Dashboard from './pages/member/Dashboard';
 import Profile from './pages/member/components/Topbar/Profilecomponents/Profile';
 import LoadingPage from './pages/loading/LoadingPage';
+import AcceptInvitation from './pages/AcceptInvitation';
+import Admin from './pages/admin/Admin';
 import ProtectedRoute from './components/ProtectedRoute';
 import { getUserRole, getUserProfile } from './utils/firestore';
 import { testFirebaseConnection } from './utils/firebaseTest';
 import { Box } from '@mui/material';
 import TopBar from './components/Appbar/TopBar';
 import BottomNav from './components/bottomnav/BottomNav';
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -119,6 +122,25 @@ function App() {
         {/* Public Route - Login */}
         <Route path="/login" element={<Login />} />
 
+        {/* Public Route - Accept Invitation */}
+        <Route path="/accept-invitation" element={<AcceptInvitation />} />
+
+        {/* Admin Routes */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute user={user} loading={loading} requiredRole="admin" userRole={userRole}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                {/* AppBar */}
+                <TopBar title="VERVEX - ADMIN" user={user} userProfile={userProfile} role={userRole} onLogout={handleLogout} />
+
+                {/* Admin Content */}
+                <Admin />
+              </Box>
+            </ProtectedRoute>
+          }
+        />
+
         {/* SuperAdmin Routes */}
         <Route
           path="/superadmin/*"
@@ -150,7 +172,7 @@ function App() {
 
                 {/* Member Content */}
                 <Routes>
-                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<Dashboard user={user} userRole={userRole} />} />
                   <Route path="/genealogy" element={<Genealogy />} />
                   <Route path="/profile" element={<Profile user={user} userProfile={userProfile} onProfileUpdate={setUserProfile} />} />
                   <Route path="*" element={<Navigate to="/member/dashboard" replace />} />
@@ -168,8 +190,10 @@ function App() {
             user ? (
               userRole === 'superadmin' ? (
                 <Navigate to="/superadmin/users" replace />
-              ) : userRole && ['vip', 'ambassador', 'supreme', 'admin', 'cashier'].includes(userRole) ? (
-                <Navigate to="/member/genealogy" replace />
+              ) : userRole === 'admin' ? (
+                <Navigate to="/admin" replace />
+              ) : userRole && ['vip', 'ambassador', 'supreme', 'cashier'].includes(userRole) ? (
+                <Navigate to="/member/dashboard" replace />
               ) : (
                 <Navigate to="/login" replace />
               )

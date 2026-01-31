@@ -43,7 +43,4 @@
   display: block;
 }
 
-/* Hide on larger screens */
-@media (min-width: 992px) {
-  .pv-bottomnav-root { display: none; }
-}
+

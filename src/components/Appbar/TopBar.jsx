@@ -122,11 +122,11 @@ export default function TopBar({ title, user, userProfile, role, onLogout }) {
         <Tooltip title="Account">
           <IconButton onClick={handleOpen} size="small" sx={{ ml: 1, position: 'relative' }}>
             <Avatar
-              src={user?.photoURL || ''}
+              src={user?.photoURL || userProfile?.avatar || ''}
               sx={{
                 width: 36,
                 height: 36,
-                bgcolor: user?.photoURL ? 'transparent' : 'transparent',
+                bgcolor: (user?.photoURL || userProfile?.avatar) ? 'transparent' : 'transparent',
                 color: roleColor(role),
                 fontWeight: 700,
                 position: 'relative',

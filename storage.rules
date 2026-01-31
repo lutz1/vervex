@@ -2,6 +2,15 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     
+    // Users folder - Users can upload and read their own avatars
+    match /users/{userId}/avatar/{allPaths=**} {
+      // Users can read their own avatars and others' avatars
+      allow read: if request.auth != null;
+      
+      // Users can only write/delete their own avatars
+      allow write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
     // Frames folder - All authenticated users can read/write
     // (Firestore rules prevent unauthorized frame creation anyway)
     match /frames/{allPaths=**} {

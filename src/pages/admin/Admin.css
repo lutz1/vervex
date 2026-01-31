@@ -1,0 +1,147 @@
+.admin-main-container {
+  background: #101a13 url('../../assets/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  padding: 32px 16px;
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.admin-main-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 20, 20, 0.7);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Admin Header */
+.admin-header {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1400px;
+  margin-bottom: 40px;
+  padding: 0 16px;
+}
+
+.admin-header-content {
+  text-align: left;
+}
+
+.admin-title {
+  color: #d4a574;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+
+.admin-subtitle {
+  color: #9fa9a3;
+  font-size: 1rem;
+}
+
+/* Stats Section */
+.admin-stats-section {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1400px;
+  margin-bottom: 40px;
+  padding: 0 16px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, rgba(26, 42, 42, 0.8) 0%, rgba(15, 20, 25, 0.8) 100%) !important;
+  border: 1px solid rgba(212, 175, 55, 0.2) !important;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.15);
+  transform: translateY(-4px);
+}
+
+.stat-label {
+  color: #9fa9a3;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  color: #d4a574;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Tabs Container */
+.admin-tabs-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1400px;
+  margin-bottom: 32px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.admin-tabs {
+  width: 100%;
+}
+
+.admin-tab {
+  color: #9fa9a3 !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+.admin-tab.Mui-selected {
+  color: #d4a574 !important;
+}
+
+/* Content Section */
+.admin-content-section {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1400px;
+  padding: 0 16px;
+}
+
+@media (max-width: 768px) {
+  .admin-main-container {
+    padding: 16px 8px;
+  }
+
+  .admin-title {
+    font-size: 1.75rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .admin-tab {
+    font-size: 0.75rem;
+  }
+}

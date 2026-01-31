@@ -10,6 +10,7 @@ import {
   where,
   getDocs,
   serverTimestamp,
+  addDoc,
 } from 'firebase/firestore';
 
 // User roles
@@ -261,5 +262,136 @@ export const getUserByUsername = async (username) => {
   } catch (error) {
     console.error('Error fetching user by username:', error);
     return null;
+  }
+};
+
+// Direct invite earnings based on role
+const DIRECT_INVITE_EARNINGS = {
+  vip: 1000,
+  ambassador: 4000,
+  supreme: 15000,
+};
+
+// Code request pricing based on role
+const CODE_REQUEST_PRICES = {
+  vip: 5998,
+  ambassador: 25998,
+  supreme: 105998,
+};
+
+// Get code request price for a role
+export const getCodeRequestPrice = (role) => {
+  const lowerRole = role?.toLowerCase() || '';
+  return CODE_REQUEST_PRICES[lowerRole] || 0;
+};
+
+// Create a code request for over-the-counter payment
+export const createCodeRequest = async (inviterId, inviteData, inviteSlot, role) => {
+  try {
+    const codeRequestsRef = collection(db, 'codeRequests');
+    const price = getCodeRequestPrice(role);
+
+    const docRef = await addDoc(codeRequestsRef, {
+      inviterId: inviterId,
+      inviteData: inviteData,
+      inviteSlot: {
+        id: inviteSlot.id,
+        type: inviteSlot.type,
+        parentId: inviteSlot.parentId,
+      },
+      role: role,
+      price: price,
+      status: 'waiting for payment',
+      generatedCode: null,
+      codeGeneratedAt: null,
+      codeGeneratedBy: null,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+
+    return { success: true, requestId: docRef.id };
+  } catch (error) {
+    console.error('Error creating code request:', error);
+    throw error;
+  }
+};
+
+// Update code request with generated code
+export const updateCodeRequest = async (requestId, code, adminId) => {
+  try {
+    const codeRequestRef = doc(db, 'codeRequests', requestId);
+    await updateDoc(codeRequestRef, {
+      generatedCode: code,
+      codeGeneratedAt: serverTimestamp(),
+      codeGeneratedBy: adminId,
+      status: 'code generated',
+      updatedAt: serverTimestamp(),
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating code request:', error);
+    throw error;
+  }
+};
+
+// Generate random code for payment verification
+export const generateRandomCode = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = '';
+  for (let i = 0; i < 8; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+};
+
+// Get direct invite earnings for a user role
+export const getDirectInviteEarnings = (role) => {
+  const lowerRole = role?.toLowerCase() || '';
+  return DIRECT_INVITE_EARNINGS[lowerRole] || 0;
+};
+
+// Add earnings to user account when they accept direct invite
+export const addDirectInviteEarnings = async (inviterId, invitedUserId) => {
+  try {
+    const inviterRef = doc(db, 'users', inviterId);
+    const inviterDoc = await getDoc(inviterRef);
+    
+    if (!inviterDoc.exists()) {
+      console.error('Inviter not found');
+      return false;
+    }
+
+    const inviterData = inviterDoc.data();
+    const earnings = getDirectInviteEarnings(inviterData.role);
+
+    if (earnings > 0) {
+      // Update inviter's balance/earnings
+      const currentBalance = inviterData.balance || 0;
+      const currentDirectInviteEarnings = inviterData.directInviteEarnings || 0;
+
+      await updateDoc(inviterRef, {
+        balance: currentBalance + earnings,
+        directInviteEarnings: currentDirectInviteEarnings + earnings,
+        lastEarningUpdate: serverTimestamp(),
+      });
+
+      // Log the transaction
+      const transactionsRef = collection(db, 'transactions');
+      await addDoc(transactionsRef, {
+        type: 'direct_invite_earning',
+        amount: earnings,
+        userId: inviterId,
+        invitedUserId: invitedUserId,
+        role: inviterData.role,
+        createdAt: serverTimestamp(),
+      });
+
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Error adding direct invite earnings:', error);
+    return false;
   }
 };
