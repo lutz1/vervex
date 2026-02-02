@@ -1,32 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Box, IconButton, Tooltip } from '@mui/material';
+import { Button } from '@mui/material';
 import GetAppIcon from '@mui/icons-material/GetApp';
 
-export default function PWAInstallButton() {
+export default function PWAInstallButton({ inline = false }) {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showButton, setShowButton] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
+  const [isInstalling, setIsInstalling] = useState(false);
 
   useEffect(() => {
-    // Check if app is already installed (running in standalone mode)
+    // Check if app is already installed
     const checkStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                           window.navigator.standalone || 
+                           window.navigator.standalone === true || 
                            document.referrer.includes('android-app://');
     
     setIsStandalone(checkStandalone);
 
     if (checkStandalone) {
-      return; // Don't show button if already installed
+      return;
     }
 
     // Listen for the beforeinstallprompt event
     const handleBeforeInstallPrompt = (e) => {
       console.log('beforeinstallprompt event fired');
-      // Prevent the browser's default install prompt
       e.preventDefault();
-      // Store the event for later use
       setDeferredPrompt(e);
-      // Show the install button
       setShowButton(true);
     };
 
@@ -41,81 +39,89 @@ export default function PWAInstallButton() {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
 
+    // If no beforeinstallprompt after 2 seconds and inline mode, show button anyway
+    const timer = setTimeout(() => {
+      if (inline && !deferredPrompt && !isStandalone) {
+        setShowButton(true);
+      }
+    }, 2000);
+
     return () => {
+      clearTimeout(timer);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
-  }, []);
+  }, [inline, deferredPrompt, isStandalone]);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) {
-      console.log('Install prompt not available');
-      // Fallback: Show installation instructions for browsers that don't support the prompt
-      alert('To install:\n\n' +
-            'Chrome/Edge (Android): Tap menu (⋮) → "Add to Home screen"\n' +
-            'Chrome (Desktop): Click install icon (⊕) in address bar\n' +
-            'Safari (iOS): Tap Share → "Add to Home Screen"');
-      return;
-    }
+    setIsInstalling(true);
 
     try {
-      console.log('Showing install prompt...');
-      // Show the install prompt
-      await deferredPrompt.prompt();
-
-      // Wait for the user to respond to the prompt
-      const { outcome } = await deferredPrompt.userChoice;
-      
-      console.log(`User response: ${outcome}`);
-      
-      if (outcome === 'accepted') {
-        console.log('User accepted the install prompt');
-        setShowButton(false);
+      if (deferredPrompt) {
+        console.log('Showing install prompt...');
+        await deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response: ${outcome}`);
+        
+        if (outcome === 'accepted') {
+          console.log('User accepted the install prompt');
+          setShowButton(false);
+        }
+        setDeferredPrompt(null);
       } else {
-        console.log('User dismissed the install prompt');
+        // Show manual installation instructions
+        const message = 'To install Vervex:\n\n' +
+                       '📱 Chrome/Edge (Android):\n' +
+                       'Tap menu (⋮) → "Add to Home screen"\n\n' +
+                       '💻 Chrome/Edge (Desktop):\n' +
+                       'Click install icon (⊕) in address bar\n\n' +
+                       '🍎 Safari (iOS):\n' +
+                       'Tap Share → "Add to Home Screen"';
+        alert(message);
       }
-
-      // Clear the deferred prompt
-      setDeferredPrompt(null);
     } catch (error) {
-      console.error('Error showing install prompt:', error);
+      console.error('Error during installation:', error);
+    } finally {
+      setIsInstalling(false);
     }
   };
 
   if (!showButton || isStandalone) return null;
 
-  return (
-    <Tooltip title="Install Vervex App">
-      <Box
+  if (inline) {
+    return (
+      <Button
+        fullWidth
+        variant="contained"
+        startIcon={<GetAppIcon />}
+        onClick={handleInstallClick}
+        disabled={isInstalling}
         sx={{
-          position: 'fixed',
-          bottom: { xs: '20px', sm: '30px' },
-          right: { xs: '20px', sm: '30px' },
-          zIndex: 999,
+          background: 'linear-gradient(135deg, #d4af37, #e8d5a1)',
+          color: '#000000',
+          fontWeight: 700,
+          fontSize: '0.9rem',
+          padding: '12px 16px',
+          marginTop: '16px',
+          borderRadius: '4px',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px',
+          transition: 'all 0.3s ease',
+          '&:hover': {
+            background: 'linear-gradient(135deg, #e8d5a1, #d4af37)',
+            transform: 'translateY(-2px)',
+            boxShadow: '0 6px 20px rgba(212, 175, 55, 0.3)',
+          },
+          '&:disabled': {
+            background: 'linear-gradient(135deg, #999999, #bbbbbb)',
+            color: '#666666',
+          },
         }}
       >
-        <IconButton
-          onClick={handleInstallClick}
-          sx={{
-            background: 'linear-gradient(135deg, #d4af37, #e8d5a1)',
-            color: '#000000',
-            width: '56px',
-            height: '56px',
-            boxShadow: '0 4px 20px rgba(212, 175, 55, 0.4)',
-            transition: 'all 0.3s ease',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #e8d5a1, #d4af37)',
-              transform: 'scale(1.1) translateY(-4px)',
-              boxShadow: '0 6px 25px rgba(212, 175, 55, 0.5)',
-            },
-            '&:active': {
-              transform: 'scale(0.95)',
-            },
-          }}
-        >
-          <GetAppIcon sx={{ fontSize: '28px', fontWeight: 'bold' }} />
-        </IconButton>
-      </Box>
-    </Tooltip>
-  );
+        {isInstalling ? 'Installing...' : 'Install Vervex App'}
+      </Button>
+    );
+  }
+
+  return null;
 }

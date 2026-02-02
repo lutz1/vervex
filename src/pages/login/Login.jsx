@@ -294,6 +294,8 @@ export default function Login() {
               >
                 {loading ? 'PROCESSING...' : 'SIGN IN'}
               </Button>
+
+              <PWAInstallButton inline={true} />
             </Box>
 
             <Box sx={{ mt: 1, display: 'flex', justifyContent: 'center' }}>
