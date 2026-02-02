@@ -1,7 +1,7 @@
 {
   "short_name": "Vervex",
   "name": "Vervex Luxury Portal",
-    "description": "Exclusive access to the Vervex luxury experience. Inspired by Versace. Green and gold theme.",
+  "description": "Exclusive access to the Vervex luxury experience. Inspired by Versace. Green and gold theme.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -11,16 +11,36 @@
     {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any"
     }
   ],
   "start_url": ".",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#006400",
-  "background_color": "#fffbe6"
+  "orientation": "portrait-primary",
+  "theme_color": "#d4af37",
+  "background_color": "#000000",
+  "categories": ["business", "finance"],
+  "screenshots": [
+    {
+      "src": "logo512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "logo192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "prefer_related_applications": false
 }
