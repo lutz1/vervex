@@ -15,17 +15,13 @@ export default function PWAInstallButton() {
     
     setIsStandalone(checkStandalone);
 
-    // If not installed, show button after a delay to give time for beforeinstallprompt
-    if (!checkStandalone) {
-      const timer = setTimeout(() => {
-        setShowButton(true);
-      }, 1000);
-      
-      return () => clearTimeout(timer);
+    if (checkStandalone) {
+      return; // Don't show button if already installed
     }
 
     // Listen for the beforeinstallprompt event
     const handleBeforeInstallPrompt = (e) => {
+      console.log('beforeinstallprompt event fired');
       // Prevent the browser's default install prompt
       e.preventDefault();
       // Store the event for later use
@@ -53,6 +49,7 @@ export default function PWAInstallButton() {
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) {
+      console.log('Install prompt not available');
       // Fallback: Show installation instructions for browsers that don't support the prompt
       alert('To install:\n\n' +
             'Chrome/Edge (Android): Tap menu (⋮) → "Add to Home screen"\n' +
@@ -61,21 +58,28 @@ export default function PWAInstallButton() {
       return;
     }
 
-    // Show the install prompt
-    deferredPrompt.prompt();
+    try {
+      console.log('Showing install prompt...');
+      // Show the install prompt
+      await deferredPrompt.prompt();
 
-    // Wait for the user to respond to the prompt
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
-      setShowButton(false);
-    } else {
-      console.log('User dismissed the install prompt');
+      // Wait for the user to respond to the prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      console.log(`User response: ${outcome}`);
+      
+      if (outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+        setShowButton(false);
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+
+      // Clear the deferred prompt
+      setDeferredPrompt(null);
+    } catch (error) {
+      console.error('Error showing install prompt:', error);
     }
-
-    // Clear the deferred prompt
-    setDeferredPrompt(null);
   };
 
   if (!showButton || isStandalone) return null;
