@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 
 // CORS configuration - allow localhost for testing and production domains
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5000', 'https://vervex-c5b91.web.app', 'https://vervex-app.com'],
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5000', 'https://vervex-c5b91.web.app', 'https://vervex-app.com', 'https://lutz1.github.io'],
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
