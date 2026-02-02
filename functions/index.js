@@ -175,12 +175,12 @@ exports.createUserHttp = functions.https.onRequest(async (req, res) => {
       displayName: fullName,
     });
 
-    // Generate email verification link with redirect back to login
+    // Generate email verification link with redirect back to app
     let verificationLink = null;
     let emailSent = false;
     try {
       verificationLink = await admin.auth().generateEmailVerificationLink(email, {
-        url: 'https://lutz1.github.io/vervex/login',
+        url: 'https://lutz1.github.io/vervex/',
         handleCodeInApp: false,
       });
       console.log(`Verification link generated for ${email}`);
@@ -489,12 +489,12 @@ exports.registerUserFromCodeHttp = functions.https.onRequest(async (req, res) =>
         }
       }
 
-      // Generate Firebase email verification link with redirect back to login
+      // Generate Firebase email verification link with redirect back to app
       let verificationLink = null;
       let emailSent = false;
       try {
         verificationLink = await admin.auth().generateEmailVerificationLink(invitedEmail, {
-          url: 'https://lutz1.github.io/vervex/login',
+          url: 'https://lutz1.github.io/vervex/',
           handleCodeInApp: false,
         });
         console.log(`Verification link generated for ${invitedEmail}`);

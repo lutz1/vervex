@@ -32,6 +32,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { createOrUpdateUser, USER_ROLES, getUsersByRole, ensureSuperAdminExists } from '../../utils/firestore';
 import { auth } from '../../firebaseConfig';
 import { useNavigate } from 'react-router-dom';
+import AddressMapPicker from './components/AddressMapPicker';
 import './UserManagement.css';
 
 export default function UserManagement() {
@@ -544,16 +545,11 @@ Or the user can:
                 variant="outlined"
                 size="medium"
               />
-              <TextField
-                fullWidth
-                label="Address"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                variant="outlined"
-                multiline
-                rows={3}
-                size="medium"
+              <AddressMapPicker
+                address={formData.address}
+                onAddressChange={(newAddress) =>
+                  setFormData({ ...formData, address: newAddress })
+                }
               />
               {!editingUser && (
                 <TextField
