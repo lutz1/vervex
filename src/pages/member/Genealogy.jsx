@@ -379,7 +379,7 @@ export default function Genealogy() {
     fetchGenealogyTree();
   }, []);
 
-  // Handle pinch zoom on mobile with horizontal scroll boundaries (vertical is unlimited)
+  // Handle pinch zoom on mobile with unlimited scroll (horizontal and vertical)
   useEffect(() => {
     const handleTouchMove = (e) => {
       // Pinch zoom with 2 fingers
@@ -408,28 +408,14 @@ export default function Genealogy() {
       lastDistanceRef.current = 0;
     };
     
-    const handleScroll = (e) => {
-      // Constrain horizontal scroll only (left and right bounds)
-      // Vertical scrolling is unlimited for infinite scroll
-      const element = e.target;
-      if (element.scrollLeft < 0) {
-        element.scrollLeft = 0;
-      }
-      if (element.scrollLeft > element.scrollWidth - element.clientWidth) {
-        element.scrollLeft = element.scrollWidth - element.clientWidth;
-      }
-    };
-    
     const treeContainer = treeShellRef.current?.parentElement;
     if (treeContainer) {
       treeContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
       treeContainer.addEventListener('touchend', handleTouchEnd);
-      treeContainer.addEventListener('scroll', handleScroll);
       
       return () => {
         treeContainer.removeEventListener('touchmove', handleTouchMove);
         treeContainer.removeEventListener('touchend', handleTouchEnd);
-        treeContainer.removeEventListener('scroll', handleScroll);
       };
     }
   }, []);
