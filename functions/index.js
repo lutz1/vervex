@@ -180,7 +180,7 @@ exports.createUserHttp = functions.https.onRequest(async (req, res) => {
     let emailSent = false;
     try {
       verificationLink = await admin.auth().generateEmailVerificationLink(email, {
-        url: 'https://lutz1.github.io/login',
+        url: 'https://lutz1.github.io/vervex/login',
         handleCodeInApp: false,
       });
       console.log(`Verification link generated for ${email}`);
@@ -494,7 +494,7 @@ exports.registerUserFromCodeHttp = functions.https.onRequest(async (req, res) =>
       let emailSent = false;
       try {
         verificationLink = await admin.auth().generateEmailVerificationLink(invitedEmail, {
-          url: 'https://lutz1.github.io/login',
+          url: 'https://lutz1.github.io/vervex/login',
           handleCodeInApp: false,
         });
         console.log(`Verification link generated for ${invitedEmail}`);

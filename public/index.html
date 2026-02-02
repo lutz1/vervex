@@ -28,6 +28,19 @@
     <meta name="description" content="Exclusive access to the Vervex luxury experience. Inspired by Versace. Green and gold theme.">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script type="text/javascript">
+      // Handle GitHub Pages SPA routing
+      (function(l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,FILL@0..1&display=swap" rel="stylesheet"/>
     <meta name="apple-mobile-web-app-title" content="Vervex">
     <meta name="msapplication-TileColor" content="#006400">
