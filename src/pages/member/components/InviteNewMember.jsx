@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   Box,
@@ -12,8 +12,11 @@ import {
   FormControl,
   InputLabel,
   Button,
+  CircularProgress,
 } from '@mui/material';
 import { getCodeRequestPrice } from '../../../utils/firestore';
+import { db } from '../../../firebaseConfig';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 export default function InviteNewMember({
   inviteSlot,
@@ -28,6 +31,9 @@ export default function InviteNewMember({
     role = 'vip',
   } = inviteData;
 
+  const [emailError, setEmailError] = useState('');
+  const [emailValidating, setEmailValidating] = useState(false);
+
   const roles = ['vip', 'ambassador', 'supreme'];
   
   const selectedPrice = useMemo(() => {
@@ -35,6 +41,39 @@ export default function InviteNewMember({
   }, [role]);
 
   const isOverTheCounter = paymentMethod === 'over-the-counter';
+
+  // Validate email - check if it already exists
+  const validateEmail = async (email) => {
+    if (!email.trim()) {
+      setEmailError('');
+      return;
+    }
+
+    setEmailValidating(true);
+    try {
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('email', '==', email.toLowerCase()));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        setEmailError('This email is already registered in the system');
+      } else {
+        setEmailError('');
+      }
+    } catch (error) {
+      console.error('Error validating email:', error);
+      setEmailError('Error validating email');
+    } finally {
+      setEmailValidating(false);
+    }
+  };
+
+  // Handle email change with validation
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    onInviteDataChange('email', value);
+    validateEmail(value);
+  };
 
   // Handle contact number - only allow numbers
   const handleContactNumberChange = (e) => {
@@ -410,52 +449,82 @@ export default function InviteNewMember({
                   marginBottom: { xs: '8px', sm: '10px' },
                 }}
               >
-                <TextField
-                  fullWidth
-                  label={field.label}
-                  variant="outlined"
-                  placeholder={field.placeholder}
-                  type={field.type || 'text'}
-                  value={inviteData[field.key]}
-                  onChange={(e) => onInviteDataChange(field.key, e.target.value)}
-                  disabled={isLoading}
-                  size="small"
+                <Box
                   sx={{
-                    marginBottom: { xs: '2px', sm: '3px' },
-                    '& .MuiOutlinedInput-root': {
-                      color: '#ffffff !important',
-                      backgroundColor: 'transparent !important',
-                      padding: '10px 0',
-                      minHeight: '40px',
-                      '& fieldset': {
-                        border: 'none',
-                        borderBottom: '1px solid #3a3a3a',
-                      },
-                      '&:hover fieldset': {
-                        borderBottomColor: '#555555 !important',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderBottom: '2px solid #d4af37 !important',
-                      },
-                    },
-                    '& .MuiInputBase-input': {
-                      fontSize: '0.85rem',
-                      lineHeight: '1.4',
-                    },
-                    '& .MuiInputBase-input::placeholder': {
-                      color: '#555555',
-                      opacity: 0.7,
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: '#999999',
-                      fontSize: '0.8rem',
-                      lineHeight: '1.2',
-                      '&.Mui-focused': {
-                        color: '#d4af37',
-                      },
-                    },
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
                   }}
-                />
+                >
+                  <TextField
+                    fullWidth
+                    label={field.label}
+                    variant="outlined"
+                    placeholder={field.placeholder}
+                    type={field.type || 'text'}
+                    value={inviteData[field.key]}
+                    onChange={handleEmailChange}
+                    disabled={isLoading}
+                    error={!!emailError}
+                    size="small"
+                    sx={{
+                      marginBottom: { xs: '2px', sm: '3px' },
+                      '& .MuiOutlinedInput-root': {
+                        color: '#ffffff !important',
+                        backgroundColor: 'transparent !important',
+                        padding: '10px 0',
+                        minHeight: '40px',
+                        '& fieldset': {
+                          border: 'none',
+                          borderBottom: emailError ? '2px solid #f44336' : '1px solid #3a3a3a',
+                        },
+                        '&:hover fieldset': {
+                          borderBottomColor: emailError ? '#f44336' : '#555555 !important',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderBottom: emailError ? '2px solid #f44336' : '2px solid #d4af37 !important',
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        fontSize: '0.85rem',
+                        lineHeight: '1.4',
+                      },
+                      '& .MuiInputBase-input::placeholder': {
+                        color: '#555555',
+                        opacity: 0.7,
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: emailError ? '#f44336' : '#999999',
+                        fontSize: '0.8rem',
+                        lineHeight: '1.2',
+                        '&.Mui-focused': {
+                          color: emailError ? '#f44336' : '#d4af37',
+                        },
+                      },
+                    }}
+                  />
+                  {emailValidating && (
+                    <CircularProgress
+                      size={20}
+                      sx={{
+                        color: '#d4af37',
+                        flexShrink: 0,
+                      }}
+                    />
+                  )}
+                </Box>
+                {emailError && (
+                  <Typography
+                    sx={{
+                      color: '#f44336',
+                      fontSize: '0.7rem',
+                      marginTop: '4px',
+                      marginLeft: '4px',
+                    }}
+                  >
+                    {emailError}
+                  </Typography>
+                )}
               </Box>
             ))}
 
@@ -658,7 +727,7 @@ export default function InviteNewMember({
               </Button>
               <Button
                 onClick={onSendInvite}
-                disabled={isLoading}
+                disabled={isLoading || !!emailError || emailValidating}
                 variant="contained"
                 sx={{
                   background: 'linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C)',
