@@ -1,7 +1,54 @@
 /* Admin Components Mobile Styles */
 
+/* Base styles for admin components */
+.admin-card-grid {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.MuiCard-root {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.MuiCardContent-root {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box !important;
+  padding: 16px !important;
+}
+
+.MuiTableContainer-root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto !important;
+  box-sizing: border-box;
+}
+
+.MuiTable-root {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 /* Responsive Card and Table Styling */
 @media (max-width: 900px) {
+  .MuiCard-root {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .MuiCardContent-root {
+    padding: 12px !important;
+  }
+
+  .MuiTableContainer-root {
+    overflow-x: auto !important;
+  }
+
   /* Hide some columns on mobile */
   .admin-table-hidden-mobile {
     display: none;
@@ -20,6 +67,18 @@
 }
 
 @media (max-width: 600px) {
+  .MuiCard-root {
+    border-radius: 8px !important;
+  }
+
+  .MuiCardContent-root {
+    padding: 10px !important;
+  }
+
+  .MuiGrid-item {
+    padding: 6px !important;
+  }
+
   .admin-table-cell {
     padding: 6px 3px !important;
     font-size: 0.75rem !important;
@@ -35,26 +94,5 @@
     display: flex;
     flex-direction: column;
     gap: 12px !important;
-  }
-}
-
-/* General responsive adjustments */
-@media (max-width: 900px) {
-  /* Ensure tables scroll horizontally on smaller screens */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  thead, tbody, tr, td, th {
-    display: block;
-  }
-  
-  /* Optional: Hide table headers on mobile and use data attributes */
-  @supports (display: grid) {
-    table {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
   }
 }

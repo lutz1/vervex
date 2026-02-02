@@ -29,7 +29,7 @@ service cloud.firestore {
     }
     
     function isVIP(uid) {
-      return getRole(uid) in ['vip', 'ambassador', 'supreme', 'admin', 'superadmin'];
+      return getRole(uid) in ['vip', 'ambassador', 'supreme', 'company_account', 'admin', 'superadmin'];
     }
 
     // Users Collection - Strict Access Control
@@ -40,7 +40,7 @@ service cloud.firestore {
       // VIP and above can read all users (for genealogy tree building)
       // Simplified check to avoid circular dependencies
       allow read: if isAuthenticated() && (
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['vip', 'ambassador', 'supreme', 'admin', 'superadmin']
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['vip', 'ambassador', 'supreme', 'company_account', 'admin', 'superadmin']
       );
       
       // SuperAdmin write access - handle missing documents gracefully
@@ -70,7 +70,7 @@ service cloud.firestore {
       // VIP and above can create new users when activating payment codes (resource == null means new document)
       allow create: if isAuthenticated() && 
         resource == null &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['vip', 'ambassador', 'supreme', 'admin', 'superadmin'];
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['vip', 'ambassador', 'supreme', 'company_account', 'admin', 'superadmin'];
     }
 
     // Invitations Collection - VIP and above can send invitations
@@ -81,7 +81,7 @@ service cloud.firestore {
       // VIP and above can create invitations
       allow create: if isAuthenticated() && 
         request.resource.data.createdBy == request.auth.uid &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['vip', 'ambassador', 'supreme', 'admin', 'superadmin'];
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['vip', 'ambassador', 'supreme', 'company_account', 'admin', 'superadmin'];
       
       // Inviter can read and update their invitations
       allow read, update: if isAuthenticated() && resource.data.createdBy == request.auth.uid;
@@ -102,7 +102,7 @@ service cloud.firestore {
       // VIP and above can create code requests
       allow create: if isAuthenticated() && (
         exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['vip', 'ambassador', 'supreme', 'admin', 'superadmin']
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['vip', 'ambassador', 'supreme', 'company_account', 'admin', 'superadmin']
       ) && request.resource.data.inviterId == request.auth.uid;
       
       // Requester can read and update their own code requests (to add receipt URL)
@@ -120,7 +120,7 @@ service cloud.firestore {
       // VIP and above can create and read invite slots
       allow create, read: if isAuthenticated() && (
         exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['vip', 'ambassador', 'supreme', 'admin', 'superadmin']
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['vip', 'ambassador', 'supreme', 'company_account', 'admin', 'superadmin']
       );
       
       // Admin and SuperAdmin can read and update all invite slots

@@ -193,43 +193,74 @@
 }
 
 @media (max-width: 480px) {
+  .dashboard-page {
+    padding: 12px 0 140px;
+  }
+
+  .pv-dashboard-root {
+    padding: 0 6px !important;
+  }
+
   .dash-header {
     gap: 8px;
-    padding: 0 4px;
+    padding: 0 6px;
+    flex-wrap: wrap;
+  }
+
+  .dash-brand {
+    min-width: 100%;
   }
 
   .dash-brand-title {
-    font-size: 0.72rem;
+    font-size: 0.75rem;
   }
 
   .dash-brand-sub {
-    font-size: 0.54rem;
+    font-size: 0.56rem;
   }
 
   .dash-user {
-    gap: 6px;
-    padding: 5px 6px;
+    width: 100%;
+    gap: 8px;
+    padding: 8px 8px;
+  }
+
+  .dash-user-meta {
+    flex: 1;
   }
 
   .dash-user-name {
-    font-size: 0.75rem;
+    font-size: 0.78rem;
   }
 
   .dash-user-rank {
-    font-size: 0.58rem;
+    font-size: 0.62rem;
   }
 
   .dash-user-badge {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     padding: 3px;
+    flex-shrink: 0;
   }
 
   .badge-letter {
-    font-size: 0.75rem;
+    font-size: 0.78rem;
   }
 
   .badge-tier {
-    font-size: 0.48rem;
+    font-size: 0.50rem;
+  }
+
+  .dash-heading {
+    padding: 0 6px;
+  }
+
+  .dash-title {
+    font-size: 1.2rem !important;
+  }
+
+  .dash-sub {
+    font-size: 0.75rem !important;
   }
 }

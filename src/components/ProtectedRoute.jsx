@@ -82,7 +82,7 @@ const ProtectedRoute = ({ user, loading, children, requiredRole = null, userRole
     if (userRole === 'superadmin') {
       return <Navigate to="/superadmin/users" replace />;
     }
-    if (userRole && ['vip', 'ambassador', 'supreme', 'admin', 'cashier'].includes(userRole)) {
+    if (userRole && ['vip', 'ambassador', 'supreme', 'company_account', 'admin', 'cashier'].includes(userRole)) {
       return <Navigate to="/member/genealogy" replace />;
     }
     return <Navigate to="/login" replace />;

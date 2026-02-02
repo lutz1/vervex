@@ -20,10 +20,12 @@ export default function UserManagement() {
     const loadUsers = async () => {
       try {
         const usersSnapshot = await getDocs(collection(db, 'users'));
-        const usersData = usersSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const usersData = usersSnapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+          .filter((user) => user.role !== 'superadmin');
 
         setUsers(usersData);
         setLoading(false);
@@ -93,8 +95,15 @@ export default function UserManagement() {
   // Mobile card layout
   if (isMobile) {
     return (
-      <Box>
-        <Card sx={{ background: 'linear-gradient(135deg, rgba(26, 42, 42, 0.8) 0%, rgba(15, 20, 25, 0.8) 100%)', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
+      <Box sx={{ width: '100%', maxWidth: '100%' }}>
+        <Card sx={{ 
+          background: 'linear-gradient(135deg, rgba(26, 42, 42, 0.8) 0%, rgba(15, 20, 25, 0.8) 100%)', 
+          border: '1px solid rgba(212, 175, 55, 0.2)',
+          width: '100%',
+          maxWidth: '100%',
+          boxSizing: 'border-box',
+          marginBottom: 2
+        }}>
           <CardContent>
             <Typography variant="h6" sx={{ color: '#d4a574', marginBottom: 2, fontWeight: 700 }}>
               User Management
@@ -127,33 +136,37 @@ export default function UserManagement() {
           </CardContent>
         </Card>
 
-        <Grid container spacing={2} sx={{ marginTop: 1 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, width: '100%', maxWidth: '100%' }}>
           {filteredUsers.map((user) => (
-            <Grid item xs={12} sm={6} key={user.id}>
-              <Card sx={{ background: 'linear-gradient(135deg, rgba(26, 42, 42, 0.8) 0%, rgba(15, 20, 25, 0.8) 100%)', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
-                <CardContent>
-                  <Typography sx={{ color: '#f5f7ff', fontWeight: 600, marginBottom: 1, fontSize: '0.95rem' }}>{user.name}</Typography>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 1 }}>
-                    <Typography sx={{ color: '#9fa9a3', fontSize: '0.8rem' }}>Email:</Typography>
-                    <Typography sx={{ color: '#7ea8ff', fontSize: '0.8rem' }}>{user.email}</Typography>
+            <Card key={user.id} sx={{ 
+              background: 'linear-gradient(135deg, rgba(26, 42, 42, 0.8) 0%, rgba(15, 20, 25, 0.8) 100%)', 
+              border: '1px solid rgba(212, 175, 55, 0.2)',
+              width: '100%',
+              maxWidth: '100%',
+              boxSizing: 'border-box'
+            }}>
+                <CardContent sx={{ padding: '12px !important' }}>
+                  <Typography sx={{ color: '#f5f7ff', fontWeight: 600, marginBottom: 1, fontSize: '0.9rem', wordBreak: 'break-word' }}>{user.name}</Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 0.5, flexWrap: 'wrap', gap: 1 }}>
+                    <Typography sx={{ color: '#9fa9a3', fontSize: '0.75rem' }}>Email:</Typography>
+                    <Typography sx={{ color: '#7ea8ff', fontSize: '0.75rem', wordBreak: 'break-all', textAlign: 'right', flex: 1 }}>{user.email}</Typography>
                   </Box>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 1 }}>
-                    <Typography sx={{ color: '#9fa9a3', fontSize: '0.8rem' }}>Username:</Typography>
-                    <Typography sx={{ color: '#f5f7ff', fontSize: '0.8rem' }}>{user.username || 'N/A'}</Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 0.5, flexWrap: 'wrap', gap: 1 }}>
+                    <Typography sx={{ color: '#9fa9a3', fontSize: '0.75rem' }}>Username:</Typography>
+                    <Typography sx={{ color: '#f5f7ff', fontSize: '0.75rem', wordBreak: 'break-word' }}>{user.username || 'N/A'}</Typography>
                   </Box>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 1 }}>
-                    <Typography sx={{ color: '#9fa9a3', fontSize: '0.8rem' }}>Role:</Typography>
-                    <Typography sx={{ color: '#f5f7ff', textTransform: 'capitalize', fontSize: '0.8rem' }}>{user.role}</Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 0.5, flexWrap: 'wrap', gap: 1 }}>
+                    <Typography sx={{ color: '#9fa9a3', fontSize: '0.75rem' }}>Role:</Typography>
+                    <Typography sx={{ color: '#f5f7ff', textTransform: 'capitalize', fontSize: '0.75rem' }}>{user.role}</Typography>
                   </Box>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography sx={{ color: '#9fa9a3', fontSize: '0.8rem' }}>Status:</Typography>
-                    <Typography sx={{ color: '#4ade80', fontSize: '0.8rem' }}>{user.status || 'active'}</Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
+                    <Typography sx={{ color: '#9fa9a3', fontSize: '0.75rem' }}>Status:</Typography>
+                    <Typography sx={{ color: '#4ade80', fontSize: '0.75rem' }}>{user.status || 'active'}</Typography>
                   </Box>
                 </CardContent>
               </Card>
-            </Grid>
           ))}
-        </Grid>
+        </Box>
       </Box>
     );
   }

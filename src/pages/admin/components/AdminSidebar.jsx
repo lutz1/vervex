@@ -7,7 +7,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import '../AdminSidebar.css';
 
-export default function AdminSidebar({ activeTab, onTabChange }) {
+export default function AdminSidebar({ activeTab, onTabChange, isCollapsed }) {
   const menuItems = [
     { id: 0, label: 'Earnings Overview', icon: <MonetizationOnIcon /> },
     { id: 1, label: 'User Management', icon: <PeopleIcon /> },
@@ -17,18 +17,22 @@ export default function AdminSidebar({ activeTab, onTabChange }) {
   ];
 
   return (
-    <Box className="admin-sidebar">
-      {menuItems.map((item) => (
-        <Button
-          key={item.id}
-          onClick={() => onTabChange(item.id)}
-          className={`admin-sidebar-item ${activeTab === item.id ? 'active' : ''}`}
-          startIcon={item.icon}
-          fullWidth
-        >
-          {item.label}
-        </Button>
-      ))}
+    <Box className={`admin-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+      {/* Menu Items */}
+      <Box className="admin-sidebar-items">
+        {menuItems.map((item) => (
+          <Button
+            key={item.id}
+            onClick={() => onTabChange(item.id)}
+            className={`admin-sidebar-item ${activeTab === item.id ? 'active' : ''}`}
+            startIcon={item.icon}
+            fullWidth
+            title={item.label}
+          >
+            {!isCollapsed && item.label}
+          </Button>
+        ))}
+      </Box>
     </Box>
   );
 }

@@ -192,20 +192,54 @@
 }
 
 @media (max-width: 480px) {
+  .pv-stats-grid {
+    gap: 10px;
+    padding: 0 2px;
+  }
+
   .pv-stat-card {
-    padding: 12px 10px;
+    padding: 14px 12px;
+    gap: 10px;
+    border-radius: 12px;
+  }
+
+  .stat-header {
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  .stat-label {
+    font-size: 0.76rem;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
   }
 
   .stat-row {
-    gap: 8px;
-  }
-
-  .stat-spark {
-    width: 64px;
-    height: 32px;
+    gap: 10px;
+    flex-wrap: wrap;
   }
 
   .stat-value {
-    font-size: 1.45rem;
+    font-size: 1.65rem;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .stat-spark {
+    width: 70px;
+    height: 35px;
+    flex-shrink: 0;
+  }
+
+  .stat-delta {
+    padding: 5px 10px;
+    font-size: 0.80rem;
+    align-self: flex-start;
   }
 }

@@ -9,7 +9,7 @@ import UserManagement from './pages/superadmin/UserManagement';
 import ManageTree from './pages/superadmin/ManageTree';
 import Genealogy from './pages/member/Genealogy';
 import Dashboard from './pages/member/Dashboard';
-import Profile from './pages/member/components/Topbar/Profilecomponents/Profile';
+import Profile from './components/Appbar/Profile';
 import LoadingPage from './pages/loading/LoadingPage';
 import AcceptInvitation from './pages/AcceptInvitation';
 import Admin from './pages/admin/Admin';
@@ -26,6 +26,7 @@ function App() {
   const [userRole, setUserRole] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [adminSidebarCollapsed, setAdminSidebarCollapsed] = useState(true);
 
   useEffect(() => {
     // Prevent scrollbar layout shift by reserving scrollbar space
@@ -127,16 +128,28 @@ function App() {
 
         {/* Admin Routes */}
         <Route
-          path="/admin"
+          path="/admin/*"
           element={
             <ProtectedRoute user={user} loading={loading} requiredRole="admin" userRole={userRole}>
               <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
                 {/* AppBar */}
-                <TopBar title="VERVEX - ADMIN" user={user} userProfile={userProfile} role={userRole} onLogout={handleLogout} />
+                <TopBar 
+                  title="VERVEX - ADMIN" 
+                  user={user} 
+                  userProfile={userProfile} 
+                  role={userRole} 
+                  onLogout={handleLogout}
+                  isAdminSidebarCollapsed={adminSidebarCollapsed}
+                  onToggleAdminSidebar={setAdminSidebarCollapsed}
+                />
 
                 {/* Admin Content */}
                 <Box sx={{ marginTop: { xs: '56px', sm: '64px' }, flex: 1 }}>
-                  <Admin />
+                  <Routes>
+                    <Route path="/" element={<Admin adminSidebarCollapsed={adminSidebarCollapsed} setAdminSidebarCollapsed={setAdminSidebarCollapsed} />} />
+                    <Route path="/profile" element={<Profile user={user} userProfile={userProfile} userRole={userRole} onProfileUpdate={setUserProfile} />} />
+                    <Route path="*" element={<Navigate to="/admin" replace />} />
+                  </Routes>
                 </Box>
               </Box>
             </ProtectedRoute>
@@ -157,6 +170,7 @@ function App() {
                   <Routes>
                     <Route path="/users" element={<UserManagement />} />
                     <Route path="/manage-tree" element={<ManageTree />} />
+                    <Route path="/profile" element={<Profile user={user} userProfile={userProfile} userRole={userRole} onProfileUpdate={setUserProfile} />} />
                     <Route path="*" element={<Navigate to="/superadmin/users" replace />} />
                   </Routes>
                 </Box>
@@ -179,7 +193,7 @@ function App() {
                   <Routes>
                     <Route path="/dashboard" element={<Dashboard user={user} userRole={userRole} />} />
                     <Route path="/genealogy" element={<Genealogy />} />
-                    <Route path="/profile" element={<Profile user={user} userProfile={userProfile} onProfileUpdate={setUserProfile} />} />
+                    <Route path="/profile" element={<Profile user={user} userProfile={userProfile} userRole={userRole} onProfileUpdate={setUserProfile} />} />
                     <Route path="*" element={<Navigate to="/member/dashboard" replace />} />
                   </Routes>
                 </Box>
@@ -198,7 +212,7 @@ function App() {
                 <Navigate to="/superadmin/users" replace />
               ) : userRole === 'admin' ? (
                 <Navigate to="/admin" replace />
-              ) : userRole && ['vip', 'ambassador', 'supreme', 'cashier'].includes(userRole) ? (
+              ) : userRole && ['vip', 'ambassador', 'supreme', 'company_account', 'cashier'].includes(userRole) ? (
                 <Navigate to="/member/dashboard" replace />
               ) : (
                 <Navigate to="/login" replace />

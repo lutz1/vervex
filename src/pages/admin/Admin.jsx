@@ -10,7 +10,7 @@ import TransactionLogs from './components/TransactionLogs';
 import Reports from './components/Reports';
 import CodeRequests from './components/CodeRequests';
 
-export default function Admin() {
+export default function Admin({ adminSidebarCollapsed, setAdminSidebarCollapsed }) {
   const [tabValue, setTabValue] = useState(0);
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -102,7 +102,12 @@ export default function Admin() {
       {/* Sidebar and Content Layout */}
       <Box className="admin-layout">
         {/* Vertical Sidebar Navigation */}
-        <AdminSidebar activeTab={tabValue} onTabChange={setTabValue} />
+        <AdminSidebar 
+          activeTab={tabValue} 
+          onTabChange={setTabValue} 
+          isCollapsed={adminSidebarCollapsed}
+          onToggleCollapse={setAdminSidebarCollapsed}
+        />
 
         {/* Content Section */}
         <Box className="admin-content-section">

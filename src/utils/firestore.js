@@ -20,6 +20,7 @@ export const USER_ROLES = {
   VIP: 'vip',
   AMBASSADOR: 'ambassador',
   SUPREME: 'supreme',
+  COMPANY_ACCOUNT: 'company_account',
   CASHIER: 'cashier',
   USER: 'user',
 };

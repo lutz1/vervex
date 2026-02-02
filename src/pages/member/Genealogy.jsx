@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Box,
   Typography,
@@ -28,6 +28,8 @@ export default function Genealogy() {
   const [inviting, setInviting] = useState(false);
   const [frameStyle, setFrameStyle] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const treeShellRef = useRef(null);
+  const lastDistanceRef = useRef(0);
   const [frameUrl, setFrameUrl] = useState(null);
   const [inviteSlotStatuses, setInviteSlotStatuses] = useState({}); // Track invite slot codes and statuses
   const [showCodeModal, setShowCodeModal] = useState(false);
@@ -258,6 +260,46 @@ export default function Genealogy() {
       }
     };
     fetchGenealogyTree();
+  }, []);
+
+  // Handle pinch zoom on mobile
+  useEffect(() => {
+    const handleTouchMove = (e) => {
+      if (e.touches.length !== 2) return;
+      
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const distance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+      
+      if (lastDistanceRef.current > 0) {
+        const scale = distance / lastDistanceRef.current;
+        setZoomLevel(prev => {
+          const newZoom = Math.max(0.5, Math.min(2, prev * scale));
+          return newZoom;
+        });
+      }
+      
+      lastDistanceRef.current = distance;
+      e.preventDefault();
+    };
+    
+    const handleTouchEnd = () => {
+      lastDistanceRef.current = 0;
+    };
+    
+    const treeContainer = treeShellRef.current?.parentElement;
+    if (treeContainer) {
+      treeContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
+      treeContainer.addEventListener('touchend', handleTouchEnd);
+      
+      return () => {
+        treeContainer.removeEventListener('touchmove', handleTouchMove);
+        treeContainer.removeEventListener('touchend', handleTouchEnd);
+      };
+    }
   }, []);
 
   // Fetch invite slot statuses (for code display) - with real-time updates
@@ -802,32 +844,15 @@ If they don't receive the email within 5 minutes, they can verify by:
             Trinary Genealogy
           </Typography>
           <Typography variant="body2" className="genealogy-subtitle">
-            Manage and track your network structure
+            Manage and track your network structure (Pinch to zoom on mobile)
           </Typography>
-        </Box>
-        <Box className="zoom-controls">
-          <Button 
-            onClick={() => setZoomLevel(prev => Math.max(0.5, prev - 0.1))}
-            className="zoom-btn"
-            disabled={zoomLevel <= 0.5}
-          >
-            -
-          </Button>
-          <Typography className="zoom-level">{Math.round(zoomLevel * 100)}%</Typography>
-          <Button 
-            onClick={() => setZoomLevel(prev => Math.min(1.5, prev + 0.1))}
-            className="zoom-btn"
-            disabled={zoomLevel >= 1.5}
-          >
-            +
-          </Button>
         </Box>
       </Box>
 
 
       {/* Tree Section */}
       <Box className="tree-container">
-        <Box className="tree-shell" style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center' }}>
+        <Box ref={treeShellRef} className="tree-shell" style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center' }}>
             {genealogyTree ? (
               <>
                 <Box className="root-row">

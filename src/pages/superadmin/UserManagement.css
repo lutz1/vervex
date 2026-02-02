@@ -10,7 +10,8 @@
   justify-content: center;
   position: relative;
   padding: 40px 20px;
-  overflow-x: auto;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .user-management-bg::before {
@@ -128,9 +129,12 @@
   border: 2px solid rgba(212, 175, 55, 0.2) !important;
   border-radius: 12px !important;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .users-table {
@@ -227,24 +231,51 @@
 }
 
 /* Dialog */
+.user-management-container .MuiDialog-root {
+  z-index: 1400 !important;
+}
+
+.user-management-container .MuiBackdrop-root {
+  z-index: 1400 !important;
+}
+
+.user-management-container .MuiDialog-paper {
+  background: linear-gradient(135deg, #1a1a1f 0%, #2d2d35 100%) !important;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px !important;
+  overflow: hidden;
+  z-index: 1401 !important;
+}
+
 .dialog-title {
   color: #d4af37 !important;
   font-weight: 700 !important;
   letter-spacing: 1px;
-  background: linear-gradient(135deg, rgba(26, 95, 63, 0.3) 0%, rgba(26, 95, 63, 0.1) 100%) !important;
+  background: linear-gradient(135deg, rgba(45, 134, 89, 0.2) 0%, rgba(26, 95, 63, 0.15) 100%) !important;
   border-bottom: 2px solid rgba(212, 175, 55, 0.3) !important;
-  padding: 20px !important;
+  padding: 20px 24px !important;
   font-size: 1.5rem !important;
+  text-align: center;
+  margin: 0 !important;
 }
 
 .dialog-content {
   background: rgba(30, 30, 35, 0.95) !important;
-  padding: 25px !important;
+  padding: 25px 20px !important;
+  overflow-y: auto;
+  max-height: calc(90vh - 200px);
+}
+
+.dialog-content .MuiBox-root {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .dialog-content .MuiTextField-root {
   background: rgba(45, 134, 89, 0.1) !important;
   border-radius: 8px !important;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .dialog-content .MuiTextField-root .MuiOutlinedInput-root {
@@ -377,6 +408,30 @@
   .delete-button {
     padding: 6px !important;
   }
+
+  /* Dialog responsive */
+  .dialog-title {
+    padding: 16px 20px !important;
+    font-size: 1.3rem !important;
+  }
+
+  .dialog-content {
+    padding: 20px 16px !important;
+    max-height: calc(80vh - 180px);
+  }
+
+  .dialog-content .MuiBox-root {
+    gap: 2rem !important;
+  }
+
+  .dialog-content .MuiTextField-root .MuiOutlinedInput-root {
+    font-size: 14px !important;
+  }
+
+  .dialog-actions {
+    padding: 14px 16px !important;
+    flex-wrap: wrap;
+  }
 }
 
 @media (max-width: 600px) {
@@ -455,5 +510,95 @@
   .delete-button {
     padding: 5px !important;
     font-size: 16px;
+  }
+
+  /* Dialog responsive mobile */
+  .dialog-title {
+    padding: 14px 16px !important;
+    font-size: 1.2rem !important;
+    letter-spacing: 0.5px;
+  }
+
+  .dialog-content {
+    padding: 16px 12px !important;
+    max-height: calc(75vh - 160px);
+  }
+
+  .dialog-content .MuiBox-root {
+    gap: 1.5rem !important;
+  }
+
+  .dialog-content .MuiTextField-root .MuiOutlinedInput-root {
+    font-size: 13px !important;
+  }
+
+  .dialog-content .MuiInputLabel-root {
+    font-size: 12px !important;
+  }
+
+  .dialog-content .MuiFormHelperText-root {
+    font-size: 11px !important;
+  }
+
+  .dialog-actions {
+    padding: 12px !important;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .dialog-actions .MuiButton-root {
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 400px) {
+  .user-management-bg {
+    padding: 16px 0;
+  }
+
+  .user-management-container {
+    padding: 0 8px;
+  }
+
+  .management-header {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .management-title {
+    font-size: 1.2rem !important;
+  }
+
+  .dialog-title {
+    padding: 12px 14px !important;
+    font-size: 1.1rem !important;
+  }
+
+  .dialog-content {
+    padding: 14px 10px !important;
+    max-height: calc(70vh - 140px);
+  }
+
+  .dialog-content .MuiBox-root {
+    gap: 1.25rem !important;
+  }
+
+  .dialog-content .MuiTextField-root .MuiOutlinedInput-root {
+    font-size: 12px !important;
+    padding: 10px 12px !important;
+  }
+
+  .dialog-content .MuiInputLabel-root {
+    font-size: 11px !important;
+  }
+
+  .dialog-actions {
+    padding: 10px !important;
+  }
+
+  .dialog-actions .MuiButton-root {
+    font-size: 12px !important;
+    min-height: 42px;
   }
 }

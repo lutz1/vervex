@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Profile.css';
-import { updateUserProfile } from '../../../../../utils/firestore';
-import { storage } from '../../../../../firebaseConfig';
+import { updateUserProfile } from '../../utils/firestore';
+import { storage } from '../../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-export default function Profile({ user, userProfile, onProfileUpdate }) {
+export default function Profile({ user, userProfile, userRole, onProfileUpdate }) {
   // eslint-disable-next-line no-unused-vars
   const navigate = useNavigate();
   const [preview, setPreview] = useState(user?.photoURL || userProfile?.avatar || null);
@@ -119,7 +119,14 @@ export default function Profile({ user, userProfile, onProfileUpdate }) {
         setTimeout(() => {
           setSuccess(false);
           try {
-            navigate(-1);
+            // Navigate back based on user role
+            if (userRole === 'superadmin') {
+              navigate('/superadmin/users');
+            } else if (userRole === 'admin') {
+              navigate('/admin');
+            } else {
+              navigate('/member/dashboard');
+            }
           } catch (e) {
             window.location.href = '/member/dashboard';
           }
@@ -139,7 +146,14 @@ export default function Profile({ user, userProfile, onProfileUpdate }) {
     setSelectedFile(null);
     setError(null);
     try {
-      navigate(-1);
+      // Navigate back based on user role
+      if (userRole === 'superadmin') {
+        navigate('/superadmin/users');
+      } else if (userRole === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/member/dashboard');
+      }
     } catch (e) {
       window.location.href = '/member/dashboard';
     }

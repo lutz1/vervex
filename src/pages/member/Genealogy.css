@@ -137,46 +137,8 @@
   font-size: 0.875rem;
 }
 
-/* Zoom Controls */
-.zoom-controls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(20, 26, 44, 0.8);
-  padding: 8px 16px;
-  border-radius: 12px;
-  border: 1px solid rgba(103, 93, 255, 0.3);
-}
-
-.zoom-btn {
-  min-width: 36px !important;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px !important;
-  background: rgba(103, 93, 255, 0.2) !important;
-  color: #d4af37 !important;
-  font-size: 20px !important;
-  font-weight: bold !important;
-  padding: 0 !important;
-  border: 1px solid rgba(103, 93, 255, 0.4) !important;
-}
-
-.zoom-btn:hover:not(:disabled) {
-  background: rgba(103, 93, 255, 0.4) !important;
-}
-
-.zoom-btn:disabled {
-  opacity: 0.3 !important;
-  cursor: not-allowed !important;
-}
-
-.zoom-level {
-  color: #d4af37;
-  font-weight: 700;
-  font-size: 0.9rem;
-  min-width: 50px;
-  text-align: center;
-}
+/* Zoom Controls - Removed, using pinch-to-zoom instead */
+/* Tree container is now touch-enabled for pinch zoom */
 
 /* Tree Section */
 .tree-container {
@@ -623,14 +585,13 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(9, 1fr);
-  gap: 24px;
+  gap: 16px;
   align-items: start;
   justify-items: center;
   padding-top: 30px;
-  width: fit-content;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
-  right: 150px;
-  max-width: 125%;
 }
 
 .subsub-group-container {
@@ -664,10 +625,12 @@
 }
 
 .subsub-group {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  justify-items: center;
   width: 100%;
+  position: relative;
   position: relative;
 }
 
@@ -915,4 +878,593 @@
 .btn-submit:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* ==================== MOBILE RESPONSIVE LAYOUT ==================== */
+
+/* Tablets (768px - 900px) */
+@media (max-width: 900px) {
+  .genealogy-header {
+    padding: 0 16px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tree-container {
+    padding: 20px 12px 30px;
+    min-height: auto;
+  }
+
+  .tree-shell {
+    padding: 20px 12px;
+  }
+
+  /* Root card responsive */
+  .root-card {
+    min-width: 160px;
+    padding: 16px 18px;
+  }
+
+  .root-avatar-wrap {
+    width: 120px;
+    height: 120px;
+  }
+
+  .root-frame-img {
+    inset: -50px;
+    width: calc(100% + 100px);
+    height: calc(100% + 100px);
+  }
+
+  .root-name {
+    font-size: 0.95rem;
+  }
+
+  .root-role {
+    font-size: 0.75rem;
+  }
+
+  /* Wing row responsive */
+  .wing-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    max-width: 100%;
+  }
+
+  .wing-card {
+    min-width: 130px;
+    padding: 12px 14px;
+  }
+
+  .wing-avatar-wrap {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 6px;
+  }
+
+  .wing-name {
+    font-size: 0.9rem;
+  }
+
+  .wing-role {
+    font-size: 0.75rem;
+  }
+
+  /* Sub row responsive */
+  .wings-sub-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    padding-top: 20px;
+    max-width: 100%;
+  }
+
+  .sub-slot {
+    width: 140px;
+    min-height: 70px;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  .subsub-slot {
+    width: 90px;
+    min-height: 60px;
+    padding: 6px 8px;
+    font-size: 0.7rem;
+  }
+
+  .subsub-title {
+    font-size: 0.65rem;
+  }
+}
+
+/* Mobile (600px - 768px) */
+@media (max-width: 768px) {
+  .genealogy-main-container {
+    padding: 20px 0;
+  }
+
+  .genealogy-content-wrapper {
+    padding: 0 8px;
+  }
+
+  .genealogy-header {
+    padding: 0 12px;
+    margin-bottom: 20px;
+    gap: 12px;
+  }
+
+  .genealogy-title {
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+  }
+
+  .genealogy-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .tree-container {
+    padding: 16px 8px 24px;
+    min-height: auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tree-shell {
+    padding: 16px 8px;
+    min-width: min-content;
+  }
+
+  /* Root card */
+  .root-card {
+    min-width: 140px;
+    padding: 14px 16px;
+  }
+
+  .root-avatar-wrap {
+    width: 100px;
+    height: 100px;
+  }
+
+  .root-frame-img {
+    inset: -40px;
+    width: calc(100% + 80px);
+    height: calc(100% + 80px);
+  }
+
+  .root-name {
+    font-size: 0.85rem;
+  }
+
+  .root-role {
+    font-size: 0.7rem;
+  }
+
+  .root-horizontal {
+    margin: 8px auto 20px;
+    height: 2px;
+  }
+
+  /* Wing row */
+  .wing-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 35px;
+    padding: 0 4px;
+  }
+
+  .wing-card {
+    min-width: 110px;
+    padding: 10px 12px;
+  }
+
+  .wing-card::before {
+    top: -28px;
+    height: 28px;
+  }
+
+  .wing-avatar-wrap {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 4px;
+  }
+
+  .wing-name {
+    font-size: 0.8rem;
+  }
+
+  .wing-role {
+    font-size: 0.7rem;
+  }
+
+  .bonus-badge {
+    font-size: 9px;
+    padding: 3px 8px;
+    bottom: -18px;
+  }
+
+  /* Sub rows */
+  .wings-sub-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 35px;
+    padding-top: 16px;
+  }
+
+  .mid-connector {
+    height: 20px;
+    margin: 12px 0 16px;
+  }
+
+  .mid-connector::before,
+  .mid-connector::after {
+    height: 2px;
+    top: 4px;
+  }
+
+  .sub-slot {
+    width: 110px;
+    min-height: 65px;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+  }
+
+  .sub-column {
+    max-width: 180px;
+  }
+
+  .subsub-slot {
+    width: 80px;
+    min-height: 55px;
+    padding: 5px 6px;
+    font-size: 0.65rem;
+  }
+
+  .subsub-title {
+    font-size: 0.6rem;
+  }
+
+  .subsub-status {
+    font-size: 0.7rem;
+  }
+
+  /* Modal responsive */
+  .modal-card {
+    max-width: 90vw;
+    margin: 16px;
+  }
+
+  .modal-header {
+    padding: 16px 20px;
+  }
+
+  .modal-title {
+    font-size: 1rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+  }
+
+  .btn-cancel,
+  .btn-submit {
+    width: 100%;
+    flex: none;
+  }
+}
+
+/* Small Mobile (480px - 600px) */
+@media (max-width: 600px) {
+  .genealogy-main-container {
+    padding: 16px 0;
+  }
+
+  .genealogy-content-wrapper {
+    padding: 0 6px;
+  }
+
+  .genealogy-header {
+    padding: 0 10px;
+    margin-bottom: 16px;
+    gap: 10px;
+  }
+
+  .genealogy-title {
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+  }
+
+  .genealogy-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .tree-container {
+    padding: 12px 4px 20px;
+  }
+
+  .tree-shell {
+    padding: 12px 4px;
+  }
+
+  /* Root card - Compact */
+  .root-card {
+    min-width: 120px;
+    padding: 12px 14px;
+  }
+
+  .root-avatar-wrap {
+    width: 85px;
+    height: 85px;
+  }
+
+  .root-frame-img {
+    inset: -30px;
+    width: calc(100% + 60px);
+    height: calc(100% + 60px);
+  }
+
+  .root-name {
+    font-size: 0.75rem;
+  }
+
+  .root-role {
+    font-size: 0.65rem;
+  }
+
+  .root-horizontal {
+    margin: 6px auto 16px;
+    height: 2px;
+  }
+
+  /* Wing row - Single column scrollable */
+  .wing-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    padding: 0 2px;
+    min-width: min-content;
+  }
+
+  .wing-card {
+    min-width: 95px;
+    padding: 8px 10px;
+  }
+
+  .wing-card::before {
+    top: -24px;
+    height: 24px;
+  }
+
+  .wing-avatar-wrap {
+    width: 85px;
+    height: 85px;
+    margin: 0 auto 3px;
+  }
+
+  .wing-name {
+    font-size: 0.7rem;
+  }
+
+  .wing-role {
+    font-size: 0.65rem;
+  }
+
+  .wing-role.subtle {
+    font-size: 0.6rem;
+  }
+
+  .bonus-badge {
+    font-size: 8px;
+    padding: 2px 6px;
+    bottom: -16px;
+  }
+
+  /* Sub rows */
+  .wings-sub-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    padding-top: 14px;
+    min-width: min-content;
+  }
+
+  .mid-connector {
+    height: 16px;
+    margin: 10px 0 14px;
+  }
+
+  .mid-connector::before,
+  .mid-connector::after {
+    height: 2px;
+    top: 2px;
+  }
+
+  .sub-slot {
+    width: 90px;
+    min-height: 60px;
+    padding: 5px 7px;
+    font-size: 0.7rem;
+  }
+
+  .column-title {
+    font-size: 0.65rem;
+  }
+
+  .subsub-slot {
+    width: 70px;
+    min-height: 50px;
+    padding: 4px 5px;
+    font-size: 0.6rem;
+  }
+
+  .subsub-title {
+    font-size: 0.55rem;
+  }
+
+  .subsub-status {
+    font-size: 0.65rem;
+  }
+
+  /* Modal */
+  .modal-card {
+    max-width: 95vw;
+    border-radius: 10px;
+  }
+
+  .modal-header {
+    padding: 14px 16px;
+  }
+
+  .modal-title {
+    font-size: 0.95rem;
+  }
+
+  .modal-actions {
+    padding: 12px;
+    gap: 6px;
+  }
+
+  .form-input {
+    margin-bottom: 12px;
+  }
+}
+
+/* Extra Small Mobile (< 480px) */
+@media (max-width: 480px) {
+  .genealogy-main-container {
+    padding: 12px 0;
+  }
+
+  .genealogy-content-wrapper {
+    padding: 0 4px;
+  }
+
+  .genealogy-header {
+    padding: 0 8px;
+    margin-bottom: 12px;
+  }
+
+  .genealogy-title {
+    font-size: 0.95rem;
+  }
+
+  .genealogy-subtitle {
+    font-size: 0.65rem;
+  }
+
+  .tree-container {
+    padding: 10px 2px 16px;
+  }
+
+  .tree-shell {
+    padding: 10px 2px;
+  }
+
+  .root-card {
+    min-width: 100px;
+    padding: 10px 12px;
+  }
+
+  .root-avatar-wrap {
+    width: 75px;
+    height: 75px;
+  }
+
+  .root-frame-img {
+    inset: -25px;
+    width: calc(100% + 50px);
+    height: calc(100% + 50px);
+  }
+
+  .root-name {
+    font-size: 0.7rem;
+  }
+
+  .root-role {
+    font-size: 0.6rem;
+  }
+
+  .wing-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .wing-card {
+    min-width: 80px;
+    padding: 6px 8px;
+  }
+
+  .wing-card::before {
+    top: -20px;
+    height: 20px;
+  }
+
+  .wing-avatar-wrap {
+    width: 75px;
+    height: 75px;
+    margin: 0 auto 2px;
+  }
+
+  .wing-name {
+    font-size: 0.65rem;
+  }
+
+  .wing-role {
+    font-size: 0.6rem;
+  }
+
+  .wings-sub-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding-top: 12px;
+  }
+
+  .sub-slot {
+    width: 75px;
+    min-height: 55px;
+    padding: 4px 5px;
+    font-size: 0.65rem;
+  }
+
+  .subsub-slot {
+    width: 60px;
+    min-height: 45px;
+    padding: 3px 4px;
+    font-size: 0.55rem;
+  }
+
+  .subsub-title {
+    font-size: 0.5rem;
+  }
+
+  .subsub-status {
+    font-size: 0.6rem;
+  }
+
+  .bonus-badge {
+    font-size: 7px;
+    padding: 2px 5px;
+  }
+
+  .modal-card {
+    max-width: 98vw;
+  }
+
+  .modal-header {
+    padding: 12px 14px;
+  }
+
+  .modal-title {
+    font-size: 0.9rem;
+  }
+
+  .modal-close-btn {
+    font-size: 1.2rem;
+  }
+
+  .modal-actions {
+    padding: 10px;
+    gap: 4px;
+  }
+
+  .form-input {
+    margin-bottom: 10px;
+  }
 }

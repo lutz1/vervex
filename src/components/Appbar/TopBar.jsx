@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Avatar, IconButton, Menu, MenuItem, Tooltip, ListItemIcon, Divider } from '@mui/material';
-import { Person as PersonIcon, Logout as LogoutIcon } from '@mui/icons-material';
+import { Person as PersonIcon, Logout as LogoutIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon } from '@mui/icons-material';
 import { ref as storageRef, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../firebaseConfig';
 import { getFrameByRole } from '../../utils/firestore';
 
-export default function TopBar({ title, user, userProfile, role, onLogout }) {
+export default function TopBar({ title, user, userProfile, role, onLogout, isAdminSidebarCollapsed, onToggleAdminSidebar }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -22,7 +22,14 @@ export default function TopBar({ title, user, userProfile, role, onLogout }) {
   const handleClose = () => setAnchorEl(null);
   const handleProfile = () => {
     handleClose();
-    navigate('/member/profile');
+    // Navigate based on role
+    if (role === 'superadmin') {
+      navigate('/superadmin/profile');
+    } else if (role === 'admin') {
+      navigate('/admin/profile');
+    } else {
+      navigate('/member/profile');
+    }
   };
 
   useEffect(() => {
@@ -101,6 +108,24 @@ export default function TopBar({ title, user, userProfile, role, onLogout }) {
   return (
     <AppBar position="fixed" sx={{ background: 'linear-gradient(135deg, #1a5f3f 0%, #0f1419 100%)', top: 0, zIndex: 1400 }}>
       <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
+        {/* Admin Sidebar Toggle Button */}
+        {title.includes('ADMIN') && (
+          <Tooltip title={isAdminSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
+            <IconButton
+              onClick={() => onToggleAdminSidebar(!isAdminSidebarCollapsed)}
+              sx={{
+                color: '#d4af37',
+                mr: 2,
+                '&:hover': {
+                  backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                }
+              }}
+            >
+              {isAdminSidebarCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+          </Tooltip>
+        )}
+
         <Typography
           variant="h6"
           sx={{
