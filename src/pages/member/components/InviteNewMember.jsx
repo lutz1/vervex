@@ -113,8 +113,11 @@ export default function InviteNewMember({
 
   useEffect(() => {
     if (isGoogleMapsLoaded && addressInputRef.current && window.google) {
+      // Get the actual input element (not the wrapper)
+      const inputElement = addressInputRef.current.querySelector('input') || addressInputRef.current;
+      
       autocompleteRef.current = new window.google.maps.places.Autocomplete(
-        addressInputRef.current,
+        inputElement,
         {
           types: ['address'],
           componentRestrictions: { country: 'ph' }, // Restrict to Philippines
@@ -557,6 +560,7 @@ export default function InviteNewMember({
               sx={{
                 marginBottom: { xs: '8px', sm: '10px' },
               }}
+              ref={addressInputRef}
             >
               <TextField
                 fullWidth
@@ -567,9 +571,6 @@ export default function InviteNewMember({
                 onChange={(e) => onInviteDataChange('fullAddress', e.target.value)}
                 disabled={isLoading}
                 size="small"
-                inputRef={addressInputRef}
-                multiline
-                rows={2}
                 sx={{
                   marginBottom: { xs: '2px', sm: '3px' },
                   '& .MuiOutlinedInput-root': {
