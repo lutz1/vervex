@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/vervex/static/css/main.ac401ba7.css",
-    "main.js": "/vervex/static/js/main.3ded65ea.js",
-    "static/js/453.69ce802e.chunk.js": "/vervex/static/js/453.69ce802e.chunk.js",
-    "static/media/bg.png": "/vervex/static/media/bg.c8d38385929e5c73ee3b.png",
-    "static/media/logo.jpg": "/vervex/static/media/logo.2ff622f9acfb253cd7b7.jpg",
-    "index.html": "/vervex/index.html",
-    "main.ac401ba7.css.map": "/vervex/static/css/main.ac401ba7.css.map",
-    "main.3ded65ea.js.map": "/vervex/static/js/main.3ded65ea.js.map",
-    "453.69ce802e.chunk.js.map": "/vervex/static/js/453.69ce802e.chunk.js.map"
+    "main.css": "/static/css/main.c0f6db5a.css",
+    "main.js": "/static/js/main.87499e07.js",
+    "static/js/453.69ce802e.chunk.js": "/static/js/453.69ce802e.chunk.js",
+    "static/media/bg.png": "/static/media/bg.c8d38385929e5c73ee3b.png",
+    "static/media/logo.jpg": "/static/media/logo.2ff622f9acfb253cd7b7.jpg",
+    "index.html": "/index.html",
+    "main.c0f6db5a.css.map": "/static/css/main.c0f6db5a.css.map",
+    "main.87499e07.js.map": "/static/js/main.87499e07.js.map",
+    "453.69ce802e.chunk.js.map": "/static/js/453.69ce802e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.ac401ba7.css",
-    "static/js/main.3ded65ea.js"
+    "static/css/main.c0f6db5a.css",
+    "static/js/main.87499e07.js"
   ]
 }
