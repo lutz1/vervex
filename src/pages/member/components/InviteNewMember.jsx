@@ -26,11 +26,17 @@ const loadGoogleMapsScript = (callback) => {
     document.body.appendChild(script);
     
     script.onload = () => {
+      console.log('Google Maps script loaded successfully');
       if (callback) callback();
     };
+    
+    script.onerror = (error) => {
+      console.error('Failed to load Google Maps script:', error);
+    };
+  } else if (window.google && window.google.maps) {
+    console.log('Google Maps script already loaded');
+    if (callback) callback();
   }
-  
-  if (existingScript && callback) callback();
 };
 
 // Add CSS for Google Maps autocomplete styling
@@ -113,28 +119,43 @@ export default function InviteNewMember({
 
   useEffect(() => {
     if (isGoogleMapsLoaded && addressInputRef.current && window.google) {
-      // Get the actual input element (not the wrapper)
-      const inputElement = addressInputRef.current.querySelector('input') || addressInputRef.current;
+      // Get the actual input element from the TextField
+      const inputElement = addressInputRef.current.querySelector('input');
       
-      autocompleteRef.current = new window.google.maps.places.Autocomplete(
-        inputElement,
-        {
-          types: ['address'],
-          componentRestrictions: { country: 'ph' }, // Restrict to Philippines
-        }
-      );
+      if (!inputElement) {
+        console.error('Address input element not found');
+        return;
+      }
 
-      autocompleteRef.current.addListener('place_changed', () => {
-        const place = autocompleteRef.current.getPlace();
-        if (place.formatted_address) {
-          onInviteDataChange('fullAddress', place.formatted_address);
-        }
-      });
+      try {
+        autocompleteRef.current = new window.google.maps.places.Autocomplete(
+          inputElement,
+          {
+            types: ['geocode'],
+            componentRestrictions: { country: 'ph' },
+          }
+        );
+
+        autocompleteRef.current.addListener('place_changed', () => {
+          const place = autocompleteRef.current.getPlace();
+          if (place.formatted_address) {
+            onInviteDataChange('fullAddress', place.formatted_address);
+          }
+        });
+
+        console.log('Google Maps Autocomplete initialized successfully');
+      } catch (error) {
+        console.error('Error initializing Google Maps Autocomplete:', error);
+      }
     }
 
     return () => {
       if (autocompleteRef.current && window.google) {
-        window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
+        try {
+          window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
+        } catch (error) {
+          console.error('Error clearing listeners:', error);
+        }
       }
     };
   }, [isGoogleMapsLoaded, onInviteDataChange]);
@@ -571,6 +592,10 @@ export default function InviteNewMember({
                 onChange={(e) => onInviteDataChange('fullAddress', e.target.value)}
                 disabled={isLoading}
                 size="small"
+                inputProps={{
+                  id: 'google-maps-autocomplete-input',
+                  autoComplete: 'off',
+                }}
                 sx={{
                   marginBottom: { xs: '2px', sm: '3px' },
                   '& .MuiOutlinedInput-root': {
