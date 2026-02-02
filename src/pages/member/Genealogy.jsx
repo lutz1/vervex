@@ -805,28 +805,36 @@ export default function Genealogy() {
       // Send verification email to the new user
       if (result.verificationLink) {
         try {
+          const emailStatus = result.emailSent 
+            ? `✓ Verification email has been sent to ${result.email}`
+            : `⚠ Verification link generated. Email delivery status: ${result.message}`;
+          
           // Provide the user with verification instructions
           const verificationMessage = `Code activated successfully!
 
-A verification link has been generated and will be sent to: ${result.email}
+${emailStatus}
 
 User Details:
 - Email: ${result.email}
 - Default Password: ${result.defaultPassword}
 
-The member needs to:
-1. Check their email inbox for the verification link
-2. Click the verification link to verify their email
+Next Steps:
+1. Check email inbox (including spam folder) for the verification link
+2. Click the verification link to verify their email address
 3. Login with their credentials
-4. Change their default password
+4. Change the default password after first login
 
-If they don't receive the email within 5 minutes, they can verify by:
-- Logging in with the credentials above
-- Firebase will automatically send a verification email on login`;
+Important:
+If the member doesn't receive the email within 5 minutes:
+- They can login directly with the credentials above
+- Firebase will send a verification email on login attempt
+- They may need to check their spam/junk folder
+
+The account is now Active and ready to use.`;
           showAlert(verificationMessage, 'success', 'Code Activated Successfully');
         } catch (error) {
           console.error('Error in verification process:', error);
-          showAlert('Code activated! Member registered in the system.\n\nVerification email will be sent to their registered email address.', 'success');
+          showAlert('Code activated! Member registered successfully.\n\nVerification email has been sent to their registered email address. They can check their inbox and spam folder.', 'success');
         }
       }
 

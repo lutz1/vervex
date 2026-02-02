@@ -40,7 +40,7 @@ async function verifyToken(token) {
 // Helper function to send verification email
 async function sendVerificationEmail(email, fullName, verificationLink) {
   try {
-    await transporter.sendMail({
+    const mailOptions = {
       from: 'johnn.onezero@gmail.com',
       to: email,
       subject: 'Welcome to Vervex - Please Verify Your Email',
@@ -72,10 +72,21 @@ async function sendVerificationEmail(email, fullName, verificationLink) {
           </p>
         </div>
       `,
-    });
+    };
+    
+    console.log(`Attempting to send email to ${email}...`);
+    const result = await transporter.sendMail(mailOptions);
+    console.log(`✓ Email sent successfully to ${email}:`, result.messageId);
     return true;
   } catch (error) {
-    console.error('Error sending verification email:', error);
+    console.error(`✗ Error sending verification email to ${email}:`, error.message);
+    console.error('Error details:', {
+      code: error.code,
+      errno: error.errno,
+      syscall: error.syscall,
+      hostname: error.hostname,
+      message: error.message
+    });
     return false;
   }
 }
@@ -511,17 +522,37 @@ exports.registerUserFromCodeHttp = functions.https.onRequest(async (req, res) =>
           url: 'https://vervexofficial.online/',
           handleCodeInApp: false,
         });
-        console.log(`Verification link generated for ${invitedEmail}`);
+        console.log(`✓ Verification link generated for ${invitedEmail}`);
         
-        // Send verification email
-        emailSent = await sendVerificationEmail(invitedEmail, `${firstName} ${surname}`, verificationLink);
-        if (emailSent) {
-          console.log(`Verification email sent to ${invitedEmail}`);
-        } else {
-          console.warn(`Failed to send verification email to ${invitedEmail}, but verification link was generated`);
+        // Try to send verification email via nodemailer
+        try {
+          emailSent = await sendVerificationEmail(invitedEmail, `${firstName} ${surname}`, verificationLink);
+          if (emailSent) {
+            console.log(`✓ Verification email sent to ${invitedEmail}`);
+          } else {
+            console.warn(`⚠ Failed to send verification email via nodemailer to ${invitedEmail}`);
+            // Try Firebase's email sending as fallback
+            try {
+              await auth.sendEmailVerificationLink(invitedEmail);
+              emailSent = true;
+              console.log(`✓ Firebase verification email sent to ${invitedEmail}`);
+            } catch (firebaseEmailErr) {
+              console.warn(`⚠ Firebase email also failed: ${firebaseEmailErr.message}`);
+            }
+          }
+        } catch (nodemailerErr) {
+          console.error(`✗ Nodemailer error: ${nodemailerErr.message}`);
+          // Try Firebase's email sending as fallback
+          try {
+            await auth.sendEmailVerificationLink(invitedEmail);
+            emailSent = true;
+            console.log(`✓ Firebase verification email sent to ${invitedEmail} (fallback)`);
+          } catch (firebaseEmailErr) {
+            console.warn(`⚠ Firebase email fallback also failed: ${firebaseEmailErr.message}`);
+          }
         }
       } catch (linkError) {
-        console.warn('Could not generate verification link:', linkError);
+        console.error(`✗ Could not generate verification link: ${linkError.message}`);
       }
 
       // Update user Firestore document to track verification and password change requirement
