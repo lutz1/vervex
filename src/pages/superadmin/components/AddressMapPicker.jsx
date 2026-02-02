@@ -12,7 +12,7 @@ import {
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { GoogleMap, LoadScript, Marker, Autocomplete } from '@react-google-maps/api';
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyAg3BQbAl95-dLNvWl8a_1LfnPnJbVE3Xc'; // Replace with your API key
+const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const mapContainerStyle = {
   width: '100%',
