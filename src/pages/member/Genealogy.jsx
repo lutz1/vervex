@@ -8,6 +8,10 @@ import {
   CardContent,
   Divider,
   Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import { auth, db, storage } from '../../firebaseConfig';
 import { collection, getDocs, doc, getDoc, serverTimestamp, addDoc, query, where, updateDoc, onSnapshot } from 'firebase/firestore';
@@ -37,6 +41,7 @@ export default function Genealogy() {
   const [activatingCode, setActivatingCode] = useState(false);
   const [showReceiptUpload, setShowReceiptUpload] = useState(false);
   const [pendingCodeRequest, setPendingCodeRequest] = useState(null);
+  const [alertDialog, setAlertDialog] = useState({ open: false, title: '', message: '', type: 'info' });
   const [inviteData, setInviteData] = useState({
     firstName: '',
     middleName: '',
@@ -51,6 +56,20 @@ export default function Genealogy() {
   });
   
   const BRANCHING = 3;
+
+  // Helper function to show styled alert dialogs
+  const showAlert = (message, type = 'info', title = '') => {
+    setAlertDialog({
+      open: true,
+      title: title || (type === 'error' ? 'Error' : type === 'success' ? 'Success' : 'Notice'),
+      message,
+      type,
+    });
+  };
+
+  const closeAlert = () => {
+    setAlertDialog({ open: false, title: '', message: '', type: 'info' });
+  };
 
   useEffect(() => {
     const fetchGenealogyTree = async () => {
@@ -341,12 +360,12 @@ export default function Genealogy() {
     const { email, firstName, middleName, surname, username, birthdate, contactNumber, fullAddress, role } = inviteData;
 
     if (!email.trim() || !firstName.trim() || !surname.trim() || !username.trim() || !contactNumber.trim() || !fullAddress.trim()) {
-      alert('Please fill in all required fields');
+      showAlert('Please fill in all required fields', 'error');
       return;
     }
 
     if (!inviteSlot) {
-      alert('No slot selected');
+      showAlert('No slot selected', 'error');
       return;
     }
 
@@ -354,7 +373,7 @@ export default function Genealogy() {
     try {
       const currentUser = auth.currentUser;
       if (!currentUser) {
-        alert('You must be logged in');
+        showAlert('You must be logged in', 'error');
         setInviting(false);
         return;
       }
@@ -398,7 +417,7 @@ export default function Genealogy() {
 
         // Close the modal and show alert
         handleCloseInvite();
-        alert('Request created! Please upload your payment receipt.');
+        showAlert('Request created! Please upload your payment receipt.', 'success');
       } else {
         // Online payment - create invitation directly
         const invitationsRef = collection(db, 'invitations');
@@ -421,7 +440,7 @@ export default function Genealogy() {
           invitationLink: `${window.location.origin}/accept-invitation?inviterId=${currentUser.uid}&parentId=${parentId}`,
         });
 
-        alert('Invitation sent successfully!');
+        showAlert('Invitation sent successfully!', 'success');
       }
 
       resetInviteForm();
@@ -430,7 +449,7 @@ export default function Genealogy() {
       setPaymentMethod(null);
     } catch (error) {
       console.error('Error processing invitation:', error);
-      alert('Failed to process invitation: ' + error.message);
+      showAlert('Failed to process invitation: ' + error.message, 'error');
     } finally {
       setInviting(false);
     }
@@ -500,12 +519,12 @@ export default function Genealogy() {
         },
       }));
 
-      alert('Receipt uploaded! Admin will generate your code shortly.');
+      showAlert('Receipt uploaded! Admin will generate your code shortly.', 'success');
       setShowReceiptUpload(false);
       setPendingCodeRequest(null);
     } catch (error) {
       console.error('Error updating code request:', error);
-      alert('Error saving receipt: ' + error.message);
+      showAlert('Error saving receipt: ' + error.message, 'error');
     }
   };
 
@@ -521,14 +540,14 @@ export default function Genealogy() {
     try {
       const currentUser = auth.currentUser;
       if (!currentUser) {
-        alert('You must be logged in');
+        showAlert('You must be logged in', 'error');
         setActivatingCode(false);
         return;
       }
 
       const slotStatus = inviteSlotStatuses[selectedCodeSlot.id];
       if (!slotStatus || !slotStatus.code) {
-        alert('Code not found');
+        showAlert('Code not found', 'error');
         setActivatingCode(false);
         return;
       }
@@ -600,10 +619,10 @@ The member needs to:
 If they don't receive the email within 5 minutes, they can verify by:
 - Logging in with the credentials above
 - Firebase will automatically send a verification email on login`;
-          alert(verificationMessage);
+          showAlert(verificationMessage, 'success', 'Code Activated Successfully');
         } catch (error) {
           console.error('Error in verification process:', error);
-          alert('Code activated! Member registered in the system.\n\nVerification email will be sent to their registered email address.');
+          showAlert('Code activated! Member registered in the system.\n\nVerification email will be sent to their registered email address.', 'success');
         }
       }
 
@@ -615,7 +634,7 @@ If they don't receive the email within 5 minutes, they can verify by:
       window.location.reload();
     } catch (error) {
       console.error('Error activating code:', error);
-      alert('Failed to activate code: ' + error.message);
+      showAlert('Failed to activate code: ' + error.message, 'error');
     } finally {
       setActivatingCode(false);
     }
@@ -1112,6 +1131,94 @@ If they don't receive the email within 5 minutes, they can verify by:
           codeRequestId={pendingCodeRequest?.id}
           isLoading={inviting}
         />
+
+        {/* Alert Dialog */}
+        <Dialog
+          open={alertDialog.open}
+          onClose={closeAlert}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: {
+              background: 'rgba(4, 12, 9, 0.95)',
+              border: `1px solid ${
+                alertDialog.type === 'error' 
+                  ? 'rgba(255, 107, 107, 0.5)' 
+                  : alertDialog.type === 'success'
+                  ? 'rgba(76, 175, 80, 0.5)'
+                  : 'rgba(212, 175, 55, 0.3)'
+              }`,
+              backdropFilter: 'blur(10px)',
+            },
+          }}
+        >
+          <DialogTitle
+            sx={{
+              color: alertDialog.type === 'error' 
+                ? '#ff6b6b' 
+                : alertDialog.type === 'success' 
+                ? '#4caf50' 
+                : '#d4af37',
+              fontWeight: 600,
+              borderBottom: `1px solid ${
+                alertDialog.type === 'error' 
+                  ? 'rgba(255, 107, 107, 0.2)' 
+                  : alertDialog.type === 'success'
+                  ? 'rgba(76, 175, 80, 0.2)'
+                  : 'rgba(212, 175, 55, 0.2)'
+              }`,
+              fontSize: '1.1rem',
+            }}
+          >
+            {alertDialog.title}
+          </DialogTitle>
+          <DialogContent sx={{ pt: 3 }}>
+            <Typography 
+              sx={{ 
+                color: '#f5f5f5',
+                whiteSpace: 'pre-line',
+              }}
+            >
+              {alertDialog.message}
+            </Typography>
+          </DialogContent>
+          <DialogActions
+            sx={{
+              gap: 1,
+              padding: '16px',
+              borderTop: `1px solid ${
+                alertDialog.type === 'error' 
+                  ? 'rgba(255, 107, 107, 0.2)' 
+                  : alertDialog.type === 'success'
+                  ? 'rgba(76, 175, 80, 0.2)'
+                  : 'rgba(212, 175, 55, 0.2)'
+              }`,
+            }}
+          >
+            <Button
+              onClick={closeAlert}
+              variant="contained"
+              sx={{
+                background: alertDialog.type === 'error' 
+                  ? '#ff6b6b' 
+                  : alertDialog.type === 'success' 
+                  ? '#4caf50' 
+                  : '#d4af37',
+                color: '#fff',
+                fontWeight: 600,
+                '&:hover': {
+                  background: alertDialog.type === 'error' 
+                    ? '#ee5a52' 
+                    : alertDialog.type === 'success' 
+                    ? '#45a049' 
+                    : '#c29d2f',
+                },
+              }}
+            >
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
     </Box>
   );
 }
