@@ -10,11 +10,11 @@
 }
 
 .pv-bottomnav {
-  background: linear-gradient(180deg, #071016 0%, #0b1216 100%);
-  border-top: 1px solid rgba(212,175,55,0.08);
+  background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
+  border-top: 2px solid #d4af37;
   color: #a8b3bb;
   min-height: 64px;
-  box-shadow: 0 -6px 18px rgba(0,0,0,0.45);
+  box-shadow: 0 -6px 18px rgba(0,0,0,0.8), 0 0 15px rgba(212, 175, 55, 0.2);
 }
 
 /* Ensure action icons and labels are visible and high-contrast */

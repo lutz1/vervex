@@ -16,7 +16,7 @@ import {
 import { auth, db, storage } from '../../firebaseConfig';
 import { collection, getDocs, doc, getDoc, serverTimestamp, addDoc, query, where, updateDoc, onSnapshot } from 'firebase/firestore';
 import { ref as storageRef, getDownloadURL } from 'firebase/storage';
-import { getFrameByRole } from '../../utils/firestore';
+import { getFrameByRole, getCodeRequestPrice } from '../../utils/firestore';
 import PaymentMethodSelection from './components/PaymentMethodSelection';
 import InviteNewMember from './components/InviteNewMember';
 import ActivateCodeModal from './components/ActivateCodeModal';
@@ -130,44 +130,91 @@ export default function Genealogy() {
         const usersCollection = collection(db, 'users');
         const allUsers = await getDocs(usersCollection);
         
-        const directReferrals = [];
-        
-        allUsers.forEach(userSnap => {
-          const user = userSnap.data();
-          if (user.referrerId === currentUser.uid) {
-            directReferrals.push({
-              id: userSnap.id,
-              name: user.name || 'Unnamed',
-              role: user.role || 'Member',
-              avatar: user.avatar || user.name?.[0] || 'U',
-              type: 'wing',
-              children: [],
-            });
-          }
-        });
-
-        // Fill up to 3 direct referrals with empty slots
-        while (directReferrals.length < 3) {
-          directReferrals.push({
-            id: `empty-direct-${directReferrals.length}`,
+        // Start with 3 empty slots
+        const directReferrals = [
+          {
+            id: `empty-direct-0`,
             name: null,
             role: null,
             avatar: null,
             type: 'wing',
             isEmpty: true,
             children: [],
-          });
-        }
+          },
+          {
+            id: `empty-direct-1`,
+            name: null,
+            role: null,
+            avatar: null,
+            type: 'wing',
+            isEmpty: true,
+            children: [],
+          },
+          {
+            id: `empty-direct-2`,
+            name: null,
+            role: null,
+            avatar: null,
+            type: 'wing',
+            isEmpty: true,
+            children: [],
+          },
+        ];
+        
+        // Collect all direct referrals with their slot info
+        const referralsList = [];
+        allUsers.forEach(userSnap => {
+          const user = userSnap.data();
+          if (user.referrerId === currentUser.uid) {
+            referralsList.push({
+              id: userSnap.id,
+              name: user.name || 'Unnamed',
+              role: user.role || 'Member',
+              avatar: user.avatar || user.name?.[0] || 'U',
+              type: 'wing',
+              children: [],
+              inviteSlotId: user.inviteSlotId,
+              createdAt: user.createdAt,
+            });
+          }
+        });
+
+        // Place users in their correct slots based on inviteSlotId
+        referralsList.forEach(referral => {
+          if (referral.inviteSlotId) {
+            // Extract slot number from inviteSlotId (e.g., "empty-direct-1" -> 1)
+            const match = referral.inviteSlotId.match(/\d+$/);
+            const slotIndex = match ? parseInt(match[0]) : -1;
+            
+            console.log('Placing user in slot:', slotIndex, 'inviteSlotId:', referral.inviteSlotId, 'user:', referral.name);
+            
+            if (slotIndex >= 0 && slotIndex < 3) {
+              // Place at the correct slot, preserving all properties
+              directReferrals[slotIndex] = {
+                id: referral.id,
+                name: referral.name,
+                role: referral.role,
+                avatar: referral.avatar,
+                type: referral.type,
+                children: referral.children,
+                isEmpty: false,
+              };
+            }
+          } else {
+            // User without inviteSlotId - shouldn't happen but log it
+            console.warn('User without inviteSlotId:', referral.name, referral.id);
+          }
+        });
 
         // For each direct referral, fetch their team members (3 per referral)
         for (let i = 0; i < directReferrals.length; i++) {
           const referral = directReferrals[i];
           if (!referral.isEmpty) {
-            const teamMembers = [];
+            const teamMembersList = [];
             allUsers.forEach(userSnap => {
               const user = userSnap.data();
               if (user.referrerId === referral.id) {
-                teamMembers.push({
+                teamMembersList.push({
                   id: userSnap.id,
                   name: user.name || 'Unnamed',
                   role: user.role || 'Member',
@@ -175,8 +222,29 @@ export default function Genealogy() {
                   type: 'sub',
                   status: 'ACTIVE',
                   children: [],
+                  createdAt: user.createdAt,
+                  inviteSlotId: user.inviteSlotId,
                 });
               }
+            });
+
+            // Sort by inviteSlotId if available, then by creation date
+            teamMembersList.sort((a, b) => {
+              if (a.inviteSlotId && b.inviteSlotId) {
+                const slotANum = parseInt(a.inviteSlotId.match(/\d+/)?.[0] || 999);
+                const slotBNum = parseInt(b.inviteSlotId.match(/\d+/)?.[0] || 999);
+                if (slotANum !== slotBNum) return slotANum - slotBNum;
+              }
+              const timeA = a.createdAt?.toMillis?.() || 0;
+              const timeB = b.createdAt?.toMillis?.() || 0;
+              return timeA - timeB;
+            });
+
+            const teamMembers = [];
+            // Copy sorted results without the extra fields
+            teamMembersList.forEach(user => {
+              const { createdAt, inviteSlotId, ...rest } = user;
+              teamMembers.push(rest);
             });
 
             // Fill up to 3 team members with empty slots
@@ -189,6 +257,7 @@ export default function Genealogy() {
                 type: 'sub',
                 status: 'EMPTY',
                 isEmpty: true,
+                parentId: referral.id,
                 children: [],
               });
             }
@@ -196,24 +265,46 @@ export default function Genealogy() {
             // Add third level: 3 nodes under each second-level node (27 total per wing)
             for (let j = 0; j < teamMembers.length; j++) {
               const subNode = teamMembers[j];
-              const thirdLevelNodes = [];
+              const thirdLevelNodesList = [];
               
               if (!subNode.isEmpty) {
                 // Try to fetch actual users with this sub-node as parent
                 allUsers.forEach(userSnap => {
                   const user = userSnap.data();
                   if (user.referrerId === subNode.id) {
-                    thirdLevelNodes.push({
+                    thirdLevelNodesList.push({
                       id: userSnap.id,
                       name: user.name || 'Unnamed',
                       role: user.role || 'Member',
                       avatar: user.avatar || user.name?.[0] || 'U',
                       type: 'subsub',
                       status: 'ACTIVE',
+                      parentId: subNode.id,
+                      createdAt: user.createdAt,
+                      inviteSlotId: user.inviteSlotId,
                     });
                   }
                 });
+
+                // Sort by inviteSlotId if available, then by creation date
+                thirdLevelNodesList.sort((a, b) => {
+                  if (a.inviteSlotId && b.inviteSlotId) {
+                    const slotANum = parseInt(a.inviteSlotId.match(/\d+/)?.[0] || 999);
+                    const slotBNum = parseInt(b.inviteSlotId.match(/\d+/)?.[0] || 999);
+                    if (slotANum !== slotBNum) return slotANum - slotBNum;
+                  }
+                  const timeA = a.createdAt?.toMillis?.() || 0;
+                  const timeB = b.createdAt?.toMillis?.() || 0;
+                  return timeA - timeB;
+                });
               }
+
+              const thirdLevelNodes = [];
+              // Copy sorted results without the extra fields
+              thirdLevelNodesList.forEach(user => {
+                const { createdAt, inviteSlotId, ...rest } = user;
+                thirdLevelNodes.push(rest);
+              });
 
               // Fill up to 3 nodes in third level
               while (thirdLevelNodes.length < 3) {
@@ -225,6 +316,7 @@ export default function Genealogy() {
                   type: 'subsub',
                   status: 'EMPTY',
                   isEmpty: true,
+                  parentId: subNode.id,
                 });
               }
 
@@ -242,6 +334,7 @@ export default function Genealogy() {
                 type: 'sub',
                 status: 'EMPTY',
                 isEmpty: true,
+                parentId: referral.id,
                 children: [],
               };
 
@@ -256,6 +349,7 @@ export default function Genealogy() {
                   type: 'subsub',
                   status: 'EMPTY',
                   isEmpty: true,
+                  parentId: emptySubNode.id,
                 });
               }
               emptySubNode.children = emptyThirdLevel;
@@ -392,9 +486,21 @@ export default function Genealogy() {
       if (paymentMethod === 'over-the-counter') {
         // Create code request document in Firebase
         const codeRequestsRef = collection(db, 'codeRequests');
+        
+        // Construct full name from first, middle, and surname
+        const fullName = [inviteData.firstName, inviteData.middleName, inviteData.surname]
+          .filter(Boolean) // Remove empty strings
+          .join(' ');
+        
+        // Get price for the role
+        const price = getCodeRequestPrice(role);
+        
         const docRef = await addDoc(codeRequestsRef, {
           inviterId: currentUser.uid,
-          inviteData: inviteData,
+          inviteData: {
+            ...inviteData,
+            fullName: fullName, // Add constructed fullName
+          },
           inviteSlot: {
             id: inviteSlot.id,
             type: inviteSlot.type,
@@ -402,6 +508,7 @@ export default function Genealogy() {
           },
           inviteSlotId: inviteSlot.id,
           role: role,
+          price: price, // Add price based on role
           status: 'pending receipt',
           receiptUrl: null,
           generatedCode: null,
@@ -511,24 +618,29 @@ export default function Genealogy() {
       if (!pendingCodeRequest) return;
 
       // Update the code request with receipt URL
-      const codeRequestRef = doc(db, 'codeRequests', pendingCodeRequest.id);
+      const codeRequestRef = doc(db, 'codeRequests', pendingCodeRequest);
       await updateDoc(codeRequestRef, {
         receiptUrl: receiptUrl,
         status: 'waiting for code generation',
         updatedAt: serverTimestamp(),
       });
 
-      // Update local state
-      setInviteSlotStatuses(prev => ({
-        ...prev,
-        [pendingCodeRequest.inviteSlot.id]: {
-          ...prev[pendingCodeRequest.inviteSlot.id],
-          status: 'Pending Receipt ✓',
-          code: null,
-          receiptUrl: receiptUrl,
-          codeRequestId: pendingCodeRequest.id,
-        },
-      }));
+      // Find the slot ID associated with this code request
+      const slotId = Object.keys(inviteSlotStatuses).find(
+        key => inviteSlotStatuses[key]?.codeRequestId === pendingCodeRequest
+      );
+
+      if (slotId) {
+        // Update local state
+        setInviteSlotStatuses(prev => ({
+          ...prev,
+          [slotId]: {
+            ...prev[slotId],
+            status: 'waiting for code generation',
+            receiptUrl: receiptUrl,
+          },
+        }));
+      }
 
       showAlert('Receipt uploaded! Admin will generate your code shortly.', 'success');
       setShowReceiptUpload(false);
@@ -563,27 +675,51 @@ export default function Genealogy() {
         return;
       }
 
+      // Log the parentId being used
+      console.log('Activating code for slot:', selectedCodeSlot.id);
+      console.log('Parent ID:', selectedCodeSlot.parentId);
+      console.log('Genealogy tree ID:', genealogyTree.id);
+      console.log('Selected slot:', selectedCodeSlot);
+
+      // Construct full address from individual fields
+      const fullAddress = [
+        slotStatus.inviteData?.purokStreet,
+        slotStatus.inviteData?.barangay,
+        slotStatus.inviteData?.city,
+        slotStatus.inviteData?.province,
+        slotStatus.inviteData?.zipCode,
+      ].filter(Boolean).join(', ');
+
       // Create invitation document with the code payment method
       const invitationsRef = collection(db, 'invitations');
       const invitationData = {
         invitedEmail: slotStatus.inviteData?.email || '',
-        invitedName: `${slotStatus.inviteData?.firstName || ''} ${slotStatus.inviteData?.surname || ''}`,
+        invitedName: slotStatus.inviteData?.fullName || `${slotStatus.inviteData?.firstName || ''} ${slotStatus.inviteData?.surname || ''}`.trim(),
         firstName: slotStatus.inviteData?.firstName || '',
         middleName: slotStatus.inviteData?.middleName || '',
         surname: slotStatus.inviteData?.surname || '',
         username: slotStatus.inviteData?.username || '',
         birthdate: slotStatus.inviteData?.birthdate || '',
-        fullAddress: slotStatus.inviteData?.fullAddress || '',
+        purokStreet: slotStatus.inviteData?.purokStreet || '',
+        barangay: slotStatus.inviteData?.barangay || '',
+        city: slotStatus.inviteData?.city || '',
+        province: slotStatus.inviteData?.province || '',
+        zipCode: slotStatus.inviteData?.zipCode || '',
+        fullAddress: fullAddress,
         contactNumber: slotStatus.inviteData?.contactNumber || '',
         paymentCode: slotStatus.code,
         paymentMethod: 'over-the-counter',
         role: slotStatus.inviteData?.role || 'vip',
         parentId: selectedCodeSlot.parentId || genealogyTree.id,
+        inviteSlotId: selectedCodeSlot.id,
         createdBy: currentUser.uid,
         createdAt: serverTimestamp(),
         status: 'payment completed',
         invitationLink: `${window.location.origin}/accept-invitation?inviterId=${currentUser.uid}&parentId=${selectedCodeSlot.parentId || genealogyTree.id}`,
       };
+
+      console.log('Creating invitation with parentId:', invitationData.parentId);
+      console.log('Creating invitation with inviteSlotId:', invitationData.inviteSlotId);
 
       await addDoc(invitationsRef, invitationData);
 
@@ -602,6 +738,11 @@ export default function Genealogy() {
           codeRequestId: slotStatus.codeRequestId,
         }),
       });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Cloud function error: ${response.status} - ${errorText}`);
+      }
 
       const result = await response.json();
 
@@ -713,6 +854,7 @@ If they don't receive the email within 5 minutes, they can verify by:
             avatar: null,
             status: 'EMPTY',
             isEmpty: true,
+            parentId: emptySubNode.id,
           });
         }
         children.push(emptySubNode);
@@ -729,6 +871,7 @@ If they don't receive the email within 5 minutes, they can verify by:
             avatar: null,
             status: 'EMPTY',
             isEmpty: true,
+            parentId: subChild.id,
           });
         }
         return { ...subChild, children: subChildren.slice(0, BRANCHING) };
@@ -745,31 +888,41 @@ If they don't receive the email within 5 minutes, they can verify by:
     const label = wing?.role || (isCenter ? 'Center Wing' : position === 'left' ? 'Left Wing' : 'Right Wing');
     const isEmpty = !!wing?.isEmpty;
     const slotStatus = inviteSlotStatuses[wing?.id];
-    const hasPendingReceipt = slotStatus?.status === 'pending receipt' || slotStatus?.status?.includes('Pending Receipt') || slotStatus?.status === 'waiting for code generation';
+    const isWaitingForCode = slotStatus?.status === 'waiting for code generation';
+    const isPendingReceipt = slotStatus?.status === 'pending receipt' || slotStatus?.status?.includes('Pending Receipt');
     const hasCode = slotStatus?.status === 'code generated' || slotStatus?.code;
-    const statusText = hasPendingReceipt ? 'Pending Receipt' : hasCode ? 'Ready to Activate' : isEmpty ? 'Empty' : 'Active';
+    const statusText = isWaitingForCode ? '⧖' : isPendingReceipt ? 'Upload Receipt' : hasCode ? 'Ready to Activate' : isEmpty ? 'Empty' : 'Active';
 
     if (wing?.isEmpty) {
       return (
         <Box 
-          className={`wing-card empty-wing ${position}`}
+          className={`wing-card empty-wing ${position} ${isWaitingForCode ? 'waiting-state' : ''}`}
           onClick={() => {
-            if (hasCode) {
-              handleShowCodeModal(wing);
-            } else if (hasPendingReceipt) {
-              setShowReceiptUpload(true);
-              setPendingCodeRequest({
-                id: slotStatus.codeRequestId,
-                inviteSlot: wing,
-              });
+            if (isWaitingForCode) return;
+            if (isPendingReceipt) {
+              // Open receipt upload modal
+              const slotStatus = inviteSlotStatuses[wing?.id];
+              if (slotStatus?.codeRequestId) {
+                setPendingCodeRequest(slotStatus.codeRequestId);
+                setShowReceiptUpload(true);
+              }
+            } else if (hasCode) {
+              // Empty wing with code ready - parentId is the current user
+              handleShowCodeModal({ ...wing, parentId: genealogyTree.id });
             } else if (isEmpty) {
               handleInviteSlotClick(wing);
             }
           }}
         >
+          {isWaitingForCode && (
+            <Box className="waiting-overlay">
+              <Typography className="waiting-icon">⧖</Typography>
+              <Typography className="waiting-text">Waiting for Code Generation</Typography>
+            </Box>
+          )}
           <Button className="empty-slot-wing">+</Button>
           <Typography className="wing-empty-text">Add direct member</Typography>
-          <Typography className={`wing-status ${isEmpty && !hasPendingReceipt && !hasCode ? 'empty' : hasPendingReceipt ? 'processing' : hasCode ? 'pending' : 'active'}`}>{statusText}</Typography>
+          <Typography className={`wing-status ${isEmpty && !isWaitingForCode && !isPendingReceipt && !hasCode ? 'empty' : isWaitingForCode ? 'processing' : isPendingReceipt ? 'processing' : hasCode ? 'pending' : 'active'}`}>{statusText}</Typography>
           <Typography className="wing-role subtle">{label}</Typography>
         </Box>
       );
@@ -804,36 +957,43 @@ If they don't receive the email within 5 minutes, they can verify by:
     const label = slotIndex === 0 ? 'L-Node' : slotIndex === 1 ? 'C-Node' : 'R-Node';
     const isEmpty = !!node?.isEmpty;
     const slotStatus = inviteSlotStatuses[node?.id];
-    const hasPendingReceipt = slotStatus?.status === 'pending receipt' || slotStatus?.status?.includes('Pending Receipt') || slotStatus?.status === 'waiting for code generation';
+    const isWaitingForCode = slotStatus?.status === 'waiting for code generation';
+    const isPendingReceipt = slotStatus?.status === 'pending receipt' || slotStatus?.status?.includes('Pending Receipt');
     const hasCode = slotStatus?.status === 'code generated' || slotStatus?.code;
-    const statusText = hasPendingReceipt ? 'Pending Receipt' : hasCode ? 'Ready to Activate' : isEmpty ? 'Empty' : 'Active';
+    const statusText = isWaitingForCode ? 'Waiting for the Code ⧖' : isPendingReceipt ? 'Upload Receipt' : hasCode ? 'Ready to Activate' : isEmpty ? 'Empty' : 'Active';
     const parentIndex = position === 'left' ? 0 : position === 'center' ? 1 : 2;
     const isCenterWing = position === 'center';
 
     return (
       <Box
         key={key}
-        className={`sub-slot basic-slot ${isCenterWing ? 'center-wing-node' : ''}`}
+        className={`sub-slot basic-slot ${isCenterWing ? 'center-wing-node' : ''} ${isWaitingForCode ? 'waiting-state' : ''}`}
         onClick={() => {
-          if (hasCode) {
-            // Show code activation modal
+          if (isWaitingForCode) return;
+          if (isPendingReceipt) {
+            // Open receipt upload modal
+            const slotStatus = inviteSlotStatuses[node?.id];
+            if (slotStatus?.codeRequestId) {
+              setPendingCodeRequest(slotStatus.codeRequestId);
+              setShowReceiptUpload(true);
+            }
+          } else if (hasCode) {
             handleShowCodeModal({ ...node, parentId: normalizedWings[parentIndex]?.id });
-          } else if (hasPendingReceipt) {
-            // Show receipt upload modal
-            setShowReceiptUpload(true);
-            setPendingCodeRequest({
-              id: slotStatus.codeRequestId,
-              inviteSlot: { ...node, parentId: normalizedWings[parentIndex]?.id },
-            });
           } else if (isEmpty) {
             handleInviteSlotClick({ ...node, parentId: normalizedWings[parentIndex]?.id });
-          } else {
+          } else if (!isEmpty) {
             setSelectedMember(node);
           }
         }}
       >
+        {isWaitingForCode && (
+          <Box className="waiting-overlay-sub">
+            <Typography className="waiting-icon-sub">⧖</Typography>
+            <Typography className="waiting-text-sub">Waiting for Code</Typography>
+          </Box>
+        )}
         <Typography className="basic-title">{label}</Typography>
-        <Typography className={`basic-status ${isEmpty && !hasPendingReceipt && !hasCode ? 'empty' : hasPendingReceipt ? 'processing' : hasCode ? 'pending' : 'active'}`}>{statusText}</Typography>
+        <Typography className={`basic-status ${isEmpty && !isWaitingForCode && !isPendingReceipt && !hasCode ? 'empty' : isWaitingForCode ? 'processing' : isPendingReceipt ? 'processing' : hasCode ? 'pending' : 'active'}`}>{statusText}</Typography>
       </Box>
     );
   };
@@ -841,26 +1001,40 @@ If they don't receive the email within 5 minutes, they can verify by:
   const renderSubSubNode = (node, slotIndex) => {
     const isEmpty = !!node?.isEmpty;
     const slotStatus = inviteSlotStatuses[node?.id];
-    const hasPendingReceipt = slotStatus?.status === 'pending receipt' || slotStatus?.status?.includes('Pending Receipt') || slotStatus?.status === 'waiting for code generation';
+    const isWaitingForCode = slotStatus?.status === 'waiting for code generation';
+    const isPendingReceipt = slotStatus?.status === 'pending receipt' || slotStatus?.status?.includes('Pending Receipt');
     const hasCode = slotStatus?.status === 'code generated' || slotStatus?.code;
     
     return (
       <Box
         key={`subsub-${node.id}`}
-        className={`subsub-slot ${isEmpty && !hasCode && !hasPendingReceipt ? 'empty-subsub' : hasCode ? 'pending-subsub' : ''}`}
+        className={`subsub-slot ${isEmpty && !hasCode && !isWaitingForCode && !isPendingReceipt ? 'empty-subsub' : hasCode ? 'pending-subsub' : ''} ${isWaitingForCode ? 'waiting-state' : ''}`}
         onClick={(e) => {
           e.stopPropagation();
-          if (hasCode) {
-            handleShowCodeModal(node);
-          } else if (isEmpty && !hasCode && !hasPendingReceipt) {
+          if (isWaitingForCode) return;
+          if (isPendingReceipt) {
+            // Open receipt upload modal
+            const slotStatus = inviteSlotStatuses[node?.id];
+            if (slotStatus?.codeRequestId) {
+              setPendingCodeRequest(slotStatus.codeRequestId);
+              setShowReceiptUpload(true);
+            }
+          } else if (hasCode) {
+            handleShowCodeModal({ ...node, parentId: node.parentId });
+          } else if (isEmpty && !hasCode && !isWaitingForCode && !isPendingReceipt) {
             handleInviteSlotClick(node);
-          } else if (!isEmpty) {
+          } else if (!isEmpty && !isWaitingForCode && !isPendingReceipt) {
             setSelectedMember(node);
           }
         }}
       >
+        {isWaitingForCode && (
+          <Box className="waiting-overlay-subsub">
+            <Typography className="waiting-icon-subsub">⧖</Typography>
+          </Box>
+        )}
         <Typography className="subsub-title">{slotIndex === 0 ? 'L' : slotIndex === 1 ? 'C' : 'R'}</Typography>
-        <Typography className={`subsub-status ${isEmpty && !hasCode && !hasPendingReceipt ? 'empty' : hasPendingReceipt ? 'processing' : hasCode ? 'pending' : 'active'}`}>{isEmpty && !hasCode && !hasPendingReceipt ? '◯' : hasPendingReceipt ? '⧖' : hasCode ? '⦘' : '●'}</Typography>
+        <Typography className={`subsub-status ${isEmpty && !hasCode && !isWaitingForCode && !isPendingReceipt ? 'empty' : isWaitingForCode ? 'processing' : isPendingReceipt ? 'processing' : hasCode ? 'pending' : 'active'}`}>{isEmpty && !hasCode && !isWaitingForCode && !isPendingReceipt ? '◯' : isWaitingForCode ? '⧖' : isPendingReceipt ? '◯' : hasCode ? '⦘' : '●'}</Typography>
       </Box>
     );
   };
@@ -1139,7 +1313,7 @@ If they don't receive the email within 5 minutes, they can verify by:
             setPendingCodeRequest(null);
           }}
           onUploadSuccess={handleReceiptUploadSuccess}
-          codeRequestId={pendingCodeRequest?.id}
+          codeRequestId={pendingCodeRequest}
           isLoading={inviting}
         />
 

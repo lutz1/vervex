@@ -106,7 +106,7 @@ export default function TopBar({ title, user, userProfile, role, onLogout, isAdm
   }, [role]);
 
   return (
-    <AppBar position="fixed" sx={{ background: 'linear-gradient(135deg, #1a5f3f 0%, #0f1419 100%)', top: 0, zIndex: 1400 }}>
+    <AppBar position="fixed" sx={{ background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)', borderBottom: '2px solid #d4af37', top: 0, zIndex: 1400 }}>
       <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
         {/* Admin Sidebar Toggle Button */}
         {title.includes('ADMIN') && (
@@ -201,13 +201,14 @@ export default function TopBar({ title, user, userProfile, role, onLogout, isAdm
           transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           PaperProps={{
             sx: {
-              backgroundColor: '#1a1a2e',
-              backgroundImage: 'linear-gradient(135deg, #1a1a2e 0%, #0f1419 100%)',
+              backgroundColor: '#000000',
+              backgroundImage: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
               color: '#d4af37',
-              border: '1px solid #d4af37',
-              borderRadius: '8px',
+              border: '2px solid #d4af37',
+              borderRadius: '4px',
               minWidth: '180px',
               mt: 8,
+              boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)',
             }
           }}
         >

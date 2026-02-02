@@ -43,12 +43,12 @@ export default function ActivateCodeModal({
           width: '100%',
           maxWidth: { xs: '90vw', sm: '420px', md: '500px' },
           maxHeight: { xs: '80vh', sm: '85vh' },
-          background: 'linear-gradient(135deg, #0a0a0a 0%, #121212 100%)',
+          background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
           color: '#ffffff',
           border: 'none',
-          borderLeft: '4px solid #4ade80',
+          borderLeft: '4px solid #d4af37',
           borderRadius: 0,
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(74, 222, 128, 0.05)',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(212, 175, 55, 0.1)',
           animation: 'slideUp 0.35s ease-out',
           display: 'flex',
           flexDirection: 'column',
@@ -210,7 +210,7 @@ export default function ActivateCodeModal({
               <Typography
                 sx={{
                   fontSize: '0.7rem',
-                  color: '#6366f1',
+                  color: '#d4af37',
                   lineHeight: 1.6,
                 }}
               >

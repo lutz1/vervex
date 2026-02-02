@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   Box,
@@ -23,17 +23,47 @@ export default function ReceiptUploadModal({
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadedUrl, setUploadedUrl] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  // Reset state when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedFile(null);
+      setUploadSuccess(false);
+      setUploadedUrl(null);
+      setPreviewUrl(null);
+      setUploading(false);
+    }
+  }, [isOpen]);
 
   const handleFileSelect = (event) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+      
+      // Create preview URL for images
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreviewUrl(reader.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setPreviewUrl(null);
+      }
     }
   };
 
   const handleUpload = async () => {
-    if (!selectedFile || !codeRequestId) {
+    console.log('Upload attempt - selectedFile:', selectedFile, 'codeRequestId:', codeRequestId);
+    
+    if (!selectedFile) {
       alert('Please select a file');
+      return;
+    }
+    
+    if (!codeRequestId) {
+      alert('Code request ID is missing. Please try again.');
       return;
     }
 
@@ -50,7 +80,6 @@ export default function ReceiptUploadModal({
       // Show success state
       setUploadedUrl(downloadUrl);
       setUploadSuccess(true);
-      setSelectedFile(null);
     } catch (error) {
       console.error('Error uploading receipt:', error);
       alert('Error uploading receipt: ' + error.message);
@@ -63,6 +92,7 @@ export default function ReceiptUploadModal({
     // Call the callback with the uploaded URL
     onUploadSuccess(uploadedUrl);
     setUploadSuccess(false);
+    setPreviewUrl(null);
     setUploadedUrl(null);
     onClose();
   };
@@ -93,12 +123,12 @@ export default function ReceiptUploadModal({
           width: '100%',
           maxWidth: { xs: '90vw', sm: '420px', md: '500px' },
           maxHeight: { xs: '80vh', sm: '85vh' },
-          background: 'linear-gradient(135deg, #0a0a0a 0%, #121212 100%)',
+          background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
           color: '#ffffff',
           border: 'none',
-          borderLeft: '4px solid #6366f1',
+          borderLeft: '4px solid #d4af37',
           borderRadius: 0,
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(99, 102, 241, 0.05)',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(212, 175, 55, 0.1)',
           animation: 'slideUp 0.35s ease-out',
           display: 'flex',
           flexDirection: 'column',
@@ -135,12 +165,13 @@ export default function ReceiptUploadModal({
               <Typography
                 sx={{
                   fontWeight: 700,
-                  color: '#6366f1',
+                  color: '#d4af37',
                   fontSize: { xs: '0.9rem', sm: '1rem', md: '1.2rem' },
-                  letterSpacing: '0.8px',
+                  letterSpacing: '1.2px',
                   textTransform: 'uppercase',
                   fontFamily: "'Cinzel', serif",
                   margin: 0,
+                  textShadow: '0 0 10px rgba(212, 175, 55, 0.5)',
                 }}
               >
                 Upload Payment Receipt
@@ -169,7 +200,7 @@ export default function ReceiptUploadModal({
                 minWidth: 'auto',
                 transition: 'all 0.3s ease',
                 '&:hover': {
-                  color: '#6366f1',
+                  color: '#d4af37',
                   transform: 'scale(1.2) rotate(90deg)',
                 },
                 '&:disabled': {
@@ -265,23 +296,24 @@ export default function ReceiptUploadModal({
                 {/* File Input Area */}
                 <Box
                   sx={{
-                    background: 'rgba(99, 102, 241, 0.08)',
-                    border: '2px dashed rgba(99, 102, 241, 0.3)',
+                    background: 'rgba(212, 175, 55, 0.08)',
+                    border: '2px dashed rgba(212, 175, 55, 0.4)',
                     padding: { xs: '16px', sm: '20px' },
                     borderRadius: '4px',
                     textAlign: 'center',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
                     '&:hover': {
-                      background: 'rgba(99, 102, 241, 0.12)',
-                      borderColor: 'rgba(99, 102, 241, 0.5)',
+                      background: 'rgba(212, 175, 55, 0.15)',
+                      borderColor: 'rgba(212, 175, 55, 0.6)',
+                      boxShadow: '0 0 15px rgba(212, 175, 55, 0.2)',
                     },
                   }}
                   onClick={() => document.getElementById('file-input').click()}
                 >
                   <Typography
                     sx={{
-                      color: '#6366f1',
+                      color: '#d4af37',
                       fontSize: '0.85rem',
                       fontWeight: 600,
                       marginBottom: '8px',
@@ -337,12 +369,38 @@ export default function ReceiptUploadModal({
                   </Box>
                 )}
 
+                {/* Image Preview */}
+                {previewUrl && (
+                  <Box
+                    sx={{
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(99, 102, 241, 0.3)',
+                      borderRadius: '4px',
+                      padding: '12px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <img
+                      src={previewUrl}
+                      alt="Receipt preview"
+                      style={{
+                        maxWidth: '100%',
+                        maxHeight: '300px',
+                        objectFit: 'contain',
+                        borderRadius: '4px',
+                      }}
+                    />
+                  </Box>
+                )}
+
                 <Divider sx={{ borderColor: '#2a2a2a !important', my: '4px' }} />
 
                 <Typography
                   sx={{
                     fontSize: '0.7rem',
-                    color: '#6366f1',
+                    color: '#d4af37',
                     lineHeight: 1.6,
                   }}
                 >
@@ -390,7 +448,7 @@ export default function ReceiptUploadModal({
                   transition: 'all 0.3s ease',
                   '&:hover': {
                     backgroundColor: '#1a1a1a',
-                    color: '#6366f1',
+                    color: '#d4af37',
                     borderColor: 'transparent',
                   },
                   '&:disabled': {
@@ -409,8 +467,8 @@ export default function ReceiptUploadModal({
                 sx={{
                   background: uploadSuccess 
                     ? 'linear-gradient(135deg, #d4af37 0%, #e8d5a1 100%)'
-                    : uploading ? 'linear-gradient(135deg, #4a4a4a, #6a6a6a, #4a4a4a)' : 'linear-gradient(135deg, #6366f1, #818cf8, #6366f1)',
-                  color: uploadSuccess ? '#1a5f3f' : '#ffffff',
+                    : uploading ? 'linear-gradient(135deg, #4a4a4a, #6a6a6a, #4a4a4a)' : 'linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C)',
+                  color: uploadSuccess ? '#000000' : '#000000',
                   padding: '8px 10px',
                   textTransform: 'uppercase',
                   fontSize: '0.65rem',
@@ -418,15 +476,15 @@ export default function ReceiptUploadModal({
                   letterSpacing: '0.3px',
                   fontFamily: "'Inter', sans-serif",
                   borderRadius: 0,
-                  border: uploadSuccess ? '1px solid #d4af37' : '1px solid #6366f1',
-                  boxShadow: uploadSuccess ? '0 2px 8px rgba(212, 175, 55, 0.2)' : '0 2px 8px rgba(99, 102, 241, 0.2)',
+                  border: uploadSuccess ? '1px solid #d4af37' : '1px solid #d4af37',
+                  boxShadow: uploadSuccess ? '0 2px 8px rgba(212, 175, 55, 0.3)' : '0 2px 8px rgba(212, 175, 55, 0.3)',
                   transition: 'all 0.3s ease',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '6px',
                   '&:hover': {
-                    boxShadow: uploadSuccess ? '0 4px 12px rgba(212, 175, 55, 0.3)' : '0 4px 12px rgba(99, 102, 241, 0.3)',
+                    boxShadow: uploadSuccess ? '0 4px 12px rgba(212, 175, 55, 0.5)' : '0 4px 12px rgba(212, 175, 55, 0.5)',
                     transform: 'translateY(-1px)',
                   },
                   '&:disabled': {
@@ -441,7 +499,7 @@ export default function ReceiptUploadModal({
                   'Request Code'
                 ) : uploading ? (
                   <>
-                    <CircularProgress size={16} sx={{ color: '#6366f1' }} />
+                    <CircularProgress size={16} sx={{ color: '#d4af37' }} />
                     Uploading...
                   </>
                 ) : (

@@ -75,16 +75,17 @@ export default function BottomNav() {
       {/* Coming Soon Dialog */}
       <Dialog open={showComingSoon} onClose={() => setShowComingSoon(false)} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ 
-          background: 'linear-gradient(135deg, #1a5f3f 0%, #0f1419 100%)',
+          background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
           color: '#d4af37',
           fontWeight: 700,
           fontSize: '1.3rem',
           textAlign: 'center',
+          borderBottom: '2px solid #d4af37',
         }}>
           🎁 Coming Soon
         </DialogTitle>
         <DialogContent sx={{ 
-          background: 'rgba(30, 30, 35, 0.95)',
+          background: '#000000',
           py: 3,
         }}>
           <Typography sx={{ 
@@ -105,8 +106,8 @@ export default function BottomNav() {
           </Typography>
         </DialogContent>
         <DialogActions sx={{ 
-          background: 'rgba(26, 95, 63, 0.15)',
-          borderTop: '1px solid rgba(212, 175, 55, 0.2)',
+          background: '#000000',
+          borderTop: '2px solid #d4af37',
           p: 2,
           gap: 1,
         }}>
@@ -114,12 +115,13 @@ export default function BottomNav() {
             onClick={() => setShowComingSoon(false)}
             variant="contained"
             sx={{
-              background: 'linear-gradient(135deg, #d4af37 0%, #e8d5a1 100%)',
-              color: '#1a5f3f',
+              background: 'linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C)',
+              color: '#000000',
               fontWeight: 700,
               width: '100%',
               '&:hover': {
                 background: 'linear-gradient(135deg, #e8d5a1 0%, #d4af37 100%)',
+                boxShadow: '0 0 15px rgba(212, 175, 55, 0.5)',
               },
             }}
           >

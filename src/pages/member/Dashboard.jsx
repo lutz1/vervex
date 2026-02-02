@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Container } from '@mui/material';
-import { onSnapshot, doc } from 'firebase/firestore';
+import { onSnapshot, doc, collection, query, where } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
 import PerformanceStats from './components/genealogycomponents/PerformanceStats';
 import './Dashboard.css';
@@ -9,10 +9,12 @@ import './Genealogy.css';
 export default function Dashboard({ user, userRole }) {
   const [directInviteEarnings, setDirectInviteEarnings] = useState(0);
   const [directInviteCount, setDirectInviteCount] = useState(0);
+  const [pendingEarnings, setPendingEarnings] = useState(0);
+  const [pendingInvitesCount, setPendingInvitesCount] = useState(0);
 
   const displayName = user?.displayName || user?.name || 'Member';
   
-  // Real-time listener for direct invite earnings
+  // Real-time listener for direct invite earnings from completed invites
   useEffect(() => {
     if (!user?.uid) return;
 
@@ -25,6 +27,36 @@ export default function Dashboard({ user, userRole }) {
       }
     }, (error) => {
       console.error('Error fetching user data:', error);
+    });
+
+    return () => unsubscribe();
+  }, [user?.uid]);
+
+  // Real-time listener for pending code request earnings
+  useEffect(() => {
+    if (!user?.uid) return;
+
+    const codeRequestsRef = collection(db, 'codeRequests');
+    const q = query(
+      codeRequestsRef,
+      where('inviterId', '==', user.uid),
+      where('status', 'in', ['pending receipt', 'waiting for payment', 'waiting for code generation'])
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      let pending = 0;
+      let count = 0;
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        count += 1;
+        if (data.price) {
+          pending += data.price;
+        }
+      });
+      setPendingEarnings(pending);
+      setPendingInvitesCount(count);
+    }, (error) => {
+      console.error('Error fetching pending earnings:', error);
     });
 
     return () => unsubscribe();
@@ -77,8 +109,10 @@ export default function Dashboard({ user, userRole }) {
           </Box>
 
           <PerformanceStats 
-            directInviteEarnings={directInviteEarnings}
+            directInviteEarnings={directInviteEarnings + pendingEarnings}
             directInviteCount={directInviteCount}
+            pendingEarnings={pendingEarnings}
+            pendingInvitesCount={pendingInvitesCount}
           />
           <div className="dash-bottom-spacer" aria-hidden />
         </Container>

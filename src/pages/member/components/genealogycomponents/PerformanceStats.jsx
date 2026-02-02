@@ -47,6 +47,13 @@ const IconVCommerce = () => (
   </svg>
 );
 
+const IconPending = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="stat-svg">
+    <path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z" stroke="currentColor" strokeWidth="1.4" fill="none"/>
+    <path d="M12 6v6l4 2.4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+  </svg>
+);
+
 function Delta({value}){
   if (value == null) return null;
   const up = value >= 0;
@@ -75,7 +82,7 @@ function Sparkline({data = []}){
   );
 }
 
-export default function PerformanceStats({ performanceData = {}, directInviteEarnings = 0, directInviteCount = 0 }) {
+export default function PerformanceStats({ performanceData = {}, directInviteEarnings = 0, directInviteCount = 0, pendingEarnings = 0, pendingInvitesCount = 0 }) {
   const sample = {
     directAffiliateCommission: `₱${directInviteEarnings.toLocaleString('en-PH')}`,
     directAffiliateDelta: 4.2,
@@ -104,6 +111,10 @@ export default function PerformanceStats({ performanceData = {}, directInviteEar
     vCommerce: 27,
     vCommerceDelta: 3.3,
     vCommerceTrend: [15,18,20,25,27],
+
+    pendingInvites: pendingInvitesCount,
+    pendingInvitesDelta: 0.0,
+    pendingInvitesTrend: [0, pendingInvitesCount, pendingInvitesCount, pendingInvitesCount, pendingInvitesCount],
   };
 
   const data = Object.keys(performanceData).length ? performanceData : sample;
@@ -126,6 +137,7 @@ export default function PerformanceStats({ performanceData = {}, directInviteEar
 
   const METRICS = [
     { key: 'directAffiliateCommission', label: 'Direct Affiliate Commission', icon: <IconAffiliate />, valueKey: 'directAffiliateCommission', deltaKey: 'directAffiliateDelta', trendKey: 'directAffiliateTrend', valueClass: 'stat-value-green' },
+    { key: 'pendingInvites', label: 'Pending Invites (Awaiting Code)', icon: <IconPending />, valueKey: 'pendingInvites', deltaKey: 'pendingInvitesDelta', trendKey: 'pendingInvitesTrend', valueClass: 'stat-value-gold' },
     { key: 'triSyncEngine', label: 'Tri - Sync Engine (Pairing)', icon: <IconTriSync />, valueKey: 'triSyncEngine', deltaKey: 'triSyncDelta', trendKey: 'triSyncTrend', valueClass: 'stat-value-green' },
     { key: 'trinityStrike', label: 'Trinity Strike (3peat)', icon: <IconTrinity />, valueKey: 'trinityStrike', deltaKey: 'trinityDelta', trendKey: 'trinityTrend', valueClass: 'stat-value-gold' },
     { key: 'prestigeVault', label: 'Prestige Vault (6th Pair LPV)', icon: <IconVault />, valueKey: 'prestigeVault', deltaKey: 'prestigeDelta', trendKey: 'prestigeTrend', valueClass: 'stat-value-gold' },

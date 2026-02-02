@@ -54,10 +54,10 @@ export default function InviteNewMember({
         bottom: 0,
         background: 'rgba(0, 0, 0, 0.85)',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: { xs: 'stretch', sm: 'center' },
         justifyContent: 'center',
         zIndex: 999,
-        padding: { xs: '12px', sm: '16px', md: '20px' },
+        padding: { xs: '0', sm: '16px', md: '20px' },
         backdropFilter: 'blur(8px)',
         overflowY: 'auto',
       }}
@@ -66,14 +66,16 @@ export default function InviteNewMember({
       <Card
         sx={{
           width: '100%',
-          maxWidth: { xs: 'calc(100vw - 24px)', sm: '420px', md: '500px' },
-          maxHeight: '90vh',
-          background: 'linear-gradient(135deg, #0a0a0a 0%, #121212 100%)',
+          maxWidth: { xs: '100%', sm: '420px', md: '500px' },
+          maxHeight: { xs: '100vh', sm: '95vh', md: '90vh' },
+          margin: { xs: '0', sm: 'auto' },
+          background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
           color: '#ffffff',
           border: 'none',
           borderLeft: '4px solid #d4af37',
-          borderRadius: 0,
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(212, 175, 55, 0.05)',
+          borderTop: { xs: '4px solid #d4af37', sm: 'none' },
+          borderRadius: { xs: 0, sm: '4px' },
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(212, 175, 55, 0.1)',
           animation: 'slideUp 0.35s ease-out',
           display: 'flex',
           flexDirection: 'column',
@@ -100,15 +102,15 @@ export default function InviteNewMember({
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'flex-start',
-              padding: { xs: '10px 12px', sm: '14px 16px' },
-              paddingBottom: { xs: '8px', sm: '10px' },
+              padding: { xs: '12px 16px', sm: '14px 16px' },
+              paddingBottom: { xs: '10px', sm: '10px' },
               borderBottom: '1px solid #2a2a2a',
               flexShrink: 0,
-              gap: '10px',
+              gap: { xs: '8px', sm: '10px' },
               position: 'sticky',
               top: 0,
               zIndex: 10,
-              background: 'linear-gradient(135deg, #0a0a0a 0%, #121212 100%)',
+              background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
             }}
           >
             <Box>
@@ -116,12 +118,13 @@ export default function InviteNewMember({
                 sx={{
                   fontWeight: 700,
                   color: '#d4af37',
-                  fontSize: { xs: '0.85rem', sm: '1rem', md: '1.2rem' },
-                  letterSpacing: '0.8px',
+                  fontSize: { xs: '0.9rem', sm: '1rem', md: '1.2rem' },
+                  letterSpacing: '1.2px',
                   textTransform: 'uppercase',
                   fontFamily: "'Cinzel', serif",
                   margin: 0,
-                  lineHeight: 1.2,
+                  lineHeight: 1.3,
+                  textShadow: '0 0 10px rgba(212, 175, 55, 0.5)',
                 }}
               >
                 INVITE NEW MEMBER
@@ -129,8 +132,8 @@ export default function InviteNewMember({
               <Typography
                 sx={{
                   color: '#999999',
-                  fontSize: { xs: '0.6rem', sm: '0.7rem' },
-                  marginTop: '2px',
+                  fontSize: { xs: '0.65rem', sm: '0.7rem' },
+                  marginTop: '4px',
                   letterSpacing: '0.3px',
                 }}
               >
@@ -148,8 +151,8 @@ export default function InviteNewMember({
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                fontSize: '1.2rem',
-                padding: '2px 4px',
+                fontSize: { xs: '1.4rem', sm: '1.2rem' },
+                padding: { xs: '4px 6px', sm: '2px 4px' },
                 minWidth: 'auto',
                 transition: 'all 0.3s ease',
                 flexShrink: 0,
@@ -173,7 +176,8 @@ export default function InviteNewMember({
               flex: 1,
               overflowY: 'auto',
               minHeight: 0,
-              padding: { xs: '10px 12px', sm: '12px 14px' },
+              padding: { xs: '12px 16px', sm: '12px 14px' },
+              paddingBottom: { xs: '80px', sm: '12px' },
               '&::-webkit-scrollbar': {
                 width: '6px',
               },
@@ -226,10 +230,10 @@ export default function InviteNewMember({
                   MenuProps={{
                     PaperProps: {
                       sx: {
-                        backgroundColor: '#121212 !important',
+                        backgroundColor: '#000000 !important',
                         color: '#ffffff',
                         maxHeight: 200,
-                        border: '1px solid #3a3a3a',
+                        border: '2px solid #d4af37',
                       },
                     },
                     anchorOrigin: {
@@ -277,9 +281,12 @@ export default function InviteNewMember({
                       value={r}
                       sx={{
                         color: '#ffffff',
-                        backgroundColor: '#121212',
+                        backgroundColor: '#000000',
                         '&:hover': {
-                          backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                          backgroundColor: 'rgba(212, 175, 55, 0.2)',
+                        },
+                        '&.Mui-selected': {
+                          backgroundColor: 'rgba(212, 175, 55, 0.3)',
                         },
                       }}
                     >
@@ -590,20 +597,32 @@ export default function InviteNewMember({
           </Box>
 
           {/* Divider and Actions */}
-          <Box sx={{ flexShrink: 0 }}>
+          <Box 
+            sx={{ 
+              flexShrink: 0,
+              position: { xs: 'fixed', sm: 'relative' },
+              bottom: { xs: 0, sm: 'auto' },
+              left: { xs: 0, sm: 'auto' },
+              right: { xs: 0, sm: 'auto' },
+              background: { xs: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)', sm: 'transparent' },
+              borderTop: { xs: '2px solid #d4af37', sm: 'none' },
+              zIndex: { xs: 20, sm: 'auto' },
+            }}
+          >
             <Divider
               sx={{
                 borderColor: '#2a2a2a !important',
-                margin: { xs: '8px 0', sm: '10px 0' },
+                margin: { xs: '0', sm: '10px 0' },
+                display: { xs: 'none', sm: 'block' },
               }}
             />
 
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
-                gap: { xs: '8px', sm: '8px' },
-                padding: { xs: '8px 12px 10px', sm: '10px 14px 12px' },
+                gridTemplateColumns: { xs: '1fr 1fr', sm: '1fr 1fr' },
+                gap: { xs: '10px', sm: '8px' },
+                padding: { xs: '12px 16px', sm: '10px 14px 12px' },
               }}
             >
               <Button
@@ -614,9 +633,9 @@ export default function InviteNewMember({
                   color: '#999999',
                   borderColor: 'transparent',
                   background: 'transparent',
-                  padding: { xs: '10px 8px', sm: '8px 10px' },
+                  padding: { xs: '12px 16px', sm: '8px 10px' },
                   textTransform: 'uppercase',
-                  fontSize: { xs: '0.6rem', sm: '0.65rem' },
+                  fontSize: { xs: '0.7rem', sm: '0.65rem' },
                   fontWeight: 600,
                   letterSpacing: '0.3px',
                   fontFamily: "'Inter', sans-serif",
@@ -625,7 +644,8 @@ export default function InviteNewMember({
                   '&:hover': {
                     backgroundColor: '#1a1a1a',
                     color: '#d4af37',
-                    borderColor: 'transparent',
+                    borderColor: '#d4af37',
+                    boxShadow: '0 0 10px rgba(212, 175, 55, 0.3)',
                   },
                   '&:disabled': {
                     color: '#555555',
@@ -643,9 +663,9 @@ export default function InviteNewMember({
                 sx={{
                   background: 'linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C)',
                   color: '#000000',
-                  padding: { xs: '10px 8px', sm: '8px 10px' },
+                  padding: { xs: '12px 16px', sm: '8px 10px' },
                   textTransform: 'uppercase',
-                  fontSize: { xs: '0.6rem', sm: '0.65rem' },
+                  fontSize: { xs: '0.7rem', sm: '0.65rem' },
                   fontWeight: 700,
                   letterSpacing: '0.3px',
                   fontFamily: "'Inter', sans-serif",

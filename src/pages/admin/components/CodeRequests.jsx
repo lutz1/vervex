@@ -174,8 +174,7 @@ export default function CodeRequests() {
                     <TableCell sx={{ color: '#d4af37', fontWeight: 700 }}>Inviter</TableCell>
                     <TableCell sx={{ color: '#d4af37', fontWeight: 700 }}>Client Name</TableCell>
                     <TableCell sx={{ color: '#d4af37', fontWeight: 700 }}>Role</TableCell>
-                    <TableCell sx={{ color: '#d4af37', fontWeight: 700 }}>Amount</TableCell>
-                    <TableCell sx={{ color: '#d4af37', fontWeight: 700 }}>Status</TableCell>
+                    <TableCell sx={{ color: '#d4af37', fontWeight: 700 }}>Amount</TableCell>                    <TableCell sx={{ color: '#d4af37', fontWeight: 700 }}>Receipt</TableCell>                    <TableCell sx={{ color: '#d4af37', fontWeight: 700 }}>Status</TableCell>
                     <TableCell sx={{ color: '#d4af37', fontWeight: 700 }}>Code</TableCell>
                     <TableCell sx={{ color: '#d4af37', fontWeight: 700 }}>Action</TableCell>
                   </TableRow>
@@ -193,7 +192,10 @@ export default function CodeRequests() {
                         {request.inviterName}
                       </TableCell>
                       <TableCell sx={{ color: '#9fa9a3' }}>
-                        {request.inviteData?.fullName || 'N/A'}
+                        {request.inviteData?.fullName || 
+                          (request.inviteData?.firstName && request.inviteData?.surname 
+                            ? `${request.inviteData.firstName} ${request.inviteData.surname}`.trim()
+                            : request.inviteData?.email || 'N/A')}
                       </TableCell>
                       <TableCell sx={{ color: '#9fa9a3' }}>
                         <Chip
@@ -208,6 +210,30 @@ export default function CodeRequests() {
                       </TableCell>
                       <TableCell sx={{ color: '#4ade80', fontWeight: 600 }}>
                         ₱{request.price?.toLocaleString()}
+                      </TableCell>
+                      <TableCell sx={{ color: '#9fa9a3' }}>
+                        {request.receiptUrl ? (
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => window.open(request.receiptUrl, '_blank')}
+                            sx={{
+                              borderColor: '#d4af37',
+                              color: '#d4af37',
+                              fontWeight: 600,
+                              fontSize: '0.75rem',
+                              '&:hover': {
+                                background: 'rgba(212, 175, 55, 0.1)',
+                              },
+                            }}
+                          >
+                            View Receipt
+                          </Button>
+                        ) : (
+                          <Typography sx={{ fontSize: '0.85rem', color: '#9fa9a3' }}>
+                            —
+                          </Typography>
+                        )}
                       </TableCell>
                       <TableCell>
                         <Chip

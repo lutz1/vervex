@@ -180,7 +180,7 @@ exports.createUserHttp = functions.https.onRequest(async (req, res) => {
     let emailSent = false;
     try {
       verificationLink = await admin.auth().generateEmailVerificationLink(email, {
-        url: 'https://lutz1.github.io/vervex/',
+        url: 'https://vervexofficial.online/',
         handleCodeInApp: false,
       });
       console.log(`Verification link generated for ${email}`);
@@ -377,6 +377,13 @@ exports.registerUserFromCodeHttp = functions.https.onRequest(async (req, res) =>
         parentId
       } = invitationData;
 
+      // Log for debugging parent ID tracking
+      console.log('=== registerUserFromCodeHttp ===');
+      console.log('Inviter ID (callerId):', callerId);
+      console.log('Parent ID received:', parentId);
+      console.log('Invitation data keys:', Object.keys(invitationData));
+      console.log('Full parentId value:', JSON.stringify(parentId));
+
       // Validate required fields
       if (!invitedEmail || !firstName || !surname || !username) {
         return res.status(400).json({
@@ -410,6 +417,9 @@ exports.registerUserFromCodeHttp = functions.https.onRequest(async (req, res) =>
       });
 
       // Create/update user document in Firestore with all invitation data
+      const referrerIdToSet = parentId || callerId;
+      console.log('Setting referrerId to:', referrerIdToSet);
+      
       await db.collection('users').doc(userRecord.uid).set({
         uid: userRecord.uid,
         email: invitedEmail,
@@ -422,7 +432,8 @@ exports.registerUserFromCodeHttp = functions.https.onRequest(async (req, res) =>
         fullAddress: invitationData.fullAddress || '',
         contactNumber: invitationData.contactNumber || '',
         role: role || 'vip',
-        referrerId: parentId || callerId,
+        referrerId: referrerIdToSet,
+        inviteSlotId: invitationData.inviteSlotId || '',
         status: 'Active',
         balance: 0,
         directInviteEarnings: 0,
@@ -497,7 +508,7 @@ exports.registerUserFromCodeHttp = functions.https.onRequest(async (req, res) =>
       let emailSent = false;
       try {
         verificationLink = await admin.auth().generateEmailVerificationLink(invitedEmail, {
-          url: 'https://lutz1.github.io/vervex/',
+          url: 'https://vervexofficial.online/',
           handleCodeInApp: false,
         });
         console.log(`Verification link generated for ${invitedEmail}`);
