@@ -75,9 +75,9 @@ function Sparkline({data = []}){
   );
 }
 
-export default function PerformanceStats({ performanceData = {} }) {
+export default function PerformanceStats({ performanceData = {}, directInviteEarnings = 0, directInviteCount = 0 }) {
   const sample = {
-    directAffiliateCommission: '$320',
+    directAffiliateCommission: `₱${directInviteEarnings.toLocaleString('en-PH')}`,
     directAffiliateDelta: 4.2,
     directAffiliateTrend: [20,22,24,28,30],
 

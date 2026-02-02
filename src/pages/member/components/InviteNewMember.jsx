@@ -42,16 +42,16 @@ export default function InviteNewMember({
     <Box
       sx={{
         position: 'fixed',
-        top: { xs: '56px', sm: '64px' },
+        top: 0,
         left: 0,
         right: 0,
-        bottom: { xs: '56px', sm: '56px' },
+        bottom: 0,
         background: 'rgba(0, 0, 0, 0.85)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 999,
-        padding: { xs: '8px', sm: '16px', md: '20px' },
+        padding: { xs: '12px', sm: '16px', md: '20px' },
         backdropFilter: 'blur(8px)',
         overflowY: 'auto',
       }}
@@ -60,8 +60,8 @@ export default function InviteNewMember({
       <Card
         sx={{
           width: '100%',
-          maxWidth: { xs: '90vw', sm: '420px', md: '500px' },
-          maxHeight: { xs: '80vh', sm: '85vh' },
+          maxWidth: { xs: 'calc(100vw - 24px)', sm: '420px', md: '500px' },
+          maxHeight: '90vh',
           background: 'linear-gradient(135deg, #0a0a0a 0%, #121212 100%)',
           color: '#ffffff',
           border: 'none',
@@ -94,11 +94,11 @@ export default function InviteNewMember({
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'flex-start',
-              padding: { xs: '12px 14px', sm: '16px 18px' },
-              paddingBottom: { xs: '10px', sm: '12px' },
+              padding: { xs: '10px 12px', sm: '14px 16px' },
+              paddingBottom: { xs: '8px', sm: '10px' },
               borderBottom: '1px solid #2a2a2a',
               flexShrink: 0,
-              gap: '12px',
+              gap: '10px',
               position: 'sticky',
               top: 0,
               zIndex: 10,
@@ -110,7 +110,7 @@ export default function InviteNewMember({
                 sx={{
                   fontWeight: 700,
                   color: '#d4af37',
-                  fontSize: { xs: '0.95rem', sm: '1.1rem', md: '1.3rem' },
+                  fontSize: { xs: '0.85rem', sm: '1rem', md: '1.2rem' },
                   letterSpacing: '0.8px',
                   textTransform: 'uppercase',
                   fontFamily: "'Cinzel', serif",
@@ -123,14 +123,14 @@ export default function InviteNewMember({
               <Typography
                 sx={{
                   color: '#999999',
-                  fontSize: { xs: '0.65rem', sm: '0.75rem' },
+                  fontSize: { xs: '0.6rem', sm: '0.7rem' },
                   marginTop: '2px',
                   letterSpacing: '0.3px',
                 }}
               >
-                Payment Method:{' '}
+                Payment:{' '}
                 <span style={{ color: '#d4af37', fontWeight: 600 }}>
-                  {paymentMethod === 'over-the-counter' ? 'Over the Counter' : 'Online'}
+                  {paymentMethod === 'over-the-counter' ? 'Counter' : 'Online'}
                 </span>
               </Typography>
             </Box>
@@ -167,7 +167,17 @@ export default function InviteNewMember({
               flex: 1,
               overflowY: 'auto',
               minHeight: 0,
-              padding: { xs: '12px 14px', sm: '14px 16px' },
+              padding: { xs: '10px 12px', sm: '12px 14px' },
+              '&::-webkit-scrollbar': {
+                width: '6px',
+              },
+              '&::-webkit-scrollbar-track': {
+                background: 'rgba(100, 100, 100, 0.1)',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                background: '#d4af37',
+                borderRadius: '3px',
+              },
             }}
           >
             <Typography
@@ -276,29 +286,29 @@ export default function InviteNewMember({
               <Box
                 sx={{
                   background: 'rgba(212, 175, 55, 0.08)',
-                  padding: { xs: '10px 12px', sm: '12px' },
+                  padding: { xs: '8px 10px', sm: '10px 12px' },
                   borderRadius: 0,
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  gap: '3px',
+                  gap: '2px',
                 }}
               >
                 <Typography
                   sx={{
                     color: '#999999',
-                    fontSize: { xs: '0.6rem', sm: '0.65rem' },
+                    fontSize: { xs: '0.55rem', sm: '0.65rem' },
                     fontWeight: 500,
                     letterSpacing: '0.2px',
                   }}
                 >
-                  {isOverTheCounter ? 'Amount to Pay' : 'Registration Price'}
+                  {isOverTheCounter ? 'Pay' : 'Price'}
                 </Typography>
                 <Typography
                   sx={{
                     color: '#d4af37',
-                    fontSize: { xs: '1rem', sm: '1.2rem' },
+                    fontSize: { xs: '0.9rem', sm: '1.1rem' },
                     fontWeight: 700,
                     fontFamily: "'Cinzel', serif",
                   }}
@@ -313,8 +323,8 @@ export default function InviteNewMember({
               sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
-                gap: { xs: '14px', sm: '16px' },
-                marginBottom: { xs: '12px', sm: '14px' },
+                gap: { xs: '8px', sm: '10px' },
+                marginBottom: { xs: '8px', sm: '10px' },
               }}
             >
               {[
@@ -341,8 +351,8 @@ export default function InviteNewMember({
                     '& .MuiOutlinedInput-root': {
                       color: '#ffffff !important',
                       backgroundColor: 'transparent !important',
-                      padding: '10px 0',
-                      minHeight: '40px',
+                      padding: '8px 0',
+                      minHeight: '36px',
                       '& fieldset': {
                         border: 'none',
                         borderBottom: '1px solid #3a3a3a',
@@ -355,7 +365,8 @@ export default function InviteNewMember({
                       },
                     },
                     '& .MuiInputBase-input': {
-                      fontSize: '0.85rem',
+                      fontSize: { xs: '0.8rem', sm: '0.85rem' },
+                      padding: '8px 0',
                       lineHeight: '1.4',
                     },
                     '& .MuiInputBase-input::placeholder': {
@@ -364,7 +375,7 @@ export default function InviteNewMember({
                     },
                     '& .MuiInputLabel-root': {
                       color: '#999999',
-                      fontSize: '0.8rem',
+                      fontSize: { xs: '0.75rem', sm: '0.8rem' },
                       lineHeight: '1.2',
                       '&.Mui-focused': {
                         color: '#d4af37',
@@ -450,9 +461,9 @@ export default function InviteNewMember({
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '8px',
-                padding: { xs: '10px 12px', sm: '12px 14px' },
+                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                gap: { xs: '8px', sm: '8px' },
+                padding: { xs: '8px 12px 10px', sm: '10px 14px 12px' },
               }}
             >
               <Button
@@ -463,9 +474,9 @@ export default function InviteNewMember({
                   color: '#999999',
                   borderColor: 'transparent',
                   background: 'transparent',
-                  padding: '8px 10px',
+                  padding: { xs: '10px 8px', sm: '8px 10px' },
                   textTransform: 'uppercase',
-                  fontSize: '0.65rem',
+                  fontSize: { xs: '0.6rem', sm: '0.65rem' },
                   fontWeight: 600,
                   letterSpacing: '0.3px',
                   fontFamily: "'Inter', sans-serif",
@@ -492,9 +503,9 @@ export default function InviteNewMember({
                 sx={{
                   background: 'linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C)',
                   color: '#000000',
-                  padding: '8px 10px',
+                  padding: { xs: '10px 8px', sm: '8px 10px' },
                   textTransform: 'uppercase',
-                  fontSize: '0.65rem',
+                  fontSize: { xs: '0.6rem', sm: '0.65rem' },
                   fontWeight: 700,
                   letterSpacing: '0.3px',
                   fontFamily: "'Inter', sans-serif",

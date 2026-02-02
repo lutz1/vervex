@@ -439,17 +439,20 @@ exports.registerUserFromCodeHttp = functions.https.onRequest(async (req, res) =>
         },
       }, { merge: true });
 
-      // Add direct invite earnings to the parent/inviter
+      // Add direct invite earnings to the parent/inviter based on the NEW USER'S ROLE
       if (parentId) {
         const parentDoc = await db.collection('users').doc(parentId).get();
         if (parentDoc.exists) {
           const parentData = parentDoc.data();
+          // Earnings are based on the INVITED USER's role, not the parent's role
           const DIRECT_INVITE_EARNINGS = {
             vip: 1000,
             ambassador: 4000,
             supreme: 15000,
+            company_account: 2500,
+            cashier: 500,
           };
-          const earnings = DIRECT_INVITE_EARNINGS[parentData.role?.toLowerCase()] || 0;
+          const earnings = DIRECT_INVITE_EARNINGS[role?.toLowerCase()] || 0;
           
           if (earnings > 0) {
             const currentBalance = parentData.balance || 0;
@@ -467,7 +470,7 @@ exports.registerUserFromCodeHttp = functions.https.onRequest(async (req, res) =>
               amount: earnings,
               userId: parentId,
               invitedUserId: userRecord.uid,
-              role: parentData.role,
+              invitedUserRole: role,
               createdAt: admin.firestore.FieldValue.serverTimestamp(),
             });
           }

@@ -1,11 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Container } from '@mui/material';
+import { onSnapshot, doc } from 'firebase/firestore';
+import { db } from '../../firebaseConfig';
 import PerformanceStats from './components/genealogycomponents/PerformanceStats';
 import './Dashboard.css';
 import './Genealogy.css';
 
 export default function Dashboard({ user, userRole }) {
+  const [directInviteEarnings, setDirectInviteEarnings] = useState(0);
+  const [directInviteCount, setDirectInviteCount] = useState(0);
+
   const displayName = user?.displayName || user?.name || 'Member';
+  
+  // Real-time listener for direct invite earnings
+  useEffect(() => {
+    if (!user?.uid) return;
+
+    const userDocRef = doc(db, 'users', user.uid);
+    const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const data = docSnapshot.data();
+        setDirectInviteEarnings(data.directInviteEarnings || 0);
+        setDirectInviteCount(data.directInviteCount || 0);
+      }
+    }, (error) => {
+      console.error('Error fetching user data:', error);
+    });
+
+    return () => unsubscribe();
+  }, [user?.uid]);
   
   const getRankDisplay = (role) => {
     if (!role) return 'PRO RANK';
@@ -13,6 +36,8 @@ export default function Dashboard({ user, userRole }) {
     if (roleStr === 'vip') return 'VIP RANK';
     if (roleStr === 'ambassador') return 'AMBASSADOR RANK';
     if (roleStr === 'supreme') return 'SUPREME RANK';
+    if (roleStr === 'company_account') return 'COMPANY ACCOUNT RANK';
+    if (roleStr === 'cashier') return 'CASHIER RANK';
     return 'PRO RANK';
   };
   
@@ -51,7 +76,10 @@ export default function Dashboard({ user, userRole }) {
             <Typography variant="body2" className="dash-sub">Overview & performance</Typography>
           </Box>
 
-          <PerformanceStats />
+          <PerformanceStats 
+            directInviteEarnings={directInviteEarnings}
+            directInviteCount={directInviteCount}
+          />
           <div className="dash-bottom-spacer" aria-hidden />
         </Container>
       </div>

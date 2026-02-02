@@ -266,11 +266,14 @@ export const getUserByUsername = async (username) => {
   }
 };
 
-// Direct invite earnings based on role
+// Direct invite earnings based on invited user's role
+// This is what the parent earns when a user with this role joins their node
 const DIRECT_INVITE_EARNINGS = {
   vip: 1000,
   ambassador: 4000,
   supreme: 15000,
+  company_account: 2500,
+  cashier: 500,
 };
 
 // Code request pricing based on role
