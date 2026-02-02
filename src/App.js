@@ -3,7 +3,7 @@ import './App.css';
 import { auth, db } from './firebaseConfig';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { onSnapshot, doc } from 'firebase/firestore';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/login/Login';
 import UserManagement from './pages/superadmin/UserManagement';
 import ManageTree from './pages/superadmin/ManageTree';
