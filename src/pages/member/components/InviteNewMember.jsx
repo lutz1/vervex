@@ -104,8 +104,9 @@ export default function InviteNewMember({
     >
       <Card
         sx={{
-          width: '100%',
-          maxWidth: { xs: '100%', sm: '420px', md: '500px' },
+          width: { xs: 'calc(100% - 0px)', sm: '100%' },
+          maxWidth: { xs: 'none', sm: '420px', md: '500px' },
+          height: { xs: '100vh', sm: 'auto' },
           maxHeight: { xs: '100vh', sm: '95vh', md: '90vh' },
           margin: { xs: '0', sm: 'auto' },
           background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
@@ -215,8 +216,8 @@ export default function InviteNewMember({
               flex: 1,
               overflowY: 'auto',
               minHeight: 0,
-              padding: { xs: '12px 16px', sm: '12px 14px' },
-              paddingBottom: { xs: '80px', sm: '12px' },
+              padding: { xs: '12px 12px', sm: '12px 14px' },
+              paddingBottom: { xs: '70px', sm: '12px' },
               '&::-webkit-scrollbar': {
                 width: '6px',
               },
@@ -246,8 +247,8 @@ export default function InviteNewMember({
               sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: '1fr 0.7fr' },
-                gap: { xs: '8px', sm: '10px' },
-                marginBottom: { xs: '10px', sm: '12px' },
+                gap: { xs: '6px', sm: '10px' },
+                marginBottom: { xs: '8px', sm: '12px' },
               }}
             >
               <FormControl fullWidth size="small">
@@ -375,8 +376,8 @@ export default function InviteNewMember({
               sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
-                gap: { xs: '8px', sm: '10px' },
-                marginBottom: { xs: '8px', sm: '10px' },
+                gap: { xs: '6px', sm: '10px' },
+                marginBottom: { xs: '6px', sm: '10px' },
               }}
             >
               {[
@@ -418,9 +419,9 @@ export default function InviteNewMember({
                       },
                     },
                     '& .MuiInputBase-input': {
-                      fontSize: { xs: '0.8rem', sm: '0.85rem' },
+                      fontSize: { xs: '0.75rem', sm: '0.85rem' },
                       padding: '8px 0',
-                      lineHeight: '1.4',
+                      lineHeight: '1.3',
                     },
                     '& .MuiInputBase-input::placeholder': {
                       color: '#555555',
@@ -428,8 +429,8 @@ export default function InviteNewMember({
                     },
                     '& .MuiInputLabel-root': {
                       color: '#999999',
-                      fontSize: { xs: '0.75rem', sm: '0.8rem' },
-                      lineHeight: '1.2',
+                      fontSize: { xs: '0.7rem', sm: '0.8rem' },
+                      lineHeight: '1.1',
                       '&.Mui-focused': {
                         color: '#d4af37',
                       },
@@ -446,7 +447,7 @@ export default function InviteNewMember({
               <Box
                 key={field.key}
                 sx={{
-                  marginBottom: { xs: '8px', sm: '10px' },
+                  marginBottom: { xs: '6px', sm: '10px' },
                 }}
               >
                 <Box
@@ -468,12 +469,12 @@ export default function InviteNewMember({
                     error={!!emailError}
                     size="small"
                     sx={{
-                      marginBottom: { xs: '2px', sm: '3px' },
+                      marginBottom: { xs: '0px', sm: '3px' },
                       '& .MuiOutlinedInput-root': {
                         color: '#ffffff !important',
                         backgroundColor: 'transparent !important',
-                        padding: '10px 0',
-                        minHeight: '40px',
+                        padding: '8px 0',
+                        minHeight: { xs: '36px', sm: '40px' },
                         '& fieldset': {
                           border: 'none',
                           borderBottom: emailError ? '2px solid #f44336' : '1px solid #3a3a3a',
@@ -495,8 +496,8 @@ export default function InviteNewMember({
                       },
                       '& .MuiInputLabel-root': {
                         color: emailError ? '#f44336' : '#999999',
-                        fontSize: '0.8rem',
-                        lineHeight: '1.2',
+                      fontSize: { xs: '0.7rem', sm: '0.8rem' },
+                      lineHeight: '1.1',
                         '&.Mui-focused': {
                           color: emailError ? '#f44336' : '#d4af37',
                         },
@@ -532,10 +533,10 @@ export default function InviteNewMember({
             <Typography
               sx={{
                 color: '#d4af37',
-                fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                fontSize: { xs: '0.65rem', sm: '0.75rem' },
                 fontWeight: 600,
-                marginTop: { xs: '8px', sm: '10px' },
-                marginBottom: { xs: '6px', sm: '8px' },
+                marginTop: { xs: '6px', sm: '10px' },
+                marginBottom: { xs: '4px', sm: '8px' },
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px',
               }}
@@ -548,8 +549,8 @@ export default function InviteNewMember({
               sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
-                gap: { xs: '8px', sm: '10px' },
-                marginBottom: { xs: '8px', sm: '10px' },
+                gap: { xs: '6px', sm: '10px' },
+                marginBottom: { xs: '6px', sm: '10px' },
               }}
             >
               {[
@@ -586,9 +587,9 @@ export default function InviteNewMember({
                       },
                     },
                     '& .MuiInputBase-input': {
-                      fontSize: { xs: '0.8rem', sm: '0.85rem' },
+                      fontSize: { xs: '0.75rem', sm: '0.85rem' },
                       padding: '8px 0',
-                      lineHeight: '1.4',
+                      lineHeight: '1.3',
                     },
                     '& .MuiInputBase-input::placeholder': {
                       color: '#555555',
@@ -596,8 +597,8 @@ export default function InviteNewMember({
                     },
                     '& .MuiInputLabel-root': {
                       color: '#999999',
-                      fontSize: { xs: '0.75rem', sm: '0.8rem' },
-                      lineHeight: '1.2',
+                      fontSize: { xs: '0.7rem', sm: '0.8rem' },
+                      lineHeight: '1.1',
                       '&.Mui-focused': {
                         color: '#d4af37',
                       },
@@ -690,8 +691,8 @@ export default function InviteNewMember({
               sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr 1fr', sm: '1fr 1fr' },
-                gap: { xs: '10px', sm: '8px' },
-                padding: { xs: '12px 16px', sm: '10px 14px 12px' },
+                gap: { xs: '8px', sm: '8px' },
+                padding: { xs: '10px 12px', sm: '10px 14px 12px' },
               }}
             >
               <Button
@@ -702,9 +703,9 @@ export default function InviteNewMember({
                   color: '#999999',
                   borderColor: 'transparent',
                   background: 'transparent',
-                  padding: { xs: '12px 16px', sm: '8px 10px' },
+                  padding: { xs: '10px 8px', sm: '8px 10px' },
                   textTransform: 'uppercase',
-                  fontSize: { xs: '0.7rem', sm: '0.65rem' },
+                  fontSize: { xs: '0.6rem', sm: '0.65rem' },
                   fontWeight: 600,
                   letterSpacing: '0.3px',
                   fontFamily: "'Inter', sans-serif",
@@ -732,9 +733,9 @@ export default function InviteNewMember({
                 sx={{
                   background: 'linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C)',
                   color: '#000000',
-                  padding: { xs: '12px 16px', sm: '8px 10px' },
+                  padding: { xs: '10px 8px', sm: '8px 10px' },
                   textTransform: 'uppercase',
-                  fontSize: { xs: '0.7rem', sm: '0.65rem' },
+                  fontSize: { xs: '0.6rem', sm: '0.65rem' },
                   fontWeight: 700,
                   letterSpacing: '0.3px',
                   fontFamily: "'Inter', sans-serif",
