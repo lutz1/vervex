@@ -190,9 +190,7 @@
   overflow-x: auto;
   overflow-y: auto;
   min-height: auto;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  display: block;
   position: relative;
   box-shadow: none;
   width: 100%;
@@ -222,15 +220,16 @@
 
 
 .tree-shell {
-  width: 100%;
-  max-width: 100%;
+  width: auto;
+  min-width: 100%;
   position: relative;
   padding: 40px;
   transition: transform 0.2s ease;
   will-change: transform;
   touch-action: pan-x pinch-zoom;
-  display: inline-block;
+  display: inline-flex;
   white-space: nowrap;
+  align-items: flex-start;
 }
 
 .tree-loading {
