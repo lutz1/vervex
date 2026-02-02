@@ -1147,8 +1147,8 @@ If they don't receive the email within 5 minutes, they can verify by:
 
                 <Box className="wing-row">
                   {renderWingCard(normalizedWings[0], 'left')}
-                  {renderWingCard(normalizedWings[1], 'center')}
                   {renderWingCard(normalizedWings[2], 'right')}
+                  {renderWingCard(normalizedWings[1], 'center')}
                 </Box>
 
                 <Box className="mid-connector" />
@@ -1157,17 +1157,18 @@ If they don't receive the email within 5 minutes, they can verify by:
                     {(normalizedWings[0]?.children || []).map((child, idx) => renderSubNode(child, 'left', idx))}
                   </Box>
                   <Box className="wing-sub-group">
-                    {(normalizedWings[1]?.children || []).map((child, idx) => renderSubNode(child, 'center', idx))}
+                    {(normalizedWings[2]?.children || []).map((child, idx) => renderSubNode(child, 'right', idx))}
                   </Box>
                   <Box className="wing-sub-group">
-                    {(normalizedWings[2]?.children || []).map((child, idx) => renderSubNode(child, 'right', idx))}
+                    {(normalizedWings[1]?.children || []).map((child, idx) => renderSubNode(child, 'center', idx))}
                   </Box>
                 </Box>
 
                 <Box className="mid-connector" />
                 <Box className="wings-subsub-row">
-                  {normalizedWings.flatMap((wing, wingIdx) =>
-                    (wing.children || []).map((subNode, subNodeIdx) => (
+                  {[normalizedWings[0], normalizedWings[2], normalizedWings[1]].flatMap((wing, displayIdx) => {
+                    const wingIdx = wing === normalizedWings[0] ? 0 : wing === normalizedWings[2] ? 2 : 1;
+                    return (wing.children || []).map((subNode, subNodeIdx) => (
                       <Box key={`subsub-group-${subNode.id}`} className={`subsub-group-container ${wingIdx === 1 ? 'center-wing-subsub' : ''}`}>
                         <Typography className="subsub-group-label">
                           {subNodeIdx === 0 ? 'L-Node' : subNodeIdx === 1 ? 'C-Node' : 'R-Node'}
@@ -1180,8 +1181,8 @@ If they don't receive the email within 5 minutes, they can verify by:
                           ))}
                         </Box>
                       </Box>
-                    ))
-                  )}
+                    ));
+                  })}
                 </Box>
               </>
             ) : (
