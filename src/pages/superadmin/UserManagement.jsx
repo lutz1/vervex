@@ -44,6 +44,8 @@ export default function UserManagement() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
 
   const [formData, setFormData] = useState({
     username: '',
@@ -273,48 +275,60 @@ Or the user can:
   };
 
   const handleDeleteUser = async (uid) => {
-    if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-      try {
-        setError('');
-        setLoading(true);
-        
-        // Get ID token from current user
-        const currentUser = auth.currentUser;
-        if (!currentUser) {
-          setError('You must be logged in');
-          return;
-        }
+    const user = users.find(u => u.uid === uid);
+    setUserToDelete(user);
+    setDeleteConfirmOpen(true);
+  };
 
-        const idToken = await currentUser.getIdToken();
-
-        // Call Cloud Function via HTTP
-        const response = await fetch(
-          'https://us-central1-vervex-c5b91.cloudfunctions.net/deleteUserHttp',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${idToken}`,
-            },
-            body: JSON.stringify({ userId: uid }),
-          }
-        );
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          setError(result.message || 'Failed to delete user');
-          return;
-        }
-        
-        setSuccess('User deleted successfully');
-        await loadAllUsers();
-      } catch (err) {
-        setError('Failed to delete user: ' + (err.message || 'Unknown error'));
-      } finally {
-        setLoading(false);
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return;
+    try {
+      setError('');
+      setLoading(true);
+      
+      // Get ID token from current user
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        setError('You must be logged in');
+        return;
       }
+
+      const idToken = await currentUser.getIdToken();
+
+      // Call Cloud Function via HTTP
+      const response = await fetch(
+        'https://us-central1-vervex-c5b91.cloudfunctions.net/deleteUserHttp',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({ userId: userToDelete.uid }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.message || 'Failed to delete user');
+        return;
+      }
+      
+      setSuccess('User deleted successfully');
+      await loadAllUsers();
+    } catch (err) {
+      setError('Failed to delete user: ' + (err.message || 'Unknown error'));
+    } finally {
+      setLoading(false);
+      setDeleteConfirmOpen(false);
+      setUserToDelete(null);
     }
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirmOpen(false);
+    setUserToDelete(null);
   };
 
   const handleUpdateRole = async (uid, newRole) => {
@@ -606,6 +620,76 @@ Or the user can:
               className="submit-button"
             >
               {loading ? 'Processing...' : editingUser ? 'Update User' : 'Create User'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={deleteConfirmOpen}
+          onClose={cancelDelete}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: {
+              background: 'rgba(4, 12, 9, 0.95)',
+              border: '1px solid rgba(212, 175, 55, 0.3)',
+              backdropFilter: 'blur(10px)',
+            },
+          }}
+        >
+          <DialogTitle
+            sx={{
+              color: '#d4af37',
+              fontWeight: 600,
+              borderBottom: '1px solid rgba(212, 175, 55, 0.2)',
+              fontSize: '1.1rem',
+            }}
+          >
+            Delete User
+          </DialogTitle>
+          <DialogContent sx={{ pt: 3 }}>
+            <Typography sx={{ color: '#f5f5f5', mb: 1 }}>
+              Are you sure you want to delete <strong>{userToDelete?.fullName || userToDelete?.username}</strong>?
+            </Typography>
+            <Typography sx={{ color: '#ff6b6b', fontSize: '0.9rem', mt: 2 }}>
+              ⚠️ This action cannot be undone.
+            </Typography>
+          </DialogContent>
+          <DialogActions
+            sx={{
+              gap: 1,
+              padding: '16px',
+              borderTop: '1px solid rgba(212, 175, 55, 0.2)',
+            }}
+          >
+            <Button
+              onClick={cancelDelete}
+              sx={{
+                color: '#d4af37',
+                border: '1px solid rgba(212, 175, 55, 0.4)',
+                '&:hover': {
+                  background: 'rgba(212, 175, 55, 0.1)',
+                },
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmDeleteUser}
+              variant="contained"
+              disabled={loading}
+              sx={{
+                background: '#ff6b6b',
+                color: '#fff',
+                '&:hover': {
+                  background: '#ee5a52',
+                },
+                '&:disabled': {
+                  background: 'rgba(255, 107, 107, 0.5)',
+                },
+              }}
+            >
+              {loading ? 'Deleting...' : 'Delete'}
             </Button>
           </DialogActions>
         </Dialog>

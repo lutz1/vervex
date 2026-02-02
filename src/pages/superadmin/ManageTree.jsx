@@ -63,6 +63,10 @@ export default function ManageTree() {
   const [editingFrame, setEditingFrame] = useState(null);
   const [frameDialogOpen, setFrameDialogOpen] = useState(false);
   const [frameFormData, setFrameFormData] = useState({ name: '', role: 'VIP' });
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null); // { type: 'avatar'|'frame', data: {...} }
+  const [frameDeleteConfirmOpen, setFrameDeleteConfirmOpen] = useState(false);
+  const [frameToDelete, setFrameToDelete] = useState(null);
 
   // Load frames from Firestore on mount
   useEffect(() => {
@@ -134,14 +138,26 @@ export default function ManageTree() {
 
   const handleDeleteAvatar = (avatar, level) => {
     if (level === 'root') return; // Can't delete root
-    if (window.confirm(`Delete ${avatar.name}?`)) {
-      if (level === 'level1') {
-        setTreeStructure({
-          ...treeStructure,
-          level1: treeStructure.level1.filter((item) => item.id !== avatar.id),
-        });
-      }
+    setDeleteTarget({ type: 'avatar', data: avatar, level });
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDeleteAvatar = () => {
+    if (!deleteTarget || deleteTarget.type !== 'avatar') return;
+    const { data: avatar, level } = deleteTarget;
+    if (level === 'level1') {
+      setTreeStructure({
+        ...treeStructure,
+        level1: treeStructure.level1.filter((item) => item.id !== avatar.id),
+      });
     }
+    setDeleteConfirmOpen(false);
+    setDeleteTarget(null);
+  };
+
+  const cancelDeleteAvatar = () => {
+    setDeleteConfirmOpen(false);
+    setDeleteTarget(null);
   };
 
   const handleOpenFrameDialog = (frame = null) => {
@@ -225,15 +241,28 @@ export default function ManageTree() {
   };
 
   const handleDeleteFrame = (frameId) => {
-    if (window.confirm('Delete this frame?')) {
-      try {
-        deleteDoc(doc(db, 'frames', frameId));
-        setFrames(frames.filter((frame) => frame.id !== frameId));
-      } catch (error) {
-        console.error('Error deleting frame:', error);
-        alert('Failed to delete frame: ' + error.message);
-      }
+    const frameToDelete = frames.find(f => f.id === frameId);
+    setFrameToDelete(frameToDelete);
+    setFrameDeleteConfirmOpen(true);
+  };
+
+  const confirmDeleteFrame = () => {
+    if (!frameToDelete) return;
+    try {
+      deleteDoc(doc(db, 'frames', frameToDelete.id));
+      setFrames(frames.filter((frame) => frame.id !== frameToDelete.id));
+    } catch (error) {
+      console.error('Error deleting frame:', error);
+      alert('Failed to delete frame: ' + error.message);
+    } finally {
+      setFrameDeleteConfirmOpen(false);
+      setFrameToDelete(null);
     }
+  };
+
+  const cancelDeleteFrame = () => {
+    setFrameDeleteConfirmOpen(false);
+    setFrameToDelete(null);
   };
 
   const handleFrameImageUpload = async (frameId, file) => {
@@ -990,6 +1019,137 @@ export default function ManageTree() {
               }}
             >
               Save Avatar
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Delete Avatar Confirmation Dialog */}
+        <Dialog
+          open={deleteConfirmOpen}
+          onClose={cancelDeleteAvatar}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: {
+              background: 'rgba(4, 12, 9, 0.95)',
+              border: '1px solid rgba(212, 175, 55, 0.3)',
+              backdropFilter: 'blur(10px)',
+            },
+          }}
+        >
+          <DialogTitle
+            sx={{
+              color: '#d4af37',
+              fontWeight: 600,
+              borderBottom: '1px solid rgba(212, 175, 55, 0.2)',
+              fontSize: '1.1rem',
+            }}
+          >
+            Delete Avatar
+          </DialogTitle>
+          <DialogContent sx={{ pt: 3 }}>
+            <Typography sx={{ color: '#f5f5f5' }}>
+              Are you sure you want to delete <strong>{deleteTarget?.data?.name}</strong>?
+            </Typography>
+          </DialogContent>
+          <DialogActions
+            sx={{
+              gap: 1,
+              padding: '16px',
+              borderTop: '1px solid rgba(212, 175, 55, 0.2)',
+            }}
+          >
+            <Button
+              onClick={cancelDeleteAvatar}
+              sx={{
+                color: '#d4af37',
+                border: '1px solid rgba(212, 175, 55, 0.4)',
+                '&:hover': {
+                  background: 'rgba(212, 175, 55, 0.1)',
+                },
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmDeleteAvatar}
+              variant="contained"
+              sx={{
+                background: '#ff6b6b',
+                color: '#fff',
+                '&:hover': {
+                  background: '#ee5a52',
+                },
+              }}
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Delete Frame Confirmation Dialog */}
+        <Dialog
+          open={frameDeleteConfirmOpen}
+          onClose={cancelDeleteFrame}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: {
+              background: 'rgba(4, 12, 9, 0.95)',
+              border: '1px solid rgba(212, 175, 55, 0.3)',
+              backdropFilter: 'blur(10px)',
+            },
+          }}
+        >
+          <DialogTitle
+            sx={{
+              color: '#d4af37',
+              fontWeight: 600,
+              borderBottom: '1px solid rgba(212, 175, 55, 0.2)',
+              fontSize: '1.1rem',
+            }}
+          >
+            Delete Frame
+          </DialogTitle>
+          <DialogContent sx={{ pt: 3 }}>
+            <Typography sx={{ color: '#f5f5f5' }}>
+              Are you sure you want to delete the frame <strong>{frameToDelete?.name}</strong>?
+            </Typography>
+            <Typography sx={{ color: '#ff6b6b', fontSize: '0.9rem', mt: 2 }}>
+              ⚠️ This action cannot be undone.
+            </Typography>
+          </DialogContent>
+          <DialogActions
+            sx={{
+              gap: 1,
+              padding: '16px',
+              borderTop: '1px solid rgba(212, 175, 55, 0.2)',
+            }}
+          >
+            <Button
+              onClick={cancelDeleteFrame}
+              sx={{
+                color: '#d4af37',
+                border: '1px solid rgba(212, 175, 55, 0.4)',
+                '&:hover': {
+                  background: 'rgba(212, 175, 55, 0.1)',
+                },
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmDeleteFrame}
+              variant="contained"
+              sx={{
+                background: '#ff6b6b',
+                color: '#fff',
+                '&:hover': {
+                  background: '#ee5a52',
+                },
+              }}
+            >
+              Delete
             </Button>
           </DialogActions>
         </Dialog>
