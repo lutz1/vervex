@@ -111,20 +111,35 @@ export default function InviteNewMember({
 
   // Load Google Maps and initialize autocomplete
   useEffect(() => {
-    loadGoogleMapsScript(() => {
+    // Only load if not already loaded
+    if (!window.google || !window.google.maps) {
+      loadGoogleMapsScript(() => {
+        setIsGoogleMapsLoaded(true);
+        addGoogleMapsStyles();
+      });
+    } else {
       setIsGoogleMapsLoaded(true);
       addGoogleMapsStyles();
-    });
+    }
   }, []);
 
   useEffect(() => {
-    if (isGoogleMapsLoaded && addressInputRef.current && window.google) {
+    if (isGoogleMapsLoaded && addressInputRef.current && window.google && window.google.maps && window.google.maps.places) {
       // Get the actual input element from the TextField
       const inputElement = addressInputRef.current.querySelector('input');
       
       if (!inputElement) {
         console.error('Address input element not found');
         return;
+      }
+
+      // Clean up previous instance
+      if (autocompleteRef.current) {
+        try {
+          window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
+        } catch (e) {
+          console.log('Cleanup not needed');
+        }
       }
 
       try {
@@ -138,7 +153,7 @@ export default function InviteNewMember({
 
         autocompleteRef.current.addListener('place_changed', () => {
           const place = autocompleteRef.current.getPlace();
-          if (place.formatted_address) {
+          if (place && place.formatted_address) {
             onInviteDataChange('fullAddress', place.formatted_address);
           }
         });
@@ -150,11 +165,11 @@ export default function InviteNewMember({
     }
 
     return () => {
-      if (autocompleteRef.current && window.google) {
+      if (autocompleteRef.current && window.google && window.google.maps) {
         try {
           window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
         } catch (error) {
-          console.error('Error clearing listeners:', error);
+          // Ignore cleanup errors
         }
       }
     };
