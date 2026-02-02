@@ -60,7 +60,10 @@
   flex-direction: column;
   align-items: center;
   overflow-x: hidden;
+  overflow-y: auto;
   width: 100%;
+  -webkit-overflow-scrolling: touch;
+  -webkit-backface-visibility: hidden;
 }
 
 .genealogy-content-wrapper {
@@ -185,7 +188,7 @@
   padding: 32px 24px 40px;
   margin-bottom: 32px;
   overflow: visible;
-  min-height: 820px;
+  min-height: auto;
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -1655,5 +1658,35 @@
 
   .form-input {
     margin-bottom: 10px;
+  }
+}
+
+/* Android/Mobile scroll optimization */
+@media (max-width: 768px) {
+  .genealogy-main-container {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    -webkit-user-select: none;
+    touch-action: pan-y;
+  }
+
+  .tree-container {
+    padding: 16px 12px 24px;
+    margin-bottom: 16px;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .tree-shell {
+    overflow: visible;
+  }
+
+  body {
+    overflow-y: auto;
+  }
+
+  html {
+    overflow-y: auto;
   }
 }
