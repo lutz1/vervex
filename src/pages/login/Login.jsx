@@ -28,6 +28,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CloseIcon from '@mui/icons-material/Close';
+import PWAInstallButton from '../../components/PWAInstallButton';
 import './Login.css';
 import logo from '../../assets/logo.jpg';
 
@@ -116,6 +117,7 @@ export default function Login() {
 
   return (
     <Box className="login-bg">
+      <PWAInstallButton />
       <Container component="main" maxWidth="sm">
 
         <Box className="login-container">
