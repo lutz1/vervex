@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Card, CardContent, Chip } from '@mui/material';
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Card, CardContent, Chip, Box, Grid } from '@mui/material';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../../firebaseConfig';
 
 export default function TransactionLogs() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 900);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const loadTransactions = async () => {
@@ -57,6 +64,70 @@ export default function TransactionLogs() {
     }
   };
 
+  if (loading) {
+    return (
+      <Card sx={{ background: 'linear-gradient(135deg, rgba(26, 42, 42, 0.8) 0%, rgba(15, 20, 25, 0.8) 100%)', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
+        <CardContent>
+          <Typography sx={{ color: '#9fa9a3' }}>Loading...</Typography>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (transactions.length === 0) {
+    return (
+      <Card sx={{ background: 'linear-gradient(135deg, rgba(26, 42, 42, 0.8) 0%, rgba(15, 20, 25, 0.8) 100%)', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
+        <CardContent>
+          <Typography sx={{ color: '#9fa9a3' }}>No transactions recorded yet</Typography>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Mobile card layout
+  if (isMobile) {
+    return (
+      <Box>
+        <Typography variant="h6" sx={{ color: '#d4a574', marginBottom: 2, fontWeight: 700 }}>
+          Transaction Logs (Latest 100)
+        </Typography>
+        <Grid container spacing={2}>
+          {transactions.map((tx) => (
+            <Grid item xs={12} sm={6} key={tx.id}>
+              <Card sx={{ background: 'linear-gradient(135deg, rgba(26, 42, 42, 0.8) 0%, rgba(15, 20, 25, 0.8) 100%)', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
+                <CardContent>
+                  <Box sx={{ marginBottom: 1 }}>
+                    <Chip
+                      label={tx.type?.replace(/_/g, ' ').toUpperCase()}
+                      size="small"
+                      sx={{
+                        background: getTransactionTypeColor(tx.type) + '20',
+                        color: getTransactionTypeColor(tx.type),
+                        fontWeight: 600,
+                      }}
+                    />
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 1 }}>
+                    <Typography sx={{ color: '#9fa9a3', fontSize: '0.85rem' }}>Amount:</Typography>
+                    <Typography sx={{ color: '#4ade80', fontWeight: 600, fontSize: '0.85rem' }}>₱{(tx.amount || 0).toLocaleString()}</Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 1 }}>
+                    <Typography sx={{ color: '#9fa9a3', fontSize: '0.85rem' }}>Role:</Typography>
+                    <Typography sx={{ color: '#7ea8ff', textTransform: 'capitalize', fontSize: '0.85rem' }}>{tx.role}</Typography>
+                  </Box>
+                  <Box>
+                    <Typography sx={{ color: '#9fa9a3', fontSize: '0.75rem' }}>{formatDate(tx.createdAt)}</Typography>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    );
+  }
+
+  // Desktop table layout
   return (
     <Card sx={{ background: 'linear-gradient(135deg, rgba(26, 42, 42, 0.8) 0%, rgba(15, 20, 25, 0.8) 100%)', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
       <CardContent>
@@ -64,44 +135,38 @@ export default function TransactionLogs() {
           Transaction Logs (Latest 100)
         </Typography>
 
-        {loading ? (
-          <Typography sx={{ color: '#9fa9a3' }}>Loading...</Typography>
-        ) : transactions.length === 0 ? (
-          <Typography sx={{ color: '#9fa9a3' }}>No transactions recorded yet</Typography>
-        ) : (
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ borderBottom: '2px solid rgba(212, 175, 55, 0.2)' }}>
-                  <TableCell sx={{ color: '#d4a574', fontWeight: 700 }}>Type</TableCell>
-                  <TableCell sx={{ color: '#d4a574', fontWeight: 700 }}>Amount</TableCell>
-                  <TableCell sx={{ color: '#d4a574', fontWeight: 700 }}>Role</TableCell>
-                  <TableCell sx={{ color: '#d4a574', fontWeight: 700 }}>Date</TableCell>
+        <TableContainer sx={{ overflowX: 'auto' }}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ borderBottom: '2px solid rgba(212, 175, 55, 0.2)' }}>
+                <TableCell sx={{ color: '#d4a574', fontWeight: 700 }}>Type</TableCell>
+                <TableCell sx={{ color: '#d4a574', fontWeight: 700 }}>Amount</TableCell>
+                <TableCell sx={{ color: '#d4a574', fontWeight: 700 }}>Role</TableCell>
+                <TableCell sx={{ color: '#d4a574', fontWeight: 700 }}>Date</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {transactions.map((tx) => (
+                <TableRow key={tx.id} sx={{ borderBottom: '1px solid rgba(212, 175, 55, 0.1)', '&:hover': { background: 'rgba(212, 175, 55, 0.05)' } }}>
+                  <TableCell>
+                    <Chip
+                      label={tx.type?.replace(/_/g, ' ').toUpperCase()}
+                      size="small"
+                      sx={{
+                        background: getTransactionTypeColor(tx.type) + '20',
+                        color: getTransactionTypeColor(tx.type),
+                        fontWeight: 600,
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell sx={{ color: '#4ade80', fontWeight: 600 }}>₱{(tx.amount || 0).toLocaleString()}</TableCell>
+                  <TableCell sx={{ color: '#7ea8ff', textTransform: 'capitalize' }}>{tx.role}</TableCell>
+                  <TableCell sx={{ color: '#9fa9a3', fontSize: '0.85rem' }}>{formatDate(tx.createdAt)}</TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {transactions.map((tx) => (
-                  <TableRow key={tx.id} sx={{ borderBottom: '1px solid rgba(212, 175, 55, 0.1)', '&:hover': { background: 'rgba(212, 175, 55, 0.05)' } }}>
-                    <TableCell>
-                      <Chip
-                        label={tx.type?.replace(/_/g, ' ').toUpperCase()}
-                        size="small"
-                        sx={{
-                          background: getTransactionTypeColor(tx.type) + '20',
-                          color: getTransactionTypeColor(tx.type),
-                          fontWeight: 600,
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell sx={{ color: '#4ade80', fontWeight: 600 }}>₱{(tx.amount || 0).toLocaleString()}</TableCell>
-                    <TableCell sx={{ color: '#7ea8ff', textTransform: 'capitalize' }}>{tx.role}</TableCell>
-                    <TableCell sx={{ color: '#9fa9a3', fontSize: '0.85rem' }}>{formatDate(tx.createdAt)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </CardContent>
     </Card>
   );

@@ -1,0 +1,60 @@
+/* Admin Components Mobile Styles */
+
+/* Responsive Card and Table Styling */
+@media (max-width: 900px) {
+  /* Hide some columns on mobile */
+  .admin-table-hidden-mobile {
+    display: none;
+  }
+  
+  /* Make table more compact */
+  .admin-table-cell {
+    padding: 8px 4px !important;
+    font-size: 0.85rem !important;
+  }
+  
+  .admin-table-header-cell {
+    padding: 10px 4px !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-table-cell {
+    padding: 6px 3px !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .admin-table-header-cell {
+    padding: 8px 3px !important;
+    font-size: 0.7rem !important;
+  }
+  
+  /* Stack layout for cards on very small screens */
+  .admin-card-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px !important;
+  }
+}
+
+/* General responsive adjustments */
+@media (max-width: 900px) {
+  /* Ensure tables scroll horizontally on smaller screens */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  thead, tbody, tr, td, th {
+    display: block;
+  }
+  
+  /* Optional: Hide table headers on mobile and use data attributes */
+  @supports (display: grid) {
+    table {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+  }
+}
