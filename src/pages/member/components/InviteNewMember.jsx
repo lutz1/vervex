@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import {
   Box,
@@ -15,75 +15,6 @@ import {
 } from '@mui/material';
 import { getCodeRequestPrice } from '../../../utils/firestore';
 
-// Load Google Maps script
-const loadGoogleMapsScript = (callback) => {
-  const existingScript = document.getElementById('googleMaps');
-  
-  if (!existingScript) {
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBjsINSn3pq6M0_ZhRJLhxGXRE0CTLvD_I&libraries=places`;
-    script.id = 'googleMaps';
-    document.body.appendChild(script);
-    
-    script.onload = () => {
-      console.log('Google Maps script loaded successfully');
-      if (callback) callback();
-    };
-    
-    script.onerror = (error) => {
-      console.error('Failed to load Google Maps script:', error);
-    };
-  } else if (window.google && window.google.maps) {
-    console.log('Google Maps script already loaded');
-    if (callback) callback();
-  }
-};
-
-// Add CSS for Google Maps autocomplete styling
-const addGoogleMapsStyles = () => {
-  const existingStyle = document.getElementById('googleMapsAutocompleteStyles');
-  if (!existingStyle) {
-    const style = document.createElement('style');
-    style.id = 'googleMapsAutocompleteStyles';
-    style.textContent = `
-      .pac-container {
-        background-color: #121212 !important;
-        border: 1px solid rgba(212, 175, 55, 0.3) !important;
-        border-top: none !important;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8) !important;
-        z-index: 10000 !important;
-        font-family: 'Roboto', sans-serif !important;
-      }
-      .pac-item {
-        background-color: #121212 !important;
-        color: #ffffff !important;
-        border-top: 1px solid #2a2a2a !important;
-        padding: 8px 12px !important;
-        cursor: pointer !important;
-        font-size: 0.85rem !important;
-      }
-      .pac-item:hover {
-        background-color: rgba(212, 175, 55, 0.1) !important;
-      }
-      .pac-item-selected {
-        background-color: rgba(212, 175, 55, 0.15) !important;
-      }
-      .pac-item-query {
-        color: #d4af37 !important;
-        font-size: 0.85rem !important;
-      }
-      .pac-matched {
-        color: #ffffff !important;
-        font-weight: 600 !important;
-      }
-      .pac-icon {
-        display: none !important;
-      }
-    `;
-    document.head.appendChild(style);
-  }
-};
-
 export default function InviteNewMember({
   inviteSlot,
   onClose,
@@ -97,10 +28,6 @@ export default function InviteNewMember({
     role = 'vip',
   } = inviteData;
 
-  const addressInputRef = useRef(null);
-  const autocompleteRef = useRef(null);
-  const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
-
   const roles = ['vip', 'ambassador', 'supreme'];
   
   const selectedPrice = useMemo(() => {
@@ -108,72 +35,6 @@ export default function InviteNewMember({
   }, [role]);
 
   const isOverTheCounter = paymentMethod === 'over-the-counter';
-
-  // Load Google Maps and initialize autocomplete
-  useEffect(() => {
-    // Only load if not already loaded
-    if (!window.google || !window.google.maps) {
-      loadGoogleMapsScript(() => {
-        setIsGoogleMapsLoaded(true);
-        addGoogleMapsStyles();
-      });
-    } else {
-      setIsGoogleMapsLoaded(true);
-      addGoogleMapsStyles();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isGoogleMapsLoaded && addressInputRef.current && window.google && window.google.maps && window.google.maps.places) {
-      // Get the actual input element from the TextField
-      const inputElement = addressInputRef.current.querySelector('input');
-      
-      if (!inputElement) {
-        console.error('Address input element not found');
-        return;
-      }
-
-      // Clean up previous instance
-      if (autocompleteRef.current) {
-        try {
-          window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
-        } catch (e) {
-          console.log('Cleanup not needed');
-        }
-      }
-
-      try {
-        autocompleteRef.current = new window.google.maps.places.Autocomplete(
-          inputElement,
-          {
-            types: ['geocode'],
-            componentRestrictions: { country: 'ph' },
-          }
-        );
-
-        autocompleteRef.current.addListener('place_changed', () => {
-          const place = autocompleteRef.current.getPlace();
-          if (place && place.formatted_address) {
-            onInviteDataChange('fullAddress', place.formatted_address);
-          }
-        });
-
-        console.log('Google Maps Autocomplete initialized successfully');
-      } catch (error) {
-        console.error('Error initializing Google Maps Autocomplete:', error);
-      }
-    }
-
-    return () => {
-      if (autocompleteRef.current && window.google && window.google.maps) {
-        try {
-          window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
-        } catch (error) {
-          // Ignore cleanup errors
-        }
-      }
-    };
-  }, [isGoogleMapsLoaded, onInviteDataChange]);
 
   // Handle contact number - only allow numbers
   const handleContactNumberChange = (e) => {
@@ -535,6 +396,7 @@ export default function InviteNewMember({
             {/* Full Width Fields */}
             {[
               { label: 'Email Address', key: 'email', placeholder: 'member@example.com', type: 'email' },
+              { label: 'Full Address', key: 'fullAddress', placeholder: 'Complete Address', multiline: true, rows: 2 },
             ].map((field) => (
               <Box
                 key={field.key}
@@ -552,6 +414,8 @@ export default function InviteNewMember({
                   onChange={(e) => onInviteDataChange(field.key, e.target.value)}
                   disabled={isLoading}
                   size="small"
+                  multiline={field.multiline}
+                  rows={field.rows}
                   sx={{
                     marginBottom: { xs: '2px', sm: '3px' },
                     '& .MuiOutlinedInput-root': {
@@ -590,64 +454,6 @@ export default function InviteNewMember({
                 />
               </Box>
             ))}
-
-            {/* Full Address with Google Maps Autocomplete */}
-            <Box
-              sx={{
-                marginBottom: { xs: '8px', sm: '10px' },
-              }}
-              ref={addressInputRef}
-            >
-              <TextField
-                fullWidth
-                label="Full Address"
-                variant="outlined"
-                placeholder="Start typing your address..."
-                value={inviteData.fullAddress}
-                onChange={(e) => onInviteDataChange('fullAddress', e.target.value)}
-                disabled={isLoading}
-                size="small"
-                inputProps={{
-                  id: 'google-maps-autocomplete-input',
-                  autoComplete: 'off',
-                }}
-                sx={{
-                  marginBottom: { xs: '2px', sm: '3px' },
-                  '& .MuiOutlinedInput-root': {
-                    color: '#ffffff !important',
-                    backgroundColor: 'transparent !important',
-                    padding: '10px 0',
-                    minHeight: '40px',
-                    '& fieldset': {
-                      border: 'none',
-                      borderBottom: '1px solid #3a3a3a',
-                    },
-                    '&:hover fieldset': {
-                      borderBottomColor: '#555555 !important',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderBottom: '2px solid #d4af37 !important',
-                    },
-                  },
-                  '& .MuiInputBase-input': {
-                    fontSize: '0.85rem',
-                    lineHeight: '1.4',
-                  },
-                  '& .MuiInputBase-input::placeholder': {
-                    color: '#555555',
-                    opacity: 0.7,
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: '#999999',
-                    fontSize: '0.8rem',
-                    lineHeight: '1.2',
-                    '&.Mui-focused': {
-                      color: '#d4af37',
-                    },
-                  },
-                }}
-              />
-            </Box>
           </Box>
 
           {/* Divider and Actions */}
