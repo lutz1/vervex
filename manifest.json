@@ -9,14 +9,14 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
-      "type": "image/png",
+      "src": "logo.jpg",
+      "type": "image/jpeg",
       "sizes": "192x192",
       "purpose": "any"
     },
     {
-      "src": "logo512.png",
-      "type": "image/png",
+      "src": "logo.jpg",
+      "type": "image/jpeg",
       "sizes": "512x512",
       "purpose": "any"
     }
@@ -30,15 +30,15 @@
   "categories": ["business", "finance"],
   "screenshots": [
     {
-      "src": "logo512.png",
+      "src": "logo.jpg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "wide"
     },
     {
-      "src": "logo192.png",
+      "src": "logo.jpg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "narrow"
     }
   ],
