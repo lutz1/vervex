@@ -5,8 +5,25 @@ import GetAppIcon from '@mui/icons-material/GetApp';
 export default function PWAInstallButton() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showButton, setShowButton] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
+    // Check if app is already installed (running in standalone mode)
+    const checkStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                           window.navigator.standalone || 
+                           document.referrer.includes('android-app://');
+    
+    setIsStandalone(checkStandalone);
+
+    // If not installed, show button after a delay to give time for beforeinstallprompt
+    if (!checkStandalone) {
+      const timer = setTimeout(() => {
+        setShowButton(true);
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
+
     // Listen for the beforeinstallprompt event
     const handleBeforeInstallPrompt = (e) => {
       // Prevent the browser's default install prompt
@@ -22,6 +39,7 @@ export default function PWAInstallButton() {
       console.log('PWA app was installed');
       setShowButton(false);
       setDeferredPrompt(null);
+      setIsStandalone(true);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -34,7 +52,14 @@ export default function PWAInstallButton() {
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      // Fallback: Show installation instructions for browsers that don't support the prompt
+      alert('To install:\n\n' +
+            'Chrome/Edge (Android): Tap menu (⋮) → "Add to Home screen"\n' +
+            'Chrome (Desktop): Click install icon (⊕) in address bar\n' +
+            'Safari (iOS): Tap Share → "Add to Home Screen"');
+      return;
+    }
 
     // Show the install prompt
     deferredPrompt.prompt();
@@ -53,7 +78,7 @@ export default function PWAInstallButton() {
     setDeferredPrompt(null);
   };
 
-  if (!showButton) return null;
+  if (!showButton || isStandalone) return null;
 
   return (
     <Tooltip title="Install Vervex App">
