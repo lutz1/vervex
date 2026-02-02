@@ -396,7 +396,6 @@ export default function InviteNewMember({
             {/* Full Width Fields */}
             {[
               { label: 'Email Address', key: 'email', placeholder: 'member@example.com', type: 'email' },
-              { label: 'Full Address', key: 'fullAddress', placeholder: 'Complete Address', multiline: true, rows: 2 },
             ].map((field) => (
               <Box
                 key={field.key}
@@ -414,8 +413,6 @@ export default function InviteNewMember({
                   onChange={(e) => onInviteDataChange(field.key, e.target.value)}
                   disabled={isLoading}
                   size="small"
-                  multiline={field.multiline}
-                  rows={field.rows}
                   sx={{
                     marginBottom: { xs: '2px', sm: '3px' },
                     '& .MuiOutlinedInput-root': {
@@ -454,6 +451,142 @@ export default function InviteNewMember({
                 />
               </Box>
             ))}
+
+            {/* Address Section Header */}
+            <Typography
+              sx={{
+                color: '#d4af37',
+                fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                fontWeight: 600,
+                marginTop: { xs: '8px', sm: '10px' },
+                marginBottom: { xs: '6px', sm: '8px' },
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}
+            >
+              Address Details
+            </Typography>
+
+            {/* Address Fields Grid */}
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                gap: { xs: '8px', sm: '10px' },
+                marginBottom: { xs: '8px', sm: '10px' },
+              }}
+            >
+              {[
+                { label: 'Purok/Street', key: 'purokStreet', placeholder: 'Purok or Street' },
+                { label: 'Barangay', key: 'barangay', placeholder: 'Barangay' },
+                { label: 'City', key: 'city', placeholder: 'City' },
+                { label: 'Province', key: 'province', placeholder: 'Province' },
+              ].map((field) => (
+                <TextField
+                  key={field.key}
+                  fullWidth
+                  label={field.label}
+                  variant="outlined"
+                  placeholder={field.placeholder}
+                  value={inviteData[field.key] || ''}
+                  onChange={(e) => onInviteDataChange(field.key, e.target.value)}
+                  disabled={isLoading}
+                  size="small"
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      color: '#ffffff !important',
+                      backgroundColor: 'transparent !important',
+                      padding: '8px 0',
+                      minHeight: '36px',
+                      '& fieldset': {
+                        border: 'none',
+                        borderBottom: '1px solid #3a3a3a',
+                      },
+                      '&:hover fieldset': {
+                        borderBottomColor: '#555555 !important',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderBottom: '2px solid #d4af37 !important',
+                      },
+                    },
+                    '& .MuiInputBase-input': {
+                      fontSize: { xs: '0.8rem', sm: '0.85rem' },
+                      padding: '8px 0',
+                      lineHeight: '1.4',
+                    },
+                    '& .MuiInputBase-input::placeholder': {
+                      color: '#555555',
+                      opacity: 0.7,
+                    },
+                    '& .MuiInputLabel-root': {
+                      color: '#999999',
+                      fontSize: { xs: '0.75rem', sm: '0.8rem' },
+                      lineHeight: '1.2',
+                      '&.Mui-focused': {
+                        color: '#d4af37',
+                      },
+                    },
+                  }}
+                />
+              ))}
+            </Box>
+
+            {/* ZIP Code - Full Width */}
+            <Box
+              sx={{
+                marginBottom: { xs: '8px', sm: '10px' },
+              }}
+            >
+              <TextField
+                fullWidth
+                label="ZIP Code"
+                variant="outlined"
+                placeholder="ZIP Code"
+                value={inviteData.zipCode || ''}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, '');
+                  onInviteDataChange('zipCode', value);
+                }}
+                disabled={isLoading}
+                size="small"
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 4 }}
+                sx={{
+                  marginBottom: { xs: '2px', sm: '3px' },
+                  '& .MuiOutlinedInput-root': {
+                    color: '#ffffff !important',
+                    backgroundColor: 'transparent !important',
+                    padding: '10px 0',
+                    minHeight: '40px',
+                    '& fieldset': {
+                      border: 'none',
+                      borderBottom: '1px solid #3a3a3a',
+                    },
+                    '&:hover fieldset': {
+                      borderBottomColor: '#555555 !important',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderBottom: '2px solid #d4af37 !important',
+                    },
+                  },
+                  '& .MuiInputBase-input': {
+                    fontSize: '0.85rem',
+                    lineHeight: '1.4',
+                  },
+                  '& .MuiInputBase-input::placeholder': {
+                    color: '#555555',
+                    opacity: 0.7,
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: '#999999',
+                    fontSize: '0.8rem',
+                    lineHeight: '1.2',
+                    '&.Mui-focused': {
+                      color: '#d4af37',
+                    },
+                  },
+                }}
+              />
+            </Box>
           </Box>
 
           {/* Divider and Actions */}

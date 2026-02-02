@@ -50,7 +50,11 @@ export default function Genealogy() {
     birthdate: '',
     contactNumber: '',
     email: '',
-    fullAddress: '',
+    purokStreet: '',
+    barangay: '',
+    city: '',
+    province: '',
+    zipCode: '',
     fullName: '',
     role: 'vip',
   });
@@ -357,9 +361,12 @@ export default function Genealogy() {
   }, []);
 
   const handleInviteMember = async () => {
-    const { email, firstName, middleName, surname, username, birthdate, contactNumber, fullAddress, role } = inviteData;
+    const { email, firstName, middleName, surname, username, birthdate, contactNumber, purokStreet, barangay, city, province, zipCode, role } = inviteData;
 
-    if (!email.trim() || !firstName.trim() || !surname.trim() || !username.trim() || !contactNumber.trim() || !fullAddress.trim()) {
+    // Concatenate address fields
+    const fullAddress = [purokStreet, barangay, city, province, zipCode].filter(Boolean).join(', ');
+
+    if (!email.trim() || !firstName.trim() || !surname.trim() || !username.trim() || !contactNumber.trim() || !purokStreet.trim() || !barangay.trim() || !city.trim() || !province.trim() || !zipCode.trim()) {
       showAlert('Please fill in all required fields', 'error');
       return;
     }
@@ -464,7 +471,11 @@ export default function Genealogy() {
       birthdate: '',
       contactNumber: '',
       email: '',
-      fullAddress: '',
+      purokStreet: '',
+      barangay: '',
+      city: '',
+      province: '',
+      zipCode: '',
       fullName: '',
       role: 'vip',
     });
