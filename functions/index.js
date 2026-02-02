@@ -19,11 +19,22 @@ const auth = admin.auth();
 
 // Initialize nodemailer transporter with superadmin Gmail
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // TLS
   auth: {
     user: 'johnn.onezero@gmail.com',
     pass: 'qxix cshr uvif cdiu',
   },
+});
+
+// Test email connection on startup
+transporter.verify((error, success) => {
+  if (error) {
+    console.error('Nodemailer SMTP connection error:', error);
+  } else {
+    console.log('✓ Nodemailer SMTP connection successful');
+  }
 });
 
 // Helper function to verify ID token and get user
@@ -37,55 +48,79 @@ async function verifyToken(token) {
   }
 }
 
-// Helper function to send verification email
+// Helper function to send verification email via nodemailer
 async function sendVerificationEmail(email, fullName, verificationLink) {
+  console.log(`\n=== Sending Verification Email to ${email} ===`);
+  
   try {
-    const mailOptions = {
+    console.log(`Attempting to send email via SMTP...`);
+    const result = await transporter.sendMail({
       from: 'johnn.onezero@gmail.com',
       to: email,
       subject: 'Welcome to Vervex - Please Verify Your Email',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #d4af37;">Welcome to Vervex, ${fullName}!</h2>
-          <p>Your account has been successfully created.</p>
-          
-          <p style="margin: 20px 0;">Please verify your email address by clicking the button below:</p>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${verificationLink}" style="background-color: #d4af37; color: #081014; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
-              Verify Email Address
-            </a>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f5f5f5; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); color: #d4af37; padding: 20px; border-radius: 5px; text-align: center;">
+            <h1 style="margin: 0; font-family: 'Cinzel', serif; font-size: 28px; letter-spacing: 2px;">VERVEX</h1>
+            <p style="margin: 5px 0 0 0; color: #999; font-size: 12px;">Luxury Network Portal</p>
           </div>
           
-          <p style="color: #666;">Or copy and paste this link in your browser:</p>
-          <p style="word-break: break-all; background-color: #f5f5f5; padding: 10px; border-radius: 3px;">
-            ${verificationLink}
-          </p>
+          <div style="background-color: #ffffff; padding: 30px; border-radius: 5px; margin-top: 10px;">
+            <h2 style="color: #333; font-family: 'Cinzel', serif;">Welcome to Vervex, ${fullName}!</h2>
+            
+            <p style="color: #666; font-size: 14px; line-height: 1.6;">Your account has been successfully created and is ready to use.</p>
+            
+            <div style="background-color: #f9f9f9; padding: 20px; border-left: 4px solid #d4af37; border-radius: 3px; margin: 20px 0;">
+              <p style="color: #333; margin: 0 0 10px 0; font-weight: bold;">⚡ Next Step:</p>
+              <p style="color: #666; margin: 0; font-size: 14px;">Please verify your email address to activate your account and access all features.</p>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${verificationLink}" style="background-color: #d4af37; color: #000000; padding: 14px 40px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; font-size: 16px;">
+                Verify Email Address
+              </a>
+            </div>
+            
+            <p style="color: #999; font-size: 12px; border-top: 1px solid #eee; padding-top: 15px; margin-top: 20px;">
+              Or copy and paste this verification link in your browser:
+            </p>
+            <p style="word-break: break-all; background-color: #f5f5f5; padding: 12px; border-radius: 3px; color: #333; font-size: 11px; font-family: monospace;">
+              ${verificationLink}
+            </p>
+            
+            <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;">
+            
+            <p style="color: #999; font-size: 12px; margin: 10px 0;">
+              <strong>Security Note:</strong> Never share your verification link with anyone else.
+            </p>
+            
+            <p style="color: #999; font-size: 12px;">
+              If you did not create this account, please ignore this email or contact support immediately.
+            </p>
+            
+            <p style="color: #999; font-size: 12px; margin-top: 25px;">
+              Best regards,<br/>
+              <strong>Vervex Team</strong>
+            </p>
+          </div>
           
-          <p style="margin-top: 30px; color: #999; font-size: 12px;">
-            If you did not create this account, please ignore this email.
-          </p>
-          
-          <p style="color: #999; font-size: 12px;">
-            Best regards,<br/>
-            Vervex Team
+          <p style="color: #999; font-size: 11px; text-align: center; margin-top: 20px;">
+            © 2026 Vervex. All rights reserved.
           </p>
         </div>
       `,
-    };
-    
-    console.log(`Attempting to send email to ${email}...`);
-    const result = await transporter.sendMail(mailOptions);
-    console.log(`✓ Email sent successfully to ${email}:`, result.messageId);
+      text: `Welcome to Vervex, ${fullName}!\n\nPlease verify your email by clicking this link:\n${verificationLink}\n\nBest regards,\nVervex Team`,
+    });
+    console.log(`✓ Email sent successfully to ${email} - Message ID: ${result.messageId}`);
     return true;
   } catch (error) {
-    console.error(`✗ Error sending verification email to ${email}:`, error.message);
-    console.error('Error details:', {
+    console.error(`✗ Email failed to send to ${email}: ${error.message}`);
+    console.error('Email error details:', {
       code: error.code,
       errno: error.errno,
       syscall: error.syscall,
-      hostname: error.hostname,
-      message: error.message
+      command: error.command,
+      response: error.response
     });
     return false;
   }
@@ -524,32 +559,12 @@ exports.registerUserFromCodeHttp = functions.https.onRequest(async (req, res) =>
         });
         console.log(`✓ Verification link generated for ${invitedEmail}`);
         
-        // Try to send verification email via nodemailer
-        try {
-          emailSent = await sendVerificationEmail(invitedEmail, `${firstName} ${surname}`, verificationLink);
-          if (emailSent) {
-            console.log(`✓ Verification email sent to ${invitedEmail}`);
-          } else {
-            console.warn(`⚠ Failed to send verification email via nodemailer to ${invitedEmail}`);
-            // Try Firebase's email sending as fallback
-            try {
-              await auth.sendEmailVerificationLink(invitedEmail);
-              emailSent = true;
-              console.log(`✓ Firebase verification email sent to ${invitedEmail}`);
-            } catch (firebaseEmailErr) {
-              console.warn(`⚠ Firebase email also failed: ${firebaseEmailErr.message}`);
-            }
-          }
-        } catch (nodemailerErr) {
-          console.error(`✗ Nodemailer error: ${nodemailerErr.message}`);
-          // Try Firebase's email sending as fallback
-          try {
-            await auth.sendEmailVerificationLink(invitedEmail);
-            emailSent = true;
-            console.log(`✓ Firebase verification email sent to ${invitedEmail} (fallback)`);
-          } catch (firebaseEmailErr) {
-            console.warn(`⚠ Firebase email fallback also failed: ${firebaseEmailErr.message}`);
-          }
+        // Send verification email
+        emailSent = await sendVerificationEmail(invitedEmail, `${firstName} ${surname}`, verificationLink);
+        if (emailSent) {
+          console.log(`✓ Verification email sent successfully to ${invitedEmail}`);
+        } else {
+          console.warn(`⚠ Email sending failed for ${invitedEmail}, but verification link was generated`);
         }
       } catch (linkError) {
         console.error(`✗ Could not generate verification link: ${linkError.message}`);
