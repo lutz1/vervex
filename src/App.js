@@ -19,6 +19,7 @@ import { testFirebaseConnection } from './utils/firebaseTest';
 import { Box } from '@mui/material';
 import TopBar from './components/Appbar/TopBar';
 import BottomNav from './components/bottomnav/BottomNav';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
 
 
 function App() {
@@ -119,6 +120,7 @@ function App() {
 
   return (
     <Router>
+      <PWAInstallPrompt />
       <Routes>
         {/* Public Route - Login */}
         <Route path="/login" element={<Login />} />
