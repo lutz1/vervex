@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Card, CardContent, Grid, Tab, Tabs } from '@mui/material';
+import { Box, Typography, Card, CardContent, Grid } from '@mui/material';
 import { db } from '../../firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 import './Admin.css';
+import AdminSidebar from './components/AdminSidebar';
 import EarningsOverview from './components/EarningsOverview';
 import UserManagement from './components/UserManagement';
 import TransactionLogs from './components/TransactionLogs';
@@ -45,10 +46,6 @@ export default function Admin() {
 
     loadAdminData();
   }, []);
-
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
 
   return (
     <Box className="admin-main-container">
@@ -102,30 +99,19 @@ export default function Admin() {
         </Grid>
       </Box>
 
-      {/* Tab Navigation */}
-      <Box className="admin-tabs-container">
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
-          className="admin-tabs"
-        >
-          <Tab label="Earnings Overview" className="admin-tab" />
-          <Tab label="User Management" className="admin-tab" />
-          <Tab label="Code Requests" className="admin-tab" />
-          <Tab label="Transactions" className="admin-tab" />
-          <Tab label="Reports" className="admin-tab" />
-        </Tabs>
-      </Box>
+      {/* Sidebar and Content Layout */}
+      <Box className="admin-layout">
+        {/* Vertical Sidebar Navigation */}
+        <AdminSidebar activeTab={tabValue} onTabChange={setTabValue} />
 
-      {/* Tab Content */}
-      <Box className="admin-content-section">
-        {tabValue === 0 && <EarningsOverview />}
-        {tabValue === 1 && <UserManagement />}
-        {tabValue === 2 && <CodeRequests />}
-        {tabValue === 3 && <TransactionLogs />}
-        {tabValue === 4 && <Reports />}
+        {/* Content Section */}
+        <Box className="admin-content-section">
+          {tabValue === 0 && <EarningsOverview />}
+          {tabValue === 1 && <UserManagement />}
+          {tabValue === 2 && <CodeRequests />}
+          {tabValue === 3 && <TransactionLogs />}
+          {tabValue === 4 && <Reports />}
+        </Box>
       </Box>
     </Box>
   );
