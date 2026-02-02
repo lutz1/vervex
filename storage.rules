@@ -21,6 +21,15 @@ service firebase.storage {
       allow read: if request.auth != null;
     }
     
+    // Receipts folder - All authenticated users can upload payment receipts
+    match /receipts/{allPaths=**} {
+      // All authenticated users can write (upload) and delete receipts
+      allow write, delete: if request.auth != null;
+      
+      // All authenticated users can read receipts
+      allow read: if request.auth != null;
+    }
+    
     // Default deny all other requests
     match /{allPaths=**} {
       allow read, write, delete: if false;

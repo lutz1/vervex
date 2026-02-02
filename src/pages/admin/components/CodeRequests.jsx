@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import { db, auth } from '../../../firebaseConfig';
 import { collection, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { generateRandomCode } from '../../../utils/firestore';
+import { generatePaymentCode, updateInviteSlotWithCode } from '../../../utils/firestore';
 
 export default function CodeRequests() {
   const [requests, setRequests] = useState([]);
@@ -72,7 +72,8 @@ export default function CodeRequests() {
 
   const handleGenerateCode = (request) => {
     setSelectedRequest(request);
-    setGeneratedCode(generateRandomCode());
+    const code = generatePaymentCode(request.role);
+    setGeneratedCode(code);
     setShowCodeDialog(true);
   };
 
@@ -86,6 +87,11 @@ export default function CodeRequests() {
         status: 'code generated',
         updatedAt: serverTimestamp(),
       });
+
+      // Update the invite slot with the generated code
+      if (selectedRequest.inviteSlotId) {
+        await updateInviteSlotWithCode(selectedRequest.inviteSlotId, generatedCode);
+      }
 
       alert('Code generated and saved!');
       setShowCodeDialog(false);
@@ -234,7 +240,7 @@ export default function CodeRequests() {
                         )}
                       </TableCell>
                       <TableCell>
-                        {!request.generatedCode && request.status === 'waiting for payment' ? (
+                        {!request.generatedCode && (request.status === 'waiting for payment' || request.status === 'waiting for code generation') ? (
                           <Button
                             variant="contained"
                             size="small"
@@ -314,7 +320,7 @@ export default function CodeRequests() {
             variant="contained"
             fullWidth
             onClick={() => {
-              const newCode = generateRandomCode();
+              const newCode = generatePaymentCode(selectedRequest?.role);
               setGeneratedCode(newCode);
             }}
             sx={{

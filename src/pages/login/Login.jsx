@@ -52,8 +52,16 @@ export default function Login() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
-      // Get user role
+      // Get user role first to check if superadmin
       const role = await getUserRole(user.uid);
+      
+      // Check if email is verified (skip for superadmin)
+      if (!user.emailVerified && role !== 'superadmin') {
+        setError('Please verify your email first. Check your inbox for the verification link sent when you activated your code.');
+        setLoading(false);
+        return;
+      }
+      
       // Record T&C acceptance if needed
       if (tncAccepted) {
         // try to persist on the user document

@@ -1,16 +1,15 @@
-/* Payment Method Selection Modal Styling */
+/* Payment Method Selection Modal - Dark Theme */
 
 :root {
   --gold-primary: #d4af37;
-  --gold-light: #e8d5a1;
-  --dark-bg: #1a2a2a;
-  --dark-bg-light: #0f1419;
-  --text-primary: #fff;
-  --text-secondary: #9fa9a3;
-  --border-gold: rgba(212, 175, 55, 0.3);
-  --border-gold-light: rgba(212, 175, 55, 0.5);
-  --border-gold-subtle: rgba(212, 175, 55, 0.2);
-  --border-gold-faint: rgba(212, 175, 55, 0.1);
+  --gold-secondary: #BF953F;
+  --gold-light: #FCF6BA;
+  --dark-bg: #0a0a0a;
+  --dark-bg-card: #121212;
+  --dark-border: #2a2a2a;
+  --text-primary: #ffffff;
+  --text-secondary: #999999;
+  --text-gold: #d4af37;
 }
 
 @keyframes fadeIn {
@@ -40,154 +39,270 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 999;
-  padding: 16px;
+  padding: clamp(12px, 3vw, 16px);
   animation: fadeIn 0.35s ease-out;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
 }
 
 /* Modal Card */
 .payment-modal-card {
   width: 100%;
   max-width: 500px;
-  background: linear-gradient(135deg, #1a2a2a 0%, #0f1419 100%);
-  color: #fff;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 8px;
+  max-height: 90vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #121212 100%);
+  color: #ffffff;
+  border: none;
+  border-left: 4px solid #d4af37;
+  border-radius: 0;
   animation: slideUp 0.35s ease-out;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(212, 175, 55, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* Modal Header */
 .payment-modal-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
+  align-items: center;
+  padding: clamp(20px, 4vw, 32px) clamp(16px, 4vw, 32px) clamp(16px, 3vw, 24px) clamp(16px, 4vw, 32px);
+  border-bottom: 1px solid #2a2a2a;
+  background: transparent;
+  flex-shrink: 0;
 }
 
 .payment-modal-title {
   font-weight: 700;
   color: #d4af37;
   text-align: center;
-  font-size: 1.1rem;
+  font-size: clamp(1.1rem, 4vw, 1.4rem);
   width: 100%;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: 'Cinzel', serif;
+  margin: 0;
+  padding: 0;
 }
 
 .payment-modal-close {
-  color: #d4af37;
+  color: #999999;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
   padding: 0;
+  margin-left: clamp(12px, 2vw, 16px);
   min-width: auto;
-  transition: color 0.2s ease;
-  position: absolute;
-  right: 12px;
-  top: 12px;
+  transition: all 0.3s ease;
+  font-weight: 300;
+  flex-shrink: 0;
 }
 
 .payment-modal-close:hover {
-  color: #e8d5a1;
+  color: #d4af37;
+  transform: scale(1.2) rotate(90deg);
 }
 
 .payment-modal-close:disabled {
-  color: rgba(212, 175, 55, 0.5);
+  color: #2a2a2a;
   cursor: not-allowed;
 }
 
 /* Modal Description */
 .payment-modal-description {
-  color: #9fa9a3;
-  font-size: 0.95rem;
+  color: #999999;
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
   text-align: center;
-  margin-bottom: 24px;
-  line-height: 1.5;
+  margin-bottom: clamp(20px, 4vw, 32px);
+  line-height: 1.6;
+  letter-spacing: 0.3px;
+  padding: clamp(16px, 4vw, 32px) clamp(16px, 4vw, 32px) 0 clamp(16px, 4vw, 32px);
+  flex: 1;
+  overflow-y: auto;
 }
 
 /* Payment Method Buttons */
 .payment-method-button {
-  padding: 24px 16px;
-  border: 1px solid rgba(212, 175, 55, 0.5);
+  padding: clamp(16px, 3vw, 24px) clamp(12px, 2vw, 20px);
+  border: 1px solid #2a2a2a;
   color: #d4af37;
   background: transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: clamp(8px, 2vw, 12px);
   cursor: pointer;
   transition: all 0.3s ease;
-  border-radius: 4px;
+  border-radius: 0;
   font-weight: 600;
-  text-transform: none;
+  text-transform: uppercase;
   flex: 1;
+  letter-spacing: 0.5px;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.7rem, 2vw, 0.8rem);
 }
 
 .payment-method-button:hover:not(:disabled) {
   border-color: #d4af37;
-  background-color: rgba(212, 175, 55, 0.1);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+  color: #d4af37;
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.2);
+  transform: translateY(-2px);
 }
 
 .payment-method-button:disabled {
-  border-color: rgba(212, 175, 55, 0.3);
-  color: rgba(212, 175, 55, 0.5);
+  border-color: #2a2a2a;
+  color: #555555;
   cursor: not-allowed;
 }
 
 .payment-method-icon {
-  font-size: 1.5rem;
+  font-size: clamp(1.4rem, 4vw, 2rem);
 }
 
 .payment-method-label {
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: clamp(0.7rem, 2vw, 0.85rem);
 }
 
 .payment-method-desc {
-  font-size: 0.8rem;
-  color: #9fa9a3;
+  font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+  color: #666666;
 }
 
 /* Divider */
 .payment-modal-divider {
-  border-color: rgba(212, 175, 55, 0.2) !important;
-  margin: 24px 0;
+  border-color: #2a2a2a !important;
+  margin: clamp(16px, 3vw, 32px) 0;
+  border-width: 1px;
 }
 
 /* Cancel Button */
 .payment-modal-cancel {
   width: 100%;
-  color: #9fa9a3;
-  border-color: rgba(212, 175, 55, 0.3);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #ffffff;
+  border-color: transparent;
+  border: none;
   background: transparent;
-  padding: 12px;
+  padding: clamp(12px, 2vw, 16px);
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
-  border-radius: 4px;
+  border-radius: 0;
   text-transform: uppercase;
-  font-size: 0.9rem;
+  font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+  letter-spacing: 1px;
+  font-family: 'Inter', sans-serif;
+  border-top: 1px solid #2a2a2a;
+  color: #999999;
 }
 
 .payment-modal-cancel:hover:not(:disabled) {
-  border-color: rgba(212, 175, 55, 0.5);
+  border-color: transparent;
+  background-color: #1a1a1a;
+  color: #d4af37;
+  box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.1);
+  transform: translateY(-1px);
 }
 
 .payment-modal-cancel:disabled {
-  color: rgba(159, 169, 163, 0.5);
-  border-color: rgba(212, 175, 55, 0.2);
+  color: #555555;
+  border-color: transparent;
   cursor: not-allowed;
 }
 
 /* Responsive */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .payment-modal-card {
     max-width: 95vw;
+    max-height: 95vh;
+  }
+
+  .payment-modal-header {
+    padding: clamp(16px, 3vw, 24px) clamp(12px, 3vw, 20px) clamp(12px, 2vw, 16px) clamp(12px, 3vw, 20px);
+  }
+
+  .payment-modal-description {
+    padding: clamp(16px, 3vw, 20px) clamp(12px, 3vw, 20px) 0 clamp(12px, 3vw, 20px);
+    margin-bottom: clamp(16px, 3vw, 24px);
+  }
+
+  .payment-modal-title {
+    font-size: clamp(1rem, 3.5vw, 1.2rem);
+    letter-spacing: 0.5px;
+  }
+
+  .payment-method-button {
+    padding: clamp(12px, 2.5vw, 18px) clamp(8px, 2vw, 14px);
+    gap: clamp(6px, 1.5vw, 10px);
+  }
+
+  .payment-modal-divider {
+    margin: clamp(12px, 2.5vw, 20px) 0;
+  }
+
+  .payment-modal-cancel {
+    padding: clamp(10px, 2vw, 14px);
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-modal-overlay {
+    padding: clamp(8px, 2vw, 12px);
+  }
+
+  .payment-modal-card {
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .payment-modal-header {
+    padding: clamp(12px, 2.5vw, 16px) clamp(8px, 2vw, 12px) clamp(8px, 2vw, 12px) clamp(8px, 2vw, 12px);
+  }
+
+  .payment-modal-title {
+    font-size: clamp(0.9rem, 3vw, 1rem);
+    letter-spacing: 0.3px;
+  }
+
+  .payment-modal-description {
+    padding: clamp(12px, 2vw, 16px) clamp(8px, 2vw, 12px) 0 clamp(8px, 2vw, 12px);
+    margin-bottom: clamp(12px, 2vw, 16px);
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
+  }
+
+  .payment-method-button {
+    padding: clamp(10px, 2vw, 14px) clamp(6px, 1.5vw, 10px);
+    gap: clamp(4px, 1vw, 8px);
+  }
+
+  .payment-method-icon {
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+  }
+
+  .payment-method-label {
+    font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+  }
+
+  .payment-method-desc {
+    font-size: clamp(0.5rem, 1vw, 0.6rem);
+  }
+
+  .payment-modal-divider {
+    margin: clamp(8px, 2vw, 12px) 0;
+  }
+
+  .payment-modal-cancel {
+    padding: clamp(8px, 1.5vw, 10px);
+    font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+    letter-spacing: 0.3px;
   }
 }

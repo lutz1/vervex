@@ -99,8 +99,8 @@ export default function TopBar({ title, user, userProfile, role, onLogout }) {
   }, [role]);
 
   return (
-    <AppBar position="sticky" sx={{ background: 'linear-gradient(135deg, #1a5f3f 0%, #0f1419 100%)', top: 0, zIndex: 1400 }}>
-      <Toolbar>
+    <AppBar position="fixed" sx={{ background: 'linear-gradient(135deg, #1a5f3f 0%, #0f1419 100%)', top: 0, zIndex: 1400 }}>
+      <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
         <Typography
           variant="h6"
           sx={{

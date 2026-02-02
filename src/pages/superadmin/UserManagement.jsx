@@ -205,7 +205,30 @@ export default function UserManagement() {
         return;
       }
 
-      setSuccess(`User ${formData.fullName} created successfully`);
+      // Show verification instructions if email verification is required
+      if (result.verificationLink) {
+        const verificationMessage = `User ${formData.fullName} created successfully!
+
+User Details:
+- Email: ${result.email}
+- Password: ${formData.password}
+
+IMPORTANT - Email Verification Required:
+The user must verify their email before they can login.
+
+Verification Link has been generated. You can:
+1. Share this link with the user: 
+${result.verificationLink}
+
+Or the user can:
+1. Check their email for a verification link
+2. Click the verification link to verify their email
+3. Login with their credentials`;
+        alert(verificationMessage);
+      } else {
+        setSuccess(`User ${formData.fullName} created successfully. Email verification required before login.`);
+      }
+
       handleCloseDialog();
       await loadAllUsers();
     } catch (err) {

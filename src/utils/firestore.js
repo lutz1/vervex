@@ -285,20 +285,41 @@ export const getCodeRequestPrice = (role) => {
   return CODE_REQUEST_PRICES[lowerRole] || 0;
 };
 
+// Generate a code with role-based prefix
+export const generatePaymentCode = (role) => {
+  const lowerRole = role?.toLowerCase() || 'vip';
+  const rolePrefix = lowerRole === 'vip' ? 'VIP' 
+    : lowerRole === 'ambassador' ? 'AMBASSADOR' 
+    : lowerRole === 'supreme' ? 'SUPREME' 
+    : 'VIP';
+  
+  // Generate 10 random alphanumeric characters
+  const randomPart = Math.random().toString(36).substring(2, 12).toUpperCase();
+  
+  return `${rolePrefix}-${randomPart}`;
+};
+
 // Create a code request for over-the-counter payment
 export const createCodeRequest = async (inviterId, inviteData, inviteSlot, role) => {
   try {
     const codeRequestsRef = collection(db, 'codeRequests');
     const price = getCodeRequestPrice(role);
 
+    const inviteSlotData = {
+      id: inviteSlot.id,
+      type: inviteSlot.type,
+    };
+    
+    // Only include parentId if it exists
+    if (inviteSlot.parentId) {
+      inviteSlotData.parentId = inviteSlot.parentId;
+    }
+
     const docRef = await addDoc(codeRequestsRef, {
       inviterId: inviterId,
       inviteData: inviteData,
-      inviteSlot: {
-        id: inviteSlot.id,
-        type: inviteSlot.type,
-        parentId: inviteSlot.parentId,
-      },
+      inviteSlot: inviteSlotData,
+      inviteSlotId: inviteSlot.id, // Store for easy reference
       role: role,
       price: price,
       status: 'waiting for payment',
@@ -327,10 +348,41 @@ export const updateCodeRequest = async (requestId, code, adminId) => {
       status: 'code generated',
       updatedAt: serverTimestamp(),
     });
-
     return { success: true };
   } catch (error) {
     console.error('Error updating code request:', error);
+    throw error;
+  }
+};
+
+// Create or update an invite slot node with "Input Code" status
+export const updateInviteSlotWithCode = async (inviteSlotId, code) => {
+  try {
+    const slotRef = doc(db, 'inviteSlots', inviteSlotId);
+    await updateDoc(slotRef, {
+      status: 'Input Code',
+      code: code,
+      codeUpdatedAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    // If document doesn't exist, create it
+    if (error.code === 'not-found') {
+      try {
+        const inviteSlotsRef = collection(db, 'inviteSlots');
+        await addDoc(inviteSlotsRef, {
+          id: inviteSlotId,
+          status: 'Input Code',
+          code: code,
+          codeUpdatedAt: serverTimestamp(),
+        });
+        return { success: true };
+      } catch (innerError) {
+        console.error('Error creating invite slot:', innerError);
+        throw innerError;
+      }
+    }
+    console.error('Error updating invite slot:', error);
     throw error;
   }
 };
@@ -393,5 +445,47 @@ export const addDirectInviteEarnings = async (inviterId, invitedUserId) => {
   } catch (error) {
     console.error('Error adding direct invite earnings:', error);
     return false;
+  }
+};
+// Register user from invitation (after payment code activation)
+export const registerUserFromInvitation = async (invitationData) => {
+  try {
+    console.log('Registering user with invitation data:', invitationData);
+
+    // Create user document in users collection
+    const usersRef = collection(db, 'users');
+    const newUserRef = doc(usersRef);
+    
+    const userData = {
+      uid: newUserRef.id,
+      email: invitationData.invitedEmail || invitationData.email,
+      name: invitationData.invitedName || `${invitationData.firstName} ${invitationData.surname}`,
+      firstName: invitationData.firstName || '',
+      middleName: invitationData.middleName || '',
+      surname: invitationData.surname || '',
+      username: invitationData.username || '',
+      birthdate: invitationData.birthdate || '',
+      fullAddress: invitationData.fullAddress || '',
+      contactNumber: invitationData.contactNumber || '',
+      role: invitationData.role || 'vip',
+      parentId: invitationData.parentId,
+      status: 'Active',
+      balance: 0,
+      avatar: (invitationData.surname || invitationData.surname?.[0] || 'U'),
+      createdAt: serverTimestamp(),
+      createdBy: invitationData.createdBy,
+      paymentCode: invitationData.paymentCode,
+      registrationMethod: 'code',
+    };
+
+    console.log('Creating user document:', userData);
+    await setDoc(newUserRef, userData);
+    console.log('User document created successfully:', newUserRef.id);
+
+    return { success: true, userId: newUserRef.id };
+  } catch (error) {
+    console.error('Error registering user from invitation:', error);
+    console.error('Error details:', error.code, error.message);
+    throw error;
   }
 };

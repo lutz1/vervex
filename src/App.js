@@ -135,7 +135,9 @@ function App() {
                 <TopBar title="VERVEX - ADMIN" user={user} userProfile={userProfile} role={userRole} onLogout={handleLogout} />
 
                 {/* Admin Content */}
-                <Admin />
+                <Box sx={{ marginTop: { xs: '56px', sm: '64px' }, flex: 1 }}>
+                  <Admin />
+                </Box>
               </Box>
             </ProtectedRoute>
           }
@@ -151,11 +153,13 @@ function App() {
                 <TopBar title="VERVEX - SUPERADMIN" user={user} userProfile={userProfile} role={userRole} onLogout={handleLogout} />
 
                 {/* SuperAdmin Content */}
-                <Routes>
-                  <Route path="/users" element={<UserManagement />} />
-                  <Route path="/manage-tree" element={<ManageTree />} />
-                  <Route path="*" element={<Navigate to="/superadmin/users" replace />} />
-                </Routes>
+                <Box sx={{ marginTop: { xs: '56px', sm: '64px' }, flex: 1 }}>
+                  <Routes>
+                    <Route path="/users" element={<UserManagement />} />
+                    <Route path="/manage-tree" element={<ManageTree />} />
+                    <Route path="*" element={<Navigate to="/superadmin/users" replace />} />
+                  </Routes>
+                </Box>
               </Box>
             </ProtectedRoute>
           }
@@ -171,12 +175,14 @@ function App() {
                 <TopBar title="VERVEX - MEMBER" user={user} userProfile={userProfile} role={userRole} onLogout={handleLogout} />
 
                 {/* Member Content */}
-                <Routes>
-                  <Route path="/dashboard" element={<Dashboard user={user} userRole={userRole} />} />
-                  <Route path="/genealogy" element={<Genealogy />} />
-                  <Route path="/profile" element={<Profile user={user} userProfile={userProfile} onProfileUpdate={setUserProfile} />} />
-                  <Route path="*" element={<Navigate to="/member/dashboard" replace />} />
-                </Routes>
+                <Box sx={{ marginTop: { xs: '56px', sm: '64px' }, flex: 1 }}>
+                  <Routes>
+                    <Route path="/dashboard" element={<Dashboard user={user} userRole={userRole} />} />
+                    <Route path="/genealogy" element={<Genealogy />} />
+                    <Route path="/profile" element={<Profile user={user} userProfile={userProfile} onProfileUpdate={setUserProfile} />} />
+                    <Route path="*" element={<Navigate to="/member/dashboard" replace />} />
+                  </Routes>
+                </Box>
                 <BottomNav />
               </Box>
             </ProtectedRoute>
