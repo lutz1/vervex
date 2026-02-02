@@ -379,42 +379,56 @@ export default function Genealogy() {
     fetchGenealogyTree();
   }, []);
 
-  // Handle pinch zoom on mobile
+  // Handle pinch zoom on mobile with scroll boundaries
   useEffect(() => {
     const handleTouchMove = (e) => {
-      if (e.touches.length !== 2) return;
-      
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      const distance = Math.hypot(
-        touch2.clientX - touch1.clientX,
-        touch2.clientY - touch1.clientY
-      );
-      
-      if (lastDistanceRef.current > 0) {
-        const scale = distance / lastDistanceRef.current;
-        setZoomLevel(prev => {
-          const newZoom = Math.max(0.5, Math.min(2, prev * scale));
-          return newZoom;
-        });
+      // Pinch zoom with 2 fingers
+      if (e.touches.length === 2) {
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        const distance = Math.hypot(
+          touch2.clientX - touch1.clientX,
+          touch2.clientY - touch1.clientY
+        );
+        
+        if (lastDistanceRef.current > 0) {
+          const scale = distance / lastDistanceRef.current;
+          setZoomLevel(prev => {
+            const newZoom = Math.max(0.5, Math.min(2, prev * scale));
+            return newZoom;
+          });
+        }
+        
+        lastDistanceRef.current = distance;
+        e.preventDefault();
       }
-      
-      lastDistanceRef.current = distance;
-      e.preventDefault();
     };
     
     const handleTouchEnd = () => {
       lastDistanceRef.current = 0;
     };
     
+    const handleScroll = (e) => {
+      // Prevent over-scrolling by constraining scroll boundaries
+      const element = e.target;
+      if (element.scrollLeft < 0) {
+        element.scrollLeft = 0;
+      }
+      if (element.scrollLeft > element.scrollWidth - element.clientWidth) {
+        element.scrollLeft = element.scrollWidth - element.clientWidth;
+      }
+    };
+    
     const treeContainer = treeShellRef.current?.parentElement;
     if (treeContainer) {
       treeContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
       treeContainer.addEventListener('touchend', handleTouchEnd);
+      treeContainer.addEventListener('scroll', handleScroll);
       
       return () => {
         treeContainer.removeEventListener('touchmove', handleTouchMove);
         treeContainer.removeEventListener('touchend', handleTouchEnd);
+        treeContainer.removeEventListener('scroll', handleScroll);
       };
     }
   }, []);

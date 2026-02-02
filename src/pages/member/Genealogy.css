@@ -187,7 +187,8 @@
   border-radius: 16px;
   padding: 32px 24px 40px;
   margin-bottom: 32px;
-  overflow: visible;
+  overflow-x: auto;
+  overflow-y: visible;
   min-height: auto;
   display: flex;
   align-items: flex-start;
@@ -196,6 +197,26 @@
   box-shadow: none;
   width: 100%;
   max-width: 1600px;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.tree-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.tree-container::-webkit-scrollbar-track {
+  background: rgba(212, 175, 55, 0.1);
+  border-radius: 10px;
+}
+
+.tree-container::-webkit-scrollbar-thumb {
+  background: #d4af37;
+  border-radius: 10px;
+}
+
+.tree-container::-webkit-scrollbar-thumb:hover {
+  background: #e8d5a1;
 }
 
 
@@ -206,6 +227,9 @@
   padding: 40px;
   transition: transform 0.2s ease;
   will-change: transform;
+  touch-action: pan-x pinch-zoom;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .tree-loading {
@@ -1074,7 +1098,21 @@
 
 /* ==================== MOBILE RESPONSIVE LAYOUT ==================== */
 
-/* Tablets (768px - 900px) */
+/* Scroll boundary constraints for mobile */
+@media (max-width: 768px) {
+  .tree-container {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 70vh;
+    overscroll-behavior: contain;
+    scroll-behavior: smooth;
+  }
+  
+  .tree-shell {
+    display: inline-block;
+    touch-action: manipulation;
+  }
+}/* Tablets (768px - 900px) */
 @media (max-width: 900px) {
   .genealogy-header {
     padding: 0 16px;
