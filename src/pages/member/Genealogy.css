@@ -1103,7 +1103,8 @@
   .tree-container {
     overflow-x: auto;
     overflow-y: auto;
-    max-height: 70vh;
+    min-height: auto;
+    max-height: none;
     overscroll-behavior: contain;
     scroll-behavior: smooth;
   }
@@ -1111,6 +1112,7 @@
   .tree-shell {
     display: inline-block;
     touch-action: manipulation;
+    min-width: 100%;
   }
 }/* Tablets (768px - 900px) */
 @media (max-width: 900px) {
