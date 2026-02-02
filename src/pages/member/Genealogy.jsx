@@ -724,31 +724,83 @@ export default function Genealogy() {
       await addDoc(invitationsRef, invitationData);
 
       // Call Cloud Function to register user in Firebase Authentication and Firestore
+      // with timeout and retry logic for mobile networks
       const idToken = await currentUser.getIdToken();
       const cloudFunctionUrl = 'https://us-central1-vervex-c5b91.cloudfunctions.net/registerUserFromCodeHttp';
       
-      const response = await fetch(cloudFunctionUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({
-          invitationData: invitationData,
-          codeRequestId: slotStatus.codeRequestId,
-        }),
-      });
+      // Create fetch with timeout
+      const fetchWithTimeout = async (url, options, timeout = 30000) => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+        
+        try {
+          const response = await fetch(url, {
+            ...options,
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          return response;
+        } catch (error) {
+          clearTimeout(timeoutId);
+          if (error.name === 'AbortError') {
+            throw new Error('Request timeout. Please check your internet connection and try again.');
+          }
+          throw error;
+        }
+      };
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Cloud function error: ${response.status} - ${errorText}`);
+      let response;
+      
+      // Retry logic for poor mobile connections
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          console.log(`Activation attempt ${attempt} of 3...`);
+          
+          response = await fetchWithTimeout(cloudFunctionUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${idToken}`,
+            },
+            body: JSON.stringify({
+              invitationData: invitationData,
+              codeRequestId: slotStatus.codeRequestId,
+            }),
+          }, 30000);
+          
+          // If successful, break the retry loop
+          break;
+        } catch (error) {
+          console.error(`Attempt ${attempt} failed:`, error);
+          
+          // If it's the last attempt, throw the error
+          if (attempt === 3) {
+            throw new Error(
+              error.message === 'Failed to fetch' 
+                ? 'Network error. Please check your internet connection and try again.' 
+                : error.message
+            );
+          }
+          
+          // Wait before retrying (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      }
+
+      if (!response || !response.ok) {
+        let errorMessage = 'Server error. Please try again.';
+        
+        try {
+          const errorText = await response.text();
+          errorMessage = `Server error (${response.status}): ${errorText}`;
+        } catch (e) {
+          errorMessage = `Server error (${response.status})`;
+        }
+        
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || `Cloud function error: ${result.error}`);
-      }
 
       // Send verification email to the new user
       if (result.verificationLink) {
@@ -786,7 +838,8 @@ If they don't receive the email within 5 minutes, they can verify by:
       window.location.reload();
     } catch (error) {
       console.error('Error activating code:', error);
-      showAlert('Failed to activate code: ' + error.message, 'error');
+      const errorMessage = error.message || 'Unknown error occurred';
+      showAlert('Failed to activate code: ' + errorMessage, 'error');
     } finally {
       setActivatingCode(false);
     }
