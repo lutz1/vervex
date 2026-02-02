@@ -49,82 +49,7 @@ async function verifyToken(token) {
 }
 
 // Helper function to send verification email via nodemailer
-async function sendVerificationEmail(email, fullName, verificationLink) {
-  console.log(`\n=== Sending Verification Email to ${email} ===`);
-  
-  try {
-    console.log(`Attempting to send email via SMTP...`);
-    const result = await transporter.sendMail({
-      from: 'johnn.onezero@gmail.com',
-      to: email,
-      subject: 'Welcome to Vervex - Please Verify Your Email',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f5f5f5; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); color: #d4af37; padding: 20px; border-radius: 5px; text-align: center;">
-            <h1 style="margin: 0; font-family: 'Cinzel', serif; font-size: 28px; letter-spacing: 2px;">VERVEX</h1>
-            <p style="margin: 5px 0 0 0; color: #999; font-size: 12px;">Luxury Network Portal</p>
-          </div>
-          
-          <div style="background-color: #ffffff; padding: 30px; border-radius: 5px; margin-top: 10px;">
-            <h2 style="color: #333; font-family: 'Cinzel', serif;">Welcome to Vervex, ${fullName}!</h2>
-            
-            <p style="color: #666; font-size: 14px; line-height: 1.6;">Your account has been successfully created and is ready to use.</p>
-            
-            <div style="background-color: #f9f9f9; padding: 20px; border-left: 4px solid #d4af37; border-radius: 3px; margin: 20px 0;">
-              <p style="color: #333; margin: 0 0 10px 0; font-weight: bold;">⚡ Next Step:</p>
-              <p style="color: #666; margin: 0; font-size: 14px;">Please verify your email address to activate your account and access all features.</p>
-            </div>
-            
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${verificationLink}" style="background-color: #d4af37; color: #000000; padding: 14px 40px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; font-size: 16px;">
-                Verify Email Address
-              </a>
-            </div>
-            
-            <p style="color: #999; font-size: 12px; border-top: 1px solid #eee; padding-top: 15px; margin-top: 20px;">
-              Or copy and paste this verification link in your browser:
-            </p>
-            <p style="word-break: break-all; background-color: #f5f5f5; padding: 12px; border-radius: 3px; color: #333; font-size: 11px; font-family: monospace;">
-              ${verificationLink}
-            </p>
-            
-            <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;">
-            
-            <p style="color: #999; font-size: 12px; margin: 10px 0;">
-              <strong>Security Note:</strong> Never share your verification link with anyone else.
-            </p>
-            
-            <p style="color: #999; font-size: 12px;">
-              If you did not create this account, please ignore this email or contact support immediately.
-            </p>
-            
-            <p style="color: #999; font-size: 12px; margin-top: 25px;">
-              Best regards,<br/>
-              <strong>Vervex Team</strong>
-            </p>
-          </div>
-          
-          <p style="color: #999; font-size: 11px; text-align: center; margin-top: 20px;">
-            © 2026 Vervex. All rights reserved.
-          </p>
-        </div>
-      `,
-      text: `Welcome to Vervex, ${fullName}!\n\nPlease verify your email by clicking this link:\n${verificationLink}\n\nBest regards,\nVervex Team`,
-    });
-    console.log(`✓ Email sent successfully to ${email} - Message ID: ${result.messageId}`);
-    return true;
-  } catch (error) {
-    console.error(`✗ Email failed to send to ${email}: ${error.message}`);
-    console.error('Email error details:', {
-      code: error.code,
-      errno: error.errno,
-      syscall: error.syscall,
-      command: error.command,
-      response: error.response
-    });
-    return false;
-  }
-}
+
 
 // Minimal Cloud Function for secure user creation
 exports.createUserHttp = functions.https.onRequest(async (req, res) => {
@@ -221,26 +146,8 @@ exports.createUserHttp = functions.https.onRequest(async (req, res) => {
       displayName: fullName,
     });
 
-    // Generate email verification link with redirect back to app
-    let verificationLink = null;
+    // Email verification removed - user can verify through Firebase if needed
     let emailSent = false;
-    try {
-      verificationLink = await admin.auth().generateEmailVerificationLink(email, {
-        url: 'https://vervexofficial.online/',
-        handleCodeInApp: false,
-      });
-      console.log(`Verification link generated for ${email}`);
-      
-      // Send verification email
-      emailSent = await sendVerificationEmail(email, fullName, verificationLink);
-      if (emailSent) {
-        console.log(`Verification email sent to ${email}`);
-      } else {
-        console.warn(`Failed to send verification email to ${email}, but verification link was generated`);
-      }
-    } catch (linkError) {
-      console.warn('Could not generate verification link:', linkError);
-    }
 
     // Create user document in Firestore
     await db.collection('users').doc(userRecord.uid).set({
@@ -549,26 +456,8 @@ exports.registerUserFromCodeHttp = functions.https.onRequest(async (req, res) =>
         }
       }
 
-      // Generate Firebase email verification link with redirect back to app
-      let verificationLink = null;
+      // Email verification removed - user can verify through Firebase if needed
       let emailSent = false;
-      try {
-        verificationLink = await admin.auth().generateEmailVerificationLink(invitedEmail, {
-          url: 'https://vervexofficial.online/',
-          handleCodeInApp: false,
-        });
-        console.log(`✓ Verification link generated for ${invitedEmail}`);
-        
-        // Send verification email
-        emailSent = await sendVerificationEmail(invitedEmail, `${firstName} ${surname}`, verificationLink);
-        if (emailSent) {
-          console.log(`✓ Verification email sent successfully to ${invitedEmail}`);
-        } else {
-          console.warn(`⚠ Email sending failed for ${invitedEmail}, but verification link was generated`);
-        }
-      } catch (linkError) {
-        console.error(`✗ Could not generate verification link: ${linkError.message}`);
-      }
 
       // Update user Firestore document to track verification and password change requirement
       try {

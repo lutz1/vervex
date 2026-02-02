@@ -803,41 +803,19 @@ export default function Genealogy() {
 
       const result = await response.json();
 
-      // Send verification email to the new user
-      if (result.verificationLink) {
-        try {
-          const emailStatus = result.emailSent 
-            ? `✓ Verification email has been sent to ${result.email}`
-            : `⚠ Verification link generated. Email delivery status: ${result.message}`;
-          
-          // Provide the user with verification instructions
-          const verificationMessage = `Code activated successfully!
-
-${emailStatus}
+      // Display success message
+      const successMessage = `Code activated successfully!
 
 User Details:
 - Email: ${result.email}
 - Default Password: ${result.defaultPassword}
 
 Next Steps:
-1. Check email inbox (including spam folder) for the verification link
-2. Click the verification link to verify their email address
-3. Login with their credentials
-4. Change the default password after first login
-
-Important:
-If the member doesn't receive the email within 5 minutes:
-- They can login directly with the credentials above
-- Firebase will send a verification email on login attempt
-- They may need to check their spam/junk folder
+1. Login with the credentials above
+2. Change the default password after first login
 
 The account is now Active and ready to use.`;
-          showAlert(verificationMessage, 'success', 'Code Activated Successfully');
-        } catch (error) {
-          console.error('Error in verification process:', error);
-          showAlert('Code activated! Member registered successfully.\n\nVerification email has been sent to their registered email address. They can check their inbox and spam folder.', 'success');
-        }
-      }
+      showAlert(successMessage, 'success', 'Code Activated Successfully');
 
       setShowCodeModal(false);
       setSelectedCodeSlot(null);
