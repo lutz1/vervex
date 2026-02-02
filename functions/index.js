@@ -175,13 +175,10 @@ exports.createUserHttp = functions.https.onRequest(async (req, res) => {
     return res.status(200).json({
       success: true,
       uid: userRecord.uid,
-      message: emailSent 
-        ? `User ${fullName} created successfully. Verification email sent to ${email}`
-        : `User ${fullName} created successfully. Verification link generated but email sending failed.`,
+      message: `User ${fullName} created successfully.`,
       email: email,
-      verificationLink: verificationLink || null,
+      defaultPassword: password,
       emailSent: emailSent,
-      emailVerificationRequired: true,
     });
   } catch (error) {
     console.error('Error creating user:', error);
@@ -475,13 +472,10 @@ exports.registerUserFromCodeHttp = functions.https.onRequest(async (req, res) =>
       return res.status(200).json({
         success: true,
         uid: userRecord.uid,
-        message: emailSent 
-          ? `User ${firstName} ${surname} registered successfully. Verification email sent to ${invitedEmail}`
-          : `User ${firstName} ${surname} registered successfully. Verification link generated.`,
+        message: `User ${firstName} ${surname} registered successfully.`,
         email: invitedEmail,
-        verificationLink: verificationLink || null,
+        defaultPassword: tempPassword,
         emailSent: emailSent,
-        emailVerificationRequired: true,
       });
     } catch (error) {
       console.error('Error registering user from code:', error);
