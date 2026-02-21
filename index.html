@@ -17,21 +17,25 @@
     <link rel="manifest" href="/manifest.json" />
     <title>Vervex Luxury Portal</title>
     <script type="text/javascript">
-      // Handle GitHub Pages SPA routing redirect from 404
+      // GitHub Pages SPA redirect helper — run only on known GH Pages hosts
       (function(l) {
-        if (l.search[1] === '/') {
-          var decoded = l.search.slice(1).split('&').map(function(s) { 
-            return s.replace(/~and~/g, '&')
-          }).join('?');
-          window.history.replaceState(null, null,
+        try {
+          var host = (l.hostname || '').toLowerCase();
+          if (!/github\.io$/.test(host) && host.indexOf('vervex-app.com') === -1) return;
+          if (l.search && l.search[1] === '/') {
+            var decoded = l.search.slice(1).split('&').map(function(s) {
+              return s.replace(/~and~/g, '&');
+            }).join('?');
+            window.history.replaceState(null, null,
               l.pathname.slice(0, -1) + decoded + l.hash
-          );
-        }
+            );
+          }
+        } catch (e) { /* ignore errors */ }
       }(window.location))
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,FILL@0..1&display=swap" rel="stylesheet"/>
-    <script type="module" crossorigin src="/assets/index-C5UQuh0R.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CFu_kgFr.css">
+    <script type="module" crossorigin src="/assets/index-oz3pe1_v.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zHOkzYZu.css">
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
